@@ -50,6 +50,7 @@
   <!-- Tray icon, loaded as avares://StatisticsAnalysisTool/Assets/sat-icon.ico. -->
   <ItemGroup>
     <AvaloniaResource Include="..\StatisticsAnalysisTool\sat-icon.ico" Link="Assets\sat-icon.ico" />
+    <AvaloniaResource Include="..\StatisticsAnalysisTool\Assets\sat-icon.png" Link="Assets\sat-icon.png" />
   </ItemGroup>
 
   <!-- Localization table, read from <app dir>/Localization/localization.json (AppDataPaths.LocalizationFile). -->

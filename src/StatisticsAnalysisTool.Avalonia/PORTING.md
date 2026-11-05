@@ -66,6 +66,18 @@ CommandManager, Clipboard, XmlLanguage, DataTemplate, DataTemplateSelector.
 `Application.Resources` returns Avalonia colors and solid brushes as the WPF-shaped `Color` / `SolidColorBrush`,
 so linked code casts them unchanged. The Avalonia theme must define the `Color.*` and `SolidColorBrush.*` keys (T08).
 
+## Ported views
+
+- `Views/ToolLoadingWindow.axaml` (T07): 600x36 borderless progress bar with the status text, draggable. Colors
+  (`Background.1`, `Text.1`) are inlined until the theme lands (T08); it uses the Fluent progress bar.
+
+## Exception handling
+
+`Linux/Startup/GlobalExceptionHandlers.cs` ports the hooks of `App.xaml.cs`: `AppDomain.UnhandledException` and
+`TaskScheduler.UnobservedTaskException` identically, `DispatcherUnhandledException` as
+`Dispatcher.UIThread.UnhandledException` (log fatal, flush, not handled). Dropped as WPF-specific: the clipboard
+`COMException` (-2147221040) workaround and the LiveCharts `CompositionTargetTicker` disposal NRE.
+
 ## View placeholders
 
 `Linux/Views/Placeholders.cs` declares `DialogWindow`, `ItemAlertWindow`, `GameDataPreparationWindow`,

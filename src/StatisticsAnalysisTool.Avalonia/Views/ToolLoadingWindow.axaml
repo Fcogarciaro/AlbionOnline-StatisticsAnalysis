@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        x:Class="StatisticsAnalysisTool.Views.ToolLoadingWindow"
+        x:DataType="vm:ToolLoadingWindowViewModel"
+        mc:Ignorable="d"
+        Height="36" Width="600" CanResize="False" SystemDecorations="None"
+        WindowStartupLocation="CenterScreen" Background="#FF1D2329" FontSize="12" Focusable="False">
+  <!-- Colors are local until the shared theme lands (T08): Background.1 and Text.1 from Styles/Colors.xaml. -->
+  <Grid Name="Hotbar">
+    <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressBarValue}" />
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+      <Image Source="avares://StatisticsAnalysisTool/Assets/sat-icon.png"
+             VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,4,0,0" Height="30" Width="35" />
+      <TextBlock Text="{Binding LoadingText}" MaxWidth="540" VerticalAlignment="Center"
+                 TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" Foreground="#FFF3F6F8" />
+    </StackPanel>
+  </Grid>
+</Window>
