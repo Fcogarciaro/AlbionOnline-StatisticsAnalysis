@@ -37,14 +37,14 @@ internal sealed class ViewHarness : IDisposable
     public MainWindowViewModel MainViewModel => StatisticsAnalysisTool.Common.ServiceLocator.Resolve<MainWindowViewModel>();
 
     /// <summary>Shows the control; <paramref name="dataContext"/> is the inherited one (null keeps the control's own).</summary>
-    public T Show<T>(T control, object dataContext = null) where T : Control
+    public T Show<T>(T control, object dataContext = null, double width = 1100, double height = 800) where T : Control
     {
         if (dataContext != null)
         {
             control.DataContext = dataContext;
         }
 
-        Window = new Window { Width = 1100, Height = 800, Content = control };
+        Window = new Window { Width = width, Height = height, Content = control };
         Window.Show();
         Dispatcher.UIThread.RunJobs();
         return control;

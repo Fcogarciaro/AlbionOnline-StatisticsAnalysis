@@ -213,7 +213,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding GuildTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Guild, FallbackValue=GUILD}" Tag="pack://application:,,,/Assets/Navigation/shield.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="GuildControl" />
+          <userControls:GuildControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding StorageHistoryTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.StorageHistory, FallbackValue=STORAGE_HISTORY}" Tag="pack://application:,,,/Assets/Navigation/treasure.png">
