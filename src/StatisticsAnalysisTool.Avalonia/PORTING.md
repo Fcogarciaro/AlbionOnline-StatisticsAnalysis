@@ -13,7 +13,7 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Updater/AuthenticodeSignatureVerifier.cs` | Windows Authenticode | none (only used by the excluded controller) | n/a |
 | generated `AutoUpdateSecurityBuildSettings.g.cs` | MSBuild-generated in the WPF project | `Linux/Updater/AutoUpdateSecurityBuildSettings.cs` | All flags off. |
 | `Common/AppDataPaths.cs` | `LocalApplicationData` is the only root; everything (incl. `Settings.json`) sits in it | `Linux/Common/AppDataPaths.cs` (copy, keep in sync) | Same members and `Instances/<id>/...` sub-structure. `Settings.json` goes to `$XDG_CONFIG_HOME/StatisticsAnalysisTool` (default `~/.config`); `Backups`, `UserData-*`, `logs`, `GameFiles` to `$XDG_DATA_HOME/StatisticsAnalysisTool` (default `~/.local/share`, where .NET already pointed `LocalApplicationData`); `temp`, `ImageResources`, `SpellImageResources` to `$XDG_CACHE_HOME/StatisticsAnalysisTool` (default `~/.cache`, safe to delete). Relative XDG values are ignored per spec. Copy the folders between machines by recreating the same `Instances/<id>` layout. Upstream has no portable mode, so none is offered. Extra member `UserSettingsFile`. |
-| `Network/PacketProviders/SocketsPacketProvider.cs` | Raw sockets with Windows `SIO_RCVALL` | `Linux/Network/SocketsPacketProvider.cs` (subclass of the libpcap provider) | The `Sockets` choice (enum value 1, may come from a Windows settings file) runs libpcap. The default `PacketProvider` is already `Npcap` = libpcap. The settings UI still lists both options (`Sockets (must be run as admin)` / `Npcap`); T10 should relabel them. |
+| `Network/PacketProviders/SocketsPacketProvider.cs` | Raw sockets with Windows `SIO_RCVALL` | `Linux/Network/SocketsPacketProvider.cs` (subclass of the libpcap provider) | The `Sockets` choice (enum value 1, may come from a Windows settings file) runs libpcap. The default `PacketProvider` is already `Npcap` = libpcap. The settings UI relabels them through `PacketProviderLabelConverter`: `libpcap` and `Sockets (mapped to libpcap)`. |
 | `Network/PacketProviders/LibpcapPacketProvider.cs` | Frame parsing knows only Ethernet and raw IP; opens every up non-loopback device | `Linux/Network/LibpcapPacketProvider.cs` (copy, keep in sync) | `TryReadNetworkLayer` delegates to `Linux/Capture/LinkLayerDecoder.cs`: Ethernet (with 802.1Q/QinQ tags), Linux cooked SLL (113) and SLL2 (276), raw IP. The `any` pseudo device (cooked headers) is only opened when no concrete interface opened, and is not listed as a selectable device, to avoid every packet arriving twice. Upstream device filtering (skip loopback and down devices, honor `NetworkDevices` selection) works unchanged on Linux: there are no NPF names. The BPF default filter (UDP 5055/5056/5058 plus IPv4 fragments) compiles for every link type. Log text still says "Npcap". |
 | `Core/ApplicationCore.cs` | `WindowsPrincipal` (throws `PlatformNotSupportedException` on Linux) | `Linux/Core/ApplicationCore.cs` | `IsAppStartedAsAdministrator()` means root, or `CAP_NET_RAW` in `CapEff` (`CAP_NET_ADMIN` is optional; the setcap text grants both like Wireshark dumpcap) of `/proc/self/status` (`Linux/Capture/CapturePrivilege.cs`). |
 | `Localization/LocalizationController.cs` | Npcap texts | `Linux/Localization/LocalizationController.cs` (copy, one added call) | `Translation()` asks `CaptureGuidance` first. Overridden keys (English only): `NPCAP_INFO_DIALOG_TITLE/MESSAGE/LINK_TEXT`, `ERR_NPCAP_DLL_MISSING`, `MAKE_SURE_YOU_HAVE_INSTALLED_NPCAP`, and, when the process lacks the capture capabilities, `NO_LISTENING_ADAPTERS`, `ERR_NPCAP_OPEN_FAILED`, `START_APPLICATION_AS_ADMINISTRATOR`. These carry the exact `sudo setcap cap_net_raw,cap_net_admin=eip <path>` command for the real process (under `dotnet X.dll` the path is the apphost next to the dll, never the dotnet host). |
@@ -25,9 +25,9 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Localization/Culture.cs` | `FrameworkElement.LanguageProperty` (xml:lang) | `Linux/Localization/Culture.cs` | Sets thread cultures only; Avalonia has no per-element language. |
 | `Common/WindowsStartupService.cs` | HKCU Run registry key | `Linux/Common/WindowsStartupService.cs` | Writes (atomically, temp file + move) or removes `$XDG_CONFIG_HOME/autostart/StatisticsAnalysisTool.desktop`, with `Path=` set to the executable's directory (default `~/.config/autostart`, relative XDG values ignored per spec). One fixed file name, whereas Windows used one registry value per install path (`InstanceId`); two installs share the entry. `Exec` is the process path, or `dotnet <dll>` when launched through the dotnet host. |
 | `SystemTrayService.cs`, `SystemTrayMenuRenderer.cs` | WinForms `NotifyIcon` | `Linux/Common/SystemTrayService.cs` (renderer dropped) | Same menu (Open, Activate/Deactivate tracking, Exit) and minimize-to-tray logic on an Avalonia `TrayIcon` (needs a StatusNotifierItem host; GNOME needs an extension). Takes `Avalonia.Controls.Window`. Single click restores (no double-click event). The first-hide hint is a `notify-send` notification (no balloon-tip click). Native menus are not themed. The service needs `MainWindowViewModel`, so it is constructed by the real `MainWindow` (T09), not by `LinuxApp`. Icon: `sat-icon.ico` as Avalonia resource |
-| `Shortcut/**` | Windows shell | none | n/a |
+| `Shortcut/**` | Windows shell (`.lnk`) | `Linux/Platform/DesktopShortcut.cs` | "Create desktop shortcut" writes a Desktop Entry to `$XDG_DATA_HOME/applications` (menu) and, when `~/Desktop` (or `$XDG_DESKTOP_DIR`) exists, an executable copy there. |
 | `Common/Controls/**` (including `FontAwesomeImage`), `TextBoxHelper.cs`, `ScrollViewerExtensions.cs`, `ProgressBarSmoother.cs`, `CultureAwareBinding.cs` | WPF controls and attached properties | `Linux/Controls/{DigitsTextBox,ResponsiveUniformGrid,SpellDescriptionTextBlock,FontAwesomeImage}.cs`, `Linux/Common/{TextBoxHelper,NumericInputRules,ScrollViewerExtensions,ProgressBarSmoother,CultureAwareBinding}.cs` (same names and namespaces) | See "Converters and controls" and "Icons" below. |
-| `Common/Validation/**`, `Converters/ValidationErrorConverter.cs` | WPF validation classes (`ValidationError`, `IDataErrorInfo` templates) | none yet | T10 (settings window) re-creates validation with Avalonia `DataValidationErrors`. |
+| `Common/Validation/**`, `Converters/ValidationErrorConverter.cs` | WPF `ValidationRule`/`Validation.Errors` | `Linux/Common/Validation/PathValidationRule.cs` (static `GetError`) | The backup path text box shows the message as tooltip and a red border (class `invalid`), set by `SettingsControl` on every text change. The converter is not needed. |
 | `Views/**`, `UserControls/**`, `*.xaml.cs`, `App.xaml.cs`, `Properties/AssemblyInfo.cs`, `Properties/Resources.Designer.cs` | Views, application shell, resx image resources | ported views (T07-T15) | See view placeholders below. |
 | `Models/StatPricesTotal.cs`, `Network/Handler/JoinHandler.cs`, `Network/SilverCountUpTimer.cs` | Excluded since T01 | n/a | n/a |
 
@@ -210,7 +210,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
 - **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, ItemSearchControl, LoggingControl,
   DungeonControl, DamageMeterControl, TradeMonitoringControl, GatheringControl, CraftingControl, PartyControl, GuildControl,
   StorageHistoryControl, MapHistoryControl, PlayerInformationControl, DonationControl, ThanksControl and SettingsControl
-  (until the settings commit of T10). Each is replaced where it is ported (T11-T15).
+  (Settings is real since T10). Each is replaced where it is ported (T11-T15).
 
 ## Secondary windows (T10)
 
@@ -238,6 +238,20 @@ pointer-delta fallback; double click toggles maximize where upstream did). Resiz
 - `CompatBrushConverter`: shim `System.Windows.Media.Brush` properties of view models (e.g. `UpdateNoteSectionViewModel.TitleBrush`) need it in bindings.
 - `ListCollectionView` (shim) is now a read-only `IList`: Avalonia refuses INotifyCollectionChanged sources that are not.
 - Avalonia binding errors are logged, not thrown: view tests collect them with `BindingErrorLog`.
+
+## Settings (T10)
+
+- `UserControls/SettingsControl.axaml(.cs)` is the 621-line view converted mechanically (keyed styles to `Theme=`, `Visibility` to
+  `IsVisible` + converter, `ToolTip.Tip`, `DisplayMemberPath` to `DisplayMemberBinding`, `ViewportWidth` to `Viewport.Width`), same cards,
+  fields, bindings and handlers; `Styles/SettingsStyles.axaml` ports `SettingsStyles.xaml` (including the custom `Settings.OptionCheckBox`).
+  `Dashboard.Section` and `Dashboard.SectionTitle` (parents of two settings themes) are defined there until the dashboard styles land (T13).
+- Differences: folders open through `xdg-open` (`ExternalLink.OpenFolder`); the desktop shortcut is a Desktop Entry; the packet provider
+  names are relabeled (above); path validation is the `invalid` class; the settings reload when the tab content is attached (a TabControl
+  only keeps the selected content in the tree; upstream used `IsVisibleChanged`); the tracking toggle re-reads the real state with
+  `SetCurrentValue` instead of `UpdateTarget()`.
+- Still English/Windows wording in the settings texts that come from the localization table ("Start with Windows", "notification area"):
+  they describe the XDG autostart entry and the tray; no overrides yet.
+- Not verified live in this session: the real desktop (see the T20 note in the feature document).
 
 ## View placeholders
 

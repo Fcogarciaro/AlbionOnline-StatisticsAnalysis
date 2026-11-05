@@ -1,0 +1,598 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+             xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+             xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
+             xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+             x:Class="StatisticsAnalysisTool.UserControls.SettingsControl"
+             x:DataType="viewModels:SettingsWindowViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="1400"
+             d:DesignWidth="1100">
+
+    <Grid x:Name="Root">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer x:Name="SettingsScrollViewer"
+                      Grid.Row="0"
+                      Padding="10,10,12,0"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalContentAlignment="Stretch">
+            <StackPanel MinWidth="900" Width="{Binding Viewport.Width, ElementName=SettingsScrollViewer, Mode=OneWay}">
+                <!-- Generally -->
+                <Border Theme="{StaticResource Settings.Card}">
+                    <StackPanel>
+                        <Border Theme="{StaticResource Settings.CardHeader}">
+                            <TextBlock Text="{Binding Translation.Generally, FallbackValue=GENERALLY}" Theme="{StaticResource Settings.CardTitle}" />
+                        </Border>
+
+                        <Button Content="{Binding Translation.CheckForUpdate, FallbackValue=CHECK__FOR__UPDATE}"
+                                Height="40" Margin="10,10,10,10" HorizontalAlignment="Stretch" FontWeight="SemiBold" Click="CheckForUpdate_Click" />
+
+                        <Grid Margin="14,12,14,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.Language, FallbackValue=LANGUAGE}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding Languages}"
+                                              SelectedItem="{Binding LanguagesSelection}"
+                                              Theme="{StaticResource Settings.ComboBox}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate x:DataType="models:FileInformation">
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} ({1:N2}%)">
+                                                            <Binding Path="EnglishName" />
+                                                            <Binding Path="PercentageTranslations" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.NavigationTabVisibility, FallbackValue=NAVIGATION__TAB__VISIBILITY}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding TabVisibilities}"
+                                              ItemTemplate="{StaticResource TabVisibilityFilter}"
+                                              Theme="{StaticResource Settings.ComboBox}" />
+                                </StackPanel>
+
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.Notifications, FallbackValue=NOTIFICATIONS}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding NotificationFilters}"
+                                              ItemTemplate="{StaticResource NotificationFilter}"
+                                              Theme="{StaticResource Settings.ComboBox}" />
+                                </StackPanel>
+
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.Proxy, FallbackValue=PROXY}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <TextBox Text="{Binding ProxyUrlWithPort}"
+                                             MaxLength="50"
+                                             TextWrapping="NoWrap"
+                                             Theme="{StaticResource Settings.TextBox}" />
+                                </StackPanel>
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.SuggestPreReleaseUpdates, FallbackValue=SUGGEST__PRE__RELEASE__UPDATES}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <CheckBox IsChecked="{Binding IsSuggestPreReleaseUpdatesActive}" VerticalContentAlignment="Center">
+                                        <TextBlock Text="{Binding Translation.AttentionTheseVersionsAreStillBeingTested, FallbackValue=ATTENTION__THESE__VERSION__ARE__STILL__BEING__TESTED}"
+                                                   Theme="{StaticResource Settings.DangerText}" />
+                                    </CheckBox>
+                                </StackPanel>
+
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.MainGameFolderPath, FallbackValue=MAIN_GAME_FOLDER_PATH}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <TextBox Text="{Binding MainGameFolderPath, Mode=OneWay}"
+                                             TextWrapping="Wrap"
+                                             Cursor="Hand"
+                                             IsReadOnly="True"
+                                             ToolTip.Tip="{Binding MainGameFolderPath}"
+                                             Theme="{StaticResource Settings.TextBox}"
+                                             PointerPressed="MainGameFolderPathTextBox_PointerPressed" />
+                                </StackPanel>
+
+                                <WrapPanel Margin="0,0,0,10">
+                                    <Button Content="{Binding Translation.OpenToolDirectory, FallbackValue=OPEN__TOOL__DIRECTORY}"
+                                            Margin="0,0,6,6"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="OpenToolDirectory_Click" />
+                                    <Button Content="{Binding Translation.OpenUserDataDirectory, FallbackValue=OPEN__USER_DATA__DIRECTORY}"
+                                            Margin="0,0,6,6"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="OpenUserDataDirectory_Click" />
+                                    <Button Content="{Binding Translation.CreateDesktopShortcut, FallbackValue=CREATE__DESKTOP__SHORTCUT}"
+                                            Margin="0,0,6,6"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="CreateDesktopShortcut_Click" />
+                                </WrapPanel>
+
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.AnotherAppToStartPath, FallbackValue=ANOTHER_APP_TO_START_PATH}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30" />
+                                            <ColumnDefinition Width="8" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="40" Background="{DynamicResource SolidColorBrush.Background.4}" BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                                                BorderThickness="1" CornerRadius="3">
+                                            <Image Source="{Binding AnotherAppToStartExeIcon}" Width="30" Height="30" />
+                                        </Border>
+                                        <TextBox Grid.Column="2" Text="{Binding AnotherAppToStartPath}" TextWrapping="Wrap" Theme="{StaticResource Settings.TextBox}" />
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Window and startup -->
+                <Border Theme="{StaticResource Settings.Card}">
+                    <StackPanel>
+                        <Border Theme="{StaticResource Settings.CardHeader}">
+                            <TextBlock Text="{Binding Translation.WindowAndStartup, FallbackValue=WINDOW__AND__STARTUP}" Theme="{StaticResource Settings.CardTitle}" />
+                        </Border>
+
+                        <Grid Margin="14,12,14,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <CheckBox IsChecked="{Binding IsStartWithWindowsActive}" Margin="0,0,0,14" Theme="{StaticResource Settings.OptionCheckBox}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Translation.StartWithWindows, FallbackValue=START__WITH__WINDOWS}" Theme="{StaticResource Settings.OptionTitle}" />
+                                        <TextBlock Text="{Binding Translation.StartWithWindowsDescription, FallbackValue=START__WITH__WINDOWS__DESCRIPTION}" Theme="{StaticResource Settings.DescriptionText}" />
+                                    </StackPanel>
+                                </CheckBox>
+
+                                <CheckBox IsChecked="{Binding IsStartInSystemTrayActive}" Margin="0,0,0,14" Theme="{StaticResource Settings.OptionCheckBox}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Translation.StartInSystemTray, FallbackValue=START__IN__SYSTEM__TRAY}" Theme="{StaticResource Settings.OptionTitle}" />
+                                        <TextBlock Text="{Binding Translation.StartInSystemTrayDescription, FallbackValue=START__IN__SYSTEM__TRAY__DESCRIPTION}" Theme="{StaticResource Settings.DescriptionText}" />
+                                    </StackPanel>
+                                </CheckBox>
+
+                                <CheckBox IsChecked="{Binding IsMinimizeToSystemTrayActive}"
+                                          Margin="0,0,0,10"
+                                          Theme="{StaticResource Settings.OptionCheckBox}">
+                                    <TextBlock Text="{Binding Translation.MinimizeToSystemTray, FallbackValue=MINIMIZE__TO__SYSTEM__TRAY}" Theme="{StaticResource Settings.OptionTitle}" />
+                                </CheckBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <CheckBox IsChecked="{Binding IsOpenWithGameActive}" Margin="0,0,0,14" Theme="{StaticResource Settings.OptionCheckBox}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Translation.OpenWithGame, FallbackValue=OPEN__WITH__GAME}" Theme="{StaticResource Settings.OptionTitle}" />
+                                        <TextBlock Text="{Binding Translation.OpenWithGameDescription, FallbackValue=OPEN__WITH__GAME__DESCRIPTION}" Theme="{StaticResource Settings.DescriptionText}" />
+                                    </StackPanel>
+                                </CheckBox>
+
+                                <CheckBox IsChecked="{Binding IsHideWithGameActive}" Margin="0,0,0,14" Theme="{StaticResource Settings.OptionCheckBox}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Translation.HideWithGame, FallbackValue=HIDE__WITH__GAME}" Theme="{StaticResource Settings.OptionTitle}" />
+                                        <TextBlock Text="{Binding Translation.HideWithGameDescription, FallbackValue=HIDE__WITH__GAME__DESCRIPTION}" Theme="{StaticResource Settings.DescriptionText}" />
+                                    </StackPanel>
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding IsStartTrackingWithGameActive}" Margin="0,0,0,14" Theme="{StaticResource Settings.OptionCheckBox}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Translation.StartTrackingWithGame, FallbackValue=START__TRACKING__WITH__GAME}" Theme="{StaticResource Settings.OptionTitle}" />
+                                        <TextBlock Text="{Binding Translation.StartTrackingWithGameDescription, FallbackValue=START__TRACKING__WITH__GAME__DESCRIPTION}" Theme="{StaticResource Settings.DescriptionText}" />
+                                    </StackPanel>
+                                </CheckBox>
+
+                                <CheckBox IsChecked="{Binding IsStopTrackingWithGameActive}" Margin="0,0,0,14" Theme="{StaticResource Settings.OptionCheckBox}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Translation.StopTrackingWithGame, FallbackValue=STOP__TRACKING__WITH__GAME}" Theme="{StaticResource Settings.OptionTitle}" />
+                                        <TextBlock Text="{Binding Translation.StopTrackingWithGameDescription, FallbackValue=STOP__TRACKING__WITH__GAME__DESCRIPTION}" Theme="{StaticResource Settings.DescriptionText}" />
+                                    </StackPanel>
+                                </CheckBox>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Server -->
+                <Border Theme="{StaticResource Settings.Card}">
+                    <StackPanel>
+                        <Border Theme="{StaticResource Settings.CardHeader}">
+                            <TextBlock Text="{Binding Translation.Server, FallbackValue=SERVER}" Theme="{StaticResource Settings.CardTitle}" />
+                        </Border>
+
+                        <Grid Margin="14,12,14,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.StartupUserDataServer, FallbackValue=STARTUP__USER_DATA__SERVER}"
+                                           ToolTip.Tip="{Binding Translation.StartupUserDataServerDescription}"
+                                           Theme="{StaticResource Settings.FieldLabel}" />
+                                <ComboBox ItemsSource="{Binding StartupUserDataServers}"
+                                          SelectedItem="{Binding StartupUserDataServerSelection}"
+                                          DisplayMemberBinding="{ReflectionBinding Name}"
+                                          ToolTip.Tip="{Binding Translation.StartupUserDataServerDescription}"
+                                          Theme="{StaticResource Settings.ComboBox}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="2" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.ServerType, FallbackValue=SERVER__TYPE}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <ComboBox ItemsSource="{Binding ServerTypes}" SelectedItem="{Binding ServerTypeSelection}" DisplayMemberBinding="{ReflectionBinding Name}" Theme="{StaticResource Settings.ComboBox}" />
+                                <TextBlock Text="{Binding Translation.ChangeRequiresAToolRestart, StringFormat='{}({0})', FallbackValue=(CHANGE__REQUIRES__A__TOOL__RESTART)}"
+                                           Theme="{StaticResource Settings.WarningText}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.AlbionDataProjectBaseUrlWest, FallbackValue=ALBION_DATA_PROJECT_BASE_URL_WEST}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <TextBox Text="{Binding AlbionDataProjectBaseUrlWest}" TextWrapping="Wrap" Theme="{StaticResource Settings.TextBox}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="2" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.AlbionDataProjectBaseUrlEast, FallbackValue=ALBION_DATA_PROJECT_BASE_URL_EAST}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <TextBox Text="{Binding AlbionDataProjectBaseUrlEast}" TextWrapping="Wrap" Theme="{StaticResource Settings.TextBox}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="4" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.AlbionDataProjectBaseUrlEurope, FallbackValue=ALBION_DATA_PROJECT_BASE_URL_EUROPE}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <TextBox Text="{Binding AlbionDataProjectBaseUrlEurope}" TextWrapping="Wrap" Theme="{StaticResource Settings.TextBox}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Tracking -->
+                <Border Theme="{StaticResource Settings.Card}">
+                    <StackPanel>
+                        <Border Theme="{StaticResource Settings.CardHeader}">
+                            <TextBlock Text="{Binding Translation.Tracking, FallbackValue=TRACKING}" Theme="{StaticResource Settings.CardTitle}" />
+                        </Border>
+
+                        <Grid Margin="14,12,14,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.TrackingStatus, FallbackValue=TRACKING__STATUS}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <ToggleButton x:Name="TrackingStateButton" HorizontalAlignment="Left"
+                                              IsChecked="{Binding MainWindow.IsTrackingActive, Mode=OneWay}"
+                                              ToolTip.Tip="{Binding Translation.TrackingStatus}"
+                                              Theme="{StaticResource App.TrackingStateButton}"
+                                              Click="TrackingStateButton_Click" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.PacketProvider, FallbackValue=PACKET_PROVIDER}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <ComboBox ItemsSource="{Binding PacketProvider}"
+                                          SelectedItem="{Binding PacketProviderSelection}"
+                                          Theme="{StaticResource Settings.ComboBox}">
+                                    <!-- Linux: the provider names are relabeled (libpcap; Sockets is mapped to libpcap). -->
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="viewModels:SettingsWindowViewModel+SettingDataInformation">
+                                            <TextBlock Text="{Binding ., Converter={x:Static conv:PacketProviderLabelConverter.Instance}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <TextBlock Text="{Binding Translation.ChangeRequiresAToolRestart, StringFormat='{}({0})', FallbackValue=(CHANGE__REQUIRES__A__TOOL__RESTART)}"
+                                           Theme="{StaticResource Settings.WarningText}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Grid.Column="0"
+                                        IsVisible="{Binding PacketFilterVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                                        Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.PacketFilter, FallbackValue=PACKET__FILTER}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="{Binding PacketFilter}" TextWrapping="NoWrap" Theme="{StaticResource Settings.TextBox}" />
+                                    <Button Grid.Column="2"
+                                            Content="{Binding Translation.Reset, FallbackValue=RESET}"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="ResetPacketFilter_Click" />
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0"
+                                        IsVisible="{Binding NetworkDevicesVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                                        Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.NetworkAdapters, FallbackValue=NETWORK__ADAPTERS}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <ComboBox ItemsSource="{Binding NetworkDevices}" Theme="{StaticResource Settings.ComboBox}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:NetworkDeviceFilter">
+                                            <Grid MinWidth="400">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="24" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Content="{Binding Translation.RestartNetworkTracking, FallbackValue=RESTART__NETWORK__TRACKING}"
+                                        Margin="0,8,0,0"
+                                        HorizontalAlignment="Left"
+                                        Theme="{StaticResource Settings.Button}"
+                                        Click="RestartNetworkTracking_Click" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="4" Grid.Column="0" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.CharacterNameToTrack, FallbackValue=CHARACTER_NAME_TO_TRACK}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <TextBox Text="{Binding MainTrackingCharacterName}"
+                                         MaxLength="50"
+                                         TextWrapping="NoWrap"
+                                         Theme="{StaticResource Settings.TextBox}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="4" Grid.Column="2" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.PlayerSelectionWithSameNameInDb, FallbackValue=PLAYER_SELECTION_WITH_SAME_NAME_IN_DB}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="{Binding PlayerSelectionWithSameNameInDb}"
+                                             MaxLength="2"
+                                             TextWrapping="NoWrap"
+                                             common:TextBoxHelper.OnlyNumeric="Double"
+                                             Theme="{StaticResource Settings.TextBox}" />
+                                    <Button Grid.Column="2"
+                                            Content="{Binding Translation.Reset, FallbackValue=RESET}"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="ResetPlayerSelectionWithSameNameInDb_Click" />
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Item search -->
+                    <Border Grid.Column="0" Theme="{StaticResource Settings.Card}">
+                        <StackPanel>
+                            <Border Theme="{StaticResource Settings.CardHeader}">
+                                <TextBlock Text="{Binding Translation.ItemSearch, FallbackValue=ITEM__SEARCH}" Theme="{StaticResource Settings.CardTitle}" />
+                            </Border>
+                            <StackPanel Margin="14,12,14,4">
+                                <!--
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.ShowInfoWindowOnStart, FallbackValue=SHOW__INFO__WINDOW__ON__START}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <CheckBox IsChecked="{Binding ShowInfoWindowOnStartChecked}" VerticalContentAlignment="Center" />
+                                </StackPanel>
+                                -->
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.AlarmSoundUsed, FallbackValue=ALERT__SOUND__USED}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding AlertSounds}"
+                                              SelectedItem="{Binding AlertSoundSelection}"
+                                              DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource Settings.ComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.Volume, FallbackValue=VOLUME}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="48" />
+                                        </Grid.ColumnDefinitions>
+                                        <Slider Value="{Binding AlertSoundVolumePercentage}"
+                                                Minimum="0"
+                                                Maximum="100"
+                                                TickFrequency="1"
+                                                IsSnapToTickEnabled="True"
+                                                VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding AlertSoundVolumePercentage, StringFormat={}{0:N0}%}"
+                                                   Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                                   VerticalAlignment="Center"
+                                                   TextAlignment="Right" />
+                                    </Grid>
+                                </StackPanel>
+                                <Button Content="{Binding Translation.PreviewSound, FallbackValue=PREVIEW__SOUND}"
+                                        HorizontalAlignment="Left"
+                                        IsEnabled="{Binding AlertSoundSelection.IsPlayable}"
+                                        Theme="{StaticResource Settings.Button}"
+                                        Click="PreviewAlertSound_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Party -->
+                    <Border Grid.Column="2" Theme="{StaticResource Settings.Card}">
+                        <StackPanel>
+                            <Border Theme="{StaticResource Settings.CardHeader}">
+                                <TextBlock Text="{Binding Translation.Party, FallbackValue=PARTY}" Theme="{StaticResource Settings.CardTitle}" />
+                            </Border>
+                            <StackPanel Margin="14,12,14,4">
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.DeathAlarmSoundUsed, FallbackValue=DEATH_ALERT__SOUND__USED}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <ComboBox ItemsSource="{Binding DeathAlertSounds}"
+                                              SelectedItem="{Binding DeathAlertSoundSelection}"
+                                              DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource Settings.ComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.Volume, FallbackValue=VOLUME}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="48" />
+                                        </Grid.ColumnDefinitions>
+                                        <Slider Value="{Binding DeathAlertSoundVolumePercentage}"
+                                                Minimum="0"
+                                                Maximum="100"
+                                                TickFrequency="1"
+                                                IsSnapToTickEnabled="True"
+                                                VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding DeathAlertSoundVolumePercentage, StringFormat={}{0:N0}%}"
+                                                   Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                                   VerticalAlignment="Center"
+                                                   TextAlignment="Right" />
+                                    </Grid>
+                                </StackPanel>
+                                <Button Content="{Binding Translation.PreviewSound, FallbackValue=PREVIEW__SOUND}"
+                                        HorizontalAlignment="Left"
+                                        IsEnabled="{Binding DeathAlertSoundSelection.IsPlayable}"
+                                        Theme="{StaticResource Settings.Button}"
+                                        Click="PreviewDeathAlertSound_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Debug -->
+                    <Border Grid.Column="4" Theme="{StaticResource Settings.Card}">
+                        <StackPanel>
+                            <Border Theme="{StaticResource Settings.CardHeader}">
+                                <TextBlock Text="{Binding Translation.Debug, FallbackValue=DEBUG}" Theme="{StaticResource Settings.CardTitle}" />
+                            </Border>
+                            <StackPanel Margin="14,12,14,4">
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.DebugConsoleParameters, FallbackValue=DEBUG__CONSOLE__PARAMETERS}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <TextBox Text="{Binding DebugConsoleFilter}" TextWrapping="NoWrap" Theme="{StaticResource Settings.TextBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource Settings.Field}">
+                                    <TextBlock Text="{Binding Translation.OpenDebugConsoleWhenStartingTheTool, FallbackValue=OPEN__DEBUG__CONSOLE__WHEN__STARTING__THE__TOOL}" Theme="{StaticResource Settings.FieldLabel}" />
+                                    <CheckBox IsChecked="{Binding IsOpenDebugConsoleWhenStartingTheToolChecked}" VerticalContentAlignment="Center" />
+                                </StackPanel>
+                                <WrapPanel>
+                                    <Button Content="{Binding Translation.OpenDebugConsole, FallbackValue=OPEN__DEBUG__CONSOLE}"
+                                            Margin="0,0,6,6"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="OpenDebugConsole_Click" />
+                                    <Button Content="{Binding Translation.CloseDebugConsole, FallbackValue=CLOSE__DEBUG__CONSOLE}"
+                                            Margin="0,0,6,6"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="CloseDebugConsole_Click" />
+                                    <Button Content="{Binding Translation.OpenEventValidation, FallbackValue=OPEN__EVENT__VALIDATION}"
+                                            Margin="0,0,6,6"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="OpenEventValidation_Click" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Backup -->
+                <Border Theme="{StaticResource Settings.Card}">
+                    <StackPanel>
+                        <Border Theme="{StaticResource Settings.CardHeader}">
+                            <TextBlock Text="{Binding Translation.Backup, FallbackValue=BACKUP}" Theme="{StaticResource Settings.CardTitle}" />
+                        </Border>
+
+                        <Grid Margin="14,12,14,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.BackupInterval, FallbackValue=BACKUP__INTERVAL}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <ComboBox ItemsSource="{Binding BackupIntervalByDays}"
+                                          SelectedItem="{Binding BackupIntervalByDaysSelection}"
+                                          DisplayMemberBinding="{ReflectionBinding Name}"
+                                          Theme="{StaticResource Settings.ComboBox}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="2" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.MaximumNumberOfBackups, FallbackValue=MAXIMUM__NUMBER__OF__BACKUPS}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <ComboBox ItemsSource="{Binding MaximumNumberOfBackups}"
+                                          SelectedItem="{Binding MaximumNumberOfBackupsSelection}"
+                                          DisplayMemberBinding="{ReflectionBinding Name}"
+                                          Theme="{StaticResource Settings.ComboBox}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" Theme="{StaticResource Settings.Field}">
+                                <TextBlock Text="{Binding Translation.BackupStorageDirectoryPath, FallbackValue=BACKUP__STORAGE__DIRECTORY__PATH}" Theme="{StaticResource Settings.FieldLabel}" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="BackupStorageDirectoryPathTextBox" Text="{Binding BackupStorageDirectoryPath, UpdateSourceTrigger=PropertyChanged}"
+                                             TextWrapping="Wrap" Theme="{StaticResource Settings.TextBox}" />
+                                    <Button Grid.Column="2"
+                                            Content="{Binding Translation.Reset, FallbackValue=RESET}"
+                                            Theme="{StaticResource Settings.Button}"
+                                            Click="ResetBackupStorageDirPath_Click" />
+                                </Grid>
+                            </StackPanel>
+
+                            <Button Grid.Row="2" Grid.ColumnSpan="3" Grid.Column="0"
+                                    Content="{Binding Translation.BackupNow, FallbackValue=BACKUP__NOW}"
+                                    IsEnabled="{Binding IsBackupNowButtonEnabled}"
+                                    HorizontalAlignment="Left"
+                                    Theme="{StaticResource Settings.Button}"
+                                    Click="BackupNow_Click" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="1" Theme="{StaticResource Settings.Footer}">
+            <Button Content="{Binding Translation.Save, FallbackValue=SAVE}" Theme="{StaticResource Style.Button.Orange}" 
+                    Width="120" HorizontalAlignment="Left" FontWeight="SemiBold" Click="BtnSave_Click" />
+        </Border>
+    </Grid>
+</UserControl>

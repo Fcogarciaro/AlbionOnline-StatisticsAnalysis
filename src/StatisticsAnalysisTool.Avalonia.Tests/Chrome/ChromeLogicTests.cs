@@ -111,3 +111,25 @@ public class CompatBrushConverterTests
         CompatBrushConverter.Instance.Convert(null, typeof(object), null, CultureInfo.InvariantCulture).Should().BeNull();
     }
 }
+
+public class PacketProviderLabelConverterTests
+{
+    [Test]
+    public void Labels_Libpcap_AndSocketsMappedToIt_IgnoringTheWindowsName()
+    {
+        var npcap = new StatisticsAnalysisTool.ViewModels.SettingsWindowViewModel.SettingDataInformation { Name = "Npcap", Value = 2 };
+        var sockets = new StatisticsAnalysisTool.ViewModels.SettingsWindowViewModel.SettingDataInformation { Name = "Sockets (must be run as admin)", Value = 1 };
+
+        PacketProviderLabelConverter.Instance.Convert(npcap, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("libpcap");
+        PacketProviderLabelConverter.Instance.Convert(sockets, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("Sockets (mapped to libpcap)");
+    }
+
+    [Test]
+    public void UnknownValues_KeepTheirName()
+    {
+        var other = new StatisticsAnalysisTool.ViewModels.SettingsWindowViewModel.SettingDataInformation { Name = "Other", Value = 9 };
+
+        PacketProviderLabelConverter.Instance.Convert(other, typeof(string), null, CultureInfo.InvariantCulture).Should().Be("Other");
+        PacketProviderLabelConverter.Instance.Convert(null, typeof(string), null, CultureInfo.InvariantCulture).Should().BeNull();
+    }
+}

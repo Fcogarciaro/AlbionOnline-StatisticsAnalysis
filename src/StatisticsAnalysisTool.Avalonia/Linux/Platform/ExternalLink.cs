@@ -4,6 +4,7 @@
 using Serilog;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace StatisticsAnalysisTool.Linux.Platform;
 
@@ -24,6 +25,40 @@ public static class ExternalLink
         };
         info.ArgumentList.Add(new Uri(url, UriKind.Absolute).AbsoluteUri);
         return info;
+    }
+
+    public static bool IsOpenableFolder(string path) => !string.IsNullOrWhiteSpace(path) && Path.IsPathRooted(path);
+
+    public static ProcessStartInfo CreateOpenFolderStartInfo(string path)
+    {
+        var info = new ProcessStartInfo("xdg-open")
+        {
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        info.ArgumentList.Add(path);
+        return info;
+    }
+
+    /// <summary>Opens a folder in the default file manager (WPF: Process.Start with UseShellExecute). False on failure.</summary>
+    public static bool OpenFolder(string path)
+    {
+        if (!IsOpenableFolder(path))
+        {
+            Log.Warning("Refused to open a folder that is not an absolute path: {Path}", path);
+            return false;
+        }
+
+        try
+        {
+            Process.Start(CreateOpenFolderStartInfo(path))?.Dispose();
+            return true;
+        }
+        catch (Exception exception)
+        {
+            Log.Warning(exception, "The folder could not be opened with xdg-open: {Path}", path);
+            return false;
+        }
     }
 
     public static bool Open(string url)

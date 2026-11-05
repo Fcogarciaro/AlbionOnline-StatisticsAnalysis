@@ -116,11 +116,11 @@ internal static class CaptureGuidance
                 return true;
 
             case "FIRST_START_GUIDE_NPCAP_OPTION":
-                text = "libpcap";
+                text = StatisticsAnalysisTool.Common.Converters.PacketProviderLabelConverter.LibpcapLabel;
                 return true;
 
             case "FIRST_START_GUIDE_SOCKETS_OPTION":
-                text = "Sockets (mapped to libpcap)";
+                text = StatisticsAnalysisTool.Common.Converters.PacketProviderLabelConverter.SocketsLabel;
                 return true;
 
             case "FIRST_START_GUIDE_NPCAP_INSTRUCTION":

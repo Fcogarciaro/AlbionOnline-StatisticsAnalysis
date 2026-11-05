@@ -243,7 +243,7 @@
       </TabItem>
       <TabItem Header="{Binding Translation.Settings, FallbackValue=SETTINGS}" Tag="pack://application:,,,/Assets/Navigation/setting.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="SettingsControl" />
+          <userControls:SettingsControl />
         </Grid>
       </TabItem>
     </TabControl>
