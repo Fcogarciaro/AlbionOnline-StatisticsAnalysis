@@ -208,7 +208,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding PartyTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Party, FallbackValue=PARTY}" Tag="pack://application:,,,/Assets/Navigation/teamwork.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="PartyControl" />
+          <userControls:PartyControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding GuildTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Guild, FallbackValue=GUILD}" Tag="pack://application:,,,/Assets/Navigation/shield.png">
@@ -233,12 +233,12 @@
       </TabItem>
       <TabItem Theme="{StaticResource ItemContainerDonationStyle}" Header="{Binding Translation.Donations, FallbackValue=DONATIONS}" Tag="pack://application:,,,/Assets/Navigation/money.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="DonationControl" />
+          <userControls:DonationControl />
         </Grid>
       </TabItem>
       <TabItem Theme="{StaticResource ItemContainerThanksStyle}" Header="{Binding Translation.Thanks, FallbackValue=THANKS}" Tag="pack://application:,,,/Assets/heart.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="ThanksControl" />
+          <userControls:ThanksControl />
         </Grid>
       </TabItem>
       <TabItem Header="{Binding Translation.Settings, FallbackValue=SETTINGS}" Tag="pack://application:,,,/Assets/Navigation/setting.png">

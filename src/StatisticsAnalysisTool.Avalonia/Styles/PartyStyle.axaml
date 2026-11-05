@@ -1,0 +1,293 @@
+<!-- Port of Styles/PartyStyle.xaml. DataTriggers are classes (IsLocalPlayer: "local"; the item power conditions: "under", "above",
+     "normal", "unknown"); Visibility.Hidden of the item power block is Opacity 0 (it keeps its space, as in WPF); the click on a
+     player header is common:MouseCommands.LeftClick. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
+        xmlns:party="clr-namespace:StatisticsAnalysisTool.Party"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <conv:RoundingConverter x:Key="RoundingConverter" />
+
+    <ControlTheme x:Key="PartyBuilder.Equipment.Icon" TargetType="Image">
+      <Setter Property="Height" Value="50" />
+      <Setter Property="Width" Value="50" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.Spell.Icon" TargetType="Image">
+      <Setter Property="Height" Value="50" />
+      <Setter Property="Width" Value="50" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.Attention.Icon" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Width" Value="18" />
+      <Setter Property="Margin" Value="5,0,5,1" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.LocalUsername.Style" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Style Selector="^.local"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.ViewVisibility.ItemPower" TargetType="StackPanel">
+      <Style Selector="^.local"><Setter Property="Opacity" Value="0" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.IPText.Style" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Style Selector="^.under"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+      <Style Selector="^.above"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+      <Style Selector="^.normal"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+      <Style Selector="^.unknown"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.BasicIPText.Style" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Style Selector="^.under"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+      <Style Selector="^.above"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+      <Style Selector="^.normal"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+      <Style Selector="^.unknown"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.PlayerInspection.Grid" TargetType="Grid">
+      <Setter Property="Width" Value="25" />
+      <Setter Property="Margin" Value="5,0,0,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.Label.Designation" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Margin" Value="0,0,0,0" />
+      <Setter Property="Padding" Value="0,0,2,0" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="FontWeight" Value="ExtraBold" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PartyBuilder.Label.Value" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Margin" Value="0,0,0,0" />
+      <Setter Property="Padding" Value="5,0,0,0" />
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="PartyBuilderPlayerTemplate" DataType="party:PartyPlayer">
+        <Grid>
+            <StackPanel Orientation="Vertical" Margin="0,0,0,5">
+                <Grid Background="{DynamicResource SolidColorBrush.Accent.Blue.5}" common:MouseCommands.LeftClick="{Binding ShowSpells}">
+                                        <StackPanel Orientation="Horizontal">
+                        <Grid Theme="{StaticResource PartyBuilder.PlayerInspection.Grid}" IsVisible="{Binding !IsPlayerInspected}">
+                            <fa:FontAwesomeImage Margin="0" Icon="SolidEye" Foreground="{DynamicResource SolidColorBrush.Accent.Yellow.1}" Theme="{StaticResource PartyBuilder.Attention.Icon}" />
+                        </Grid>
+                        <Label Content="{Binding Username}" FontWeight="Bold" Width="120" Padding="0,5" Margin="5,0,0,0" Theme="{StaticResource PartyBuilder.LocalUsername.Style}" Classes.local="{Binding IsLocalPlayer}" />
+                        <StackPanel Orientation="Horizontal" Width="60" Theme="{StaticResource PartyBuilder.ViewVisibility.ItemPower}" Classes.local="{Binding IsLocalPlayer}">
+                            <Label Content="IP" FontWeight="ExtraBold" Padding="5,5,0,0" Theme="{StaticResource PartyBuilder.IPText.Style}" Classes.under="{Binding ItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.UnderMinimal}}" Classes.above="{Binding ItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.AboveMaximum}}" Classes.normal="{Binding ItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.Normal}}" Classes.unknown="{Binding ItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.Unknown}}" />
+                            <Label Content="{Binding AverageItemPower.ItemPower, Mode=OneWay, Converter={StaticResource RoundingConverter}, ConverterParameter=0}" Padding="5,5,10,0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Width="60">
+                            <Label Content="BIP" FontWeight="ExtraBold" Padding="5,5,0,0" Theme="{StaticResource PartyBuilder.BasicIPText.Style}" Classes.under="{Binding BasicItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.UnderMinimal}}" Classes.above="{Binding BasicItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.AboveMaximum}}" Classes.normal="{Binding BasicItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.Normal}}" Classes.unknown="{Binding BasicItemPowerCondition, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static party:PartyBuilderItemPowerCondition.Unknown}}" />
+                            <Label Content="{Binding AverageBasicItemPower.ItemPower, Mode=OneWay, Converter={StaticResource RoundingConverter}, ConverterParameter=0}" Padding="5,5,10,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Orientation="Horizontal" Background="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.4}">
+                    <Image Source="{Binding MainHand?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding OffHand?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding Head?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding Chest?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding Shoes?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding Cape?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding Mount?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding BuffFood?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                    <Image Source="{Binding Potion?.Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" IsVisible="{Binding SpellsContainerVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Background="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.5}">
+                    <ItemsControl ItemsSource="{Binding MainHandSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding OffHandSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding HeadSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding ChestSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding ShoesSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding MountSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding PotionSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding FoodSpells}" Width="50">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=OneWay}" Theme="{StaticResource PartyBuilder.Equipment.Icon}" ToolTip.Tip="{Binding LocalizationName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <Label Content="{Binding LastUpdate}" ToolTip.Tip="{Binding TranslationLastUpdate}" HorizontalAlignment="Right" />
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PartyBuilderDescriptionsTemplate" DataType="party:PartyBindings">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding TranslationDescriptions, FallbackValue='DESCRIPTIONS'}" Theme="{StaticResource Text.Title.1}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <fa:FontAwesomeImage Icon="SolidEye" Height="20" Width="20" Margin="0,0,5,0" Foreground="{DynamicResource SolidColorBrush.Accent.Yellow.1}" HorizontalAlignment="Left" />
+                <Label Content="{Binding TranslationPlayerIsNotInspected, FallbackValue='PLAYER_IS_NOT_INSPECTED'}" Padding="2,6,0,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IP |" Theme="{StaticResource PartyBuilder.Label.Designation}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                    <Label Content="BIP" Theme="{StaticResource PartyBuilder.Label.Designation}" Width="38" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                </StackPanel>
+                <Label Content="{Binding TranslationIpOrBipBetweenMinAndMaxRange, FallbackValue='ITEM__POWER__TO__LOW'}" Padding="2,6,0,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IP |" Theme="{StaticResource PartyBuilder.Label.Designation}" Foreground="{DynamicResource SolidColorBrush.Accent.Green.2}" />
+                    <Label Content="BIP" Theme="{StaticResource PartyBuilder.Label.Designation}" Width="38" Foreground="{DynamicResource SolidColorBrush.Accent.Green.2}" />
+                </StackPanel>
+                <Label Content="{Binding TranslationIpOrBipOverMaxRange, FallbackValue='ITEM__POWER__TO__LOW'}" Padding="2,6,0,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IP |" Theme="{StaticResource PartyBuilder.Label.Designation}" Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+                    <Label Content="BIP" Theme="{StaticResource PartyBuilder.Label.Designation}" Width="38" Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+                </StackPanel>
+                <Label Content="{Binding TranslationIpOrBipUnderMinRange, FallbackValue='ITEM__POWER__TO__LOW'}" Padding="2,6,0,0" />
+            </StackPanel>
+            <Grid Margin="5" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PartyBuilderPartyInfoTemplate" DataType="party:PartyBindings">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding TranslationPartyInformation, FallbackValue='PARTY_INFORMATION'}" Theme="{StaticResource Text.Title.1}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Width="250">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding TranslationAverageIp, StringFormat='{}{0}:', FallbackValue='AVERAGE__IP'}" Theme="{StaticResource PartyBuilder.Label.Designation}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                        <Label Content="{Binding AveragePartyIp, FallbackValue='0', Converter={StaticResource RoundingConverter}, ConverterParameter=0}" Theme="{StaticResource PartyBuilder.Label.Value}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding TranslationAverageBasicIp, StringFormat='{}{0}:', FallbackValue='AVERAGE__BIP'}" Theme="{StaticResource PartyBuilder.Label.Designation}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                        <Label Content="{Binding AveragePartyBasicIp, FallbackValue='0', Converter={StaticResource RoundingConverter}, ConverterParameter=0}" Theme="{StaticResource PartyBuilder.Label.Value}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Width="250">
+                    
+                </StackPanel>
+            </StackPanel>
+            <Grid Margin="5" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PartyBuilderConditionsTemplate" DataType="party:PartyBindings">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding TranslationConditions, FallbackValue='CONDITIONS'}" Theme="{StaticResource Text.Title.1}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding MinimalItemPower, FallbackValue=600}" Width="34" Height="20"  Margin="5,-2,0,0" common:TextBoxHelper.OnlyNumeric="Double" 
+                                             Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+                        <Label Content="{Binding TranslationMinimalItemPower, FallbackValue='MINIMAL__ITEM__POWER'}" MinWidth="250" VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding MinimalBasicItemPower, FallbackValue=600}" Width="34" Height="20"  Margin="5,-2,0,0" common:TextBoxHelper.OnlyNumeric="Double" 
+                                             Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+                        <Label Content="{Binding TranslationMinimalBasicItemPower, FallbackValue='MINIMAL__BASIC__ITEM__POWER'}" MinWidth="250" VerticalAlignment="Top" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding MaximumItemPower, FallbackValue=900}" Width="34" Height="20"  Margin="5,-2,0,0" common:TextBoxHelper.OnlyNumeric="Double" 
+                                             Foreground="{DynamicResource SolidColorBrush.Accent.Green.2}" />
+                        <Label Content="{Binding TranslationMaximumItemPower, FallbackValue='MAXIMUM__ITEM__POWER'}" MinWidth="250" VerticalAlignment="Top" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding MaximumBasicItemPower, FallbackValue=900}" Width="34" Height="20"  Margin="5,-2,0,0" common:TextBoxHelper.OnlyNumeric="Double" 
+                                             Foreground="{DynamicResource SolidColorBrush.Accent.Green.2}" />
+                        <Label Content="{Binding TranslationMaximumBasicItemPower, FallbackValue='MAXIMUM__BASIC__ITEM__POWER'}" MinWidth="250" VerticalAlignment="Top" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <Grid Margin="5" />
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PartyPlayerDeathAlertTemplate" DataType="party:PartyPlayer">
+        <Grid>
+            <StackPanel Orientation="Vertical" Background="{DynamicResource SolidColorBrush.Accent.Blue.5}">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding Username}" FontWeight="Bold" Width="120" Padding="0,5" Margin="5,0,0,0" Theme="{StaticResource PartyBuilder.LocalUsername.Style}" Classes.local="{Binding IsLocalPlayer}" />
+                    <Grid Margin="0 -2 0 0" Height="18" Width="18" HorizontalAlignment="Right">
+                        <CheckBox IsChecked="{Binding IsDeathAlertActive, FallbackValue=false}" 
+                                  ToolTip.Tip="{Binding TranslationSelectForDeathAlert}" />
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+  </Styles.Resources>
+</Styles>

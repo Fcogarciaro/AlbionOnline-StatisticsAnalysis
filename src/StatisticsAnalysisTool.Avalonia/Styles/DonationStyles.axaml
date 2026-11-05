@@ -1,0 +1,195 @@
+<!-- Port of Styles/DonationStyles.xaml. The Placement DataTriggers are classes (ToStringEqualsConverter, because XAML cannot pass
+     an int ConverterParameter); the 35 DonationType triggers of Donation.Icon.Style are DonationTypeIconConverter. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="Donation.Icon.Style" TargetType="Image">
+      <Setter Property="Width" Value="70" />
+      <Setter Property="Height" Value="70" />
+      <Setter Property="Margin" Value="0,-15,-10,-15" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.Image.Silver.Style" TargetType="Image">
+      <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/silver.png" />
+      <Setter Property="IsVisible" Value="False" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="Margin" Value="0,0,0,0" />
+      <Setter Property="Width" Value="26" />
+      <Setter Property="Height" Value="26" />
+      <Style Selector="^.silver"><Setter Property="IsVisible" Value="True" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.Image.RealMoney.Style" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Icon" Value="SolidEuroSign" />
+      <Setter Property="Margin" Value="0,0,0,0" />
+      <Setter Property="Width" Value="20" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.TextBlock.RealMoney.Style" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="MinWidth" Value="160" />
+      <Setter Property="Margin" Value="0,0,0,0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.TextBlock.Server.Style" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.5}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="MinWidth" Value="160" />
+      <Setter Property="Margin" Value="5,0,0,0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <!-- The shimmer is the Loaded storyboard of the WPF template: a translucent band sliding from -120 to 720 every 2.8 s. -->
+    <ControlTheme x:Key="Donation.ProgressBar.Goal.Style" TargetType="ProgressBar">
+      <Setter Property="Width" Value="640" />
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.7}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      <Setter Property="Template">
+        <ControlTemplate TargetType="ProgressBar">
+          <Grid ClipToBounds="True">
+            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="3" />
+            <Grid Margin="1">
+              <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" CornerRadius="3" HorizontalAlignment="Left" ClipToBounds="True">
+                <Rectangle Classes="shimmer" Width="110" HorizontalAlignment="Left">
+                  <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                      <GradientStop Color="#00FFFFFF" Offset="0" />
+                      <GradientStop Color="#55FFFFFF" Offset="0.5" />
+                      <GradientStop Color="#00FFFFFF" Offset="1" />
+                    </LinearGradientBrush>
+                  </Rectangle.Fill>
+                  <Rectangle.RenderTransform>
+                    <TranslateTransform X="-120" />
+                  </Rectangle.RenderTransform>
+                </Rectangle>
+              </Border>
+            </Grid>
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^ /template/ Rectangle.shimmer">
+        <Style.Animations>
+          <Animation Duration="0:0:2.8" IterationCount="Infinite">
+            <KeyFrame Cue="0%"><Setter Property="TranslateTransform.X" Value="-120" /></KeyFrame>
+            <KeyFrame Cue="100%"><Setter Property="TranslateTransform.X" Value="720" /></KeyFrame>
+          </Animation>
+        </Style.Animations>
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.TextBlock.Placement.Style" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Style Selector="^.p1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+      <Style Selector="^.p2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+      <Style Selector="^.p3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.1}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.TextBlock.Amount.Compact.Style" TargetType="TextBlock" BasedOn="{StaticResource Donation.TextBlock.RealMoney.Style}">
+      <Setter Property="MinWidth" Value="90" />
+      <Setter Property="FontSize" Value="15" />
+      <Style Selector="^.p1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" /></Style>
+      <Style Selector="^.p2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+      <Style Selector="^.p3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.1}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.TextBlock.Server.Compact.Style" TargetType="TextBlock" BasedOn="{StaticResource Donation.TextBlock.Server.Style}">
+      <Setter Property="MinWidth" Value="90" />
+      <Setter Property="FontSize" Value="12" />
+      <Style Selector="^.p1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" /></Style>
+      <Style Selector="^.p2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+      <Style Selector="^.p3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.1}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Donation.TextBlock.Contributor.Style" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Style Selector="^.p1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+      <Style Selector="^.p2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+      <Style Selector="^.p3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.1}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+    </ControlTheme>
+
+    <!-- Two columns of items; the ItemContainerStyle of the WPF style (margin 0,0,10,4, left aligned) targets the containers. -->
+    <ControlTheme x:Key="Donation.ItemsControl.TwoColumns.Style" TargetType="ItemsControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
+      <Setter Property="Width" Value="800" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="ItemsPanel">
+        <ItemsPanelTemplate>
+          <UniformGrid Columns="2" />
+        </ItemsPanelTemplate>
+      </Setter>
+      <Setter Property="ItemContainerTheme">
+        <ControlTheme TargetType="ContentPresenter">
+          <Setter Property="Margin" Value="0,0,10,4" />
+          <Setter Property="HorizontalAlignment" Value="Left" />
+        </ControlTheme>
+      </Setter>
+    </ControlTheme>
+
+    <DataTemplate x:Key="Donation" DataType="models:Donation">
+      <Grid Width="390" MinHeight="56" HorizontalAlignment="Left">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="32" />
+          <ColumnDefinition Width="112" />
+          <ColumnDefinition Width="50" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0" Text="{Binding Placement, StringFormat='{}{0}.'}" Theme="{StaticResource Donation.TextBlock.Placement.Style}"
+                   Classes.p1="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                   Classes.p2="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                   Classes.p3="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}" />
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" IsVisible="{Binding DonationSilverVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" HorizontalAlignment="Left" VerticalAlignment="Center">
+          <Image Theme="{StaticResource Donation.Image.Silver.Style}" Classes.silver="{Binding !IsDonationRealMoney}" Width="24" Height="24" ToolTip.Tip="{Binding TranslationSilver}" />
+          <StackPanel Orientation="Vertical">
+            <TextBlock Theme="{StaticResource Donation.TextBlock.Amount.Compact.Style}" Text="{Binding Amount, StringFormat='{} {0:N0}'}"
+                       Classes.p1="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                       Classes.p2="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                       Classes.p3="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}" />
+            <TextBlock Theme="{StaticResource Donation.TextBlock.Server.Compact.Style}" Text="{Binding DonationServer}"
+                       Classes.p1="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                       Classes.p2="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                       Classes.p3="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}" />
+          </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" IsVisible="{Binding DonationRealMoneyVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" HorizontalAlignment="Left" VerticalAlignment="Center">
+          <fa:FontAwesomeImage Theme="{StaticResource Donation.Image.RealMoney.Style}" Width="18" Height="18" />
+          <TextBlock Theme="{StaticResource Donation.TextBlock.Amount.Compact.Style}" Text="{Binding RealMoneyAmount, StringFormat='{} {0:N2}'}"
+                     Classes.p1="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                     Classes.p2="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                     Classes.p3="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}" />
+        </StackPanel>
+
+        <Image Grid.Column="2" Theme="{StaticResource Donation.Icon.Style}" Source="{Binding DonationType, Converter={x:Static conv:DonationTypeIconConverter.Instance}}" Width="72" Height="72" HorizontalAlignment="Left" />
+        <TextBlock Grid.Column="3" Text="{Binding Contributor}" Margin="10,0" ToolTip.Tip="{Binding Contributor}" Theme="{StaticResource Donation.TextBlock.Contributor.Style}"
+                   Classes.p1="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                   Classes.p2="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                   Classes.p3="{Binding Placement, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}" />
+      </Grid>
+    </DataTemplate>
+
+  </Styles.Resources>
+</Styles>

@@ -19,4 +19,7 @@
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/TrackingStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/EventValidationStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/SettingsStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ThanksStyle.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DonationStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/PartyStyle.axaml" />
 </Styles>
