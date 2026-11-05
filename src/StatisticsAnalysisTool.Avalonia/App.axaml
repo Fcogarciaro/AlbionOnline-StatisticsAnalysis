@@ -4,5 +4,6 @@
              RequestedThemeVariant="Dark">
   <Application.Styles>
     <FluentTheme />
+    <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/Theme.axaml" />
   </Application.Styles>
 </Application>

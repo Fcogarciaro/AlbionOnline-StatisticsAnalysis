@@ -1,0 +1,12 @@
+<!-- Entry point of the shared theme: merged once in App.axaml (and in the headless TestApp). Feature dictionaries
+     (Dungeon, Trade, Dashboard, ...) are NOT here; each is added with the views that use it. See PORTING.md. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://StatisticsAnalysisTool/Styles/Colors.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+</Styles>

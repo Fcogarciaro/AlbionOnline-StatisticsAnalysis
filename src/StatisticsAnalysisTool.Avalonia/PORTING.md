@@ -86,8 +86,16 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   `GameDataPreparationWindow` (so a first run without a game folder ends in an early shutdown), `LanguageSelectionWindow`
   (needed when a completed guide left no culture), `DialogWindow` (the info dialog uses `MessageBox`), `ItemAlertWindow`,
   `EventValidationWindow`.
-- The Avalonia theme (T08) must provide the `Color.*` keys that view models read (for example `Color.Accent.Blue.2`,
-  `Color.Text.1`); until then `TrackingController.InitTrackingAsync` throws without them (the startup test defines them).
+- The theme (T08, `Styles/`) provides the `Color.*` / `SolidColorBrush.*` keys that view models read (for example
+  `Color.Accent.Blue.2`, `Color.Text.1`); the startup test no longer defines workarounds.
+
+## Theme (`Styles/`, T08)
+
+- `Styles/Colors.axaml` is `Styles/Colors.xaml` with only the namespace changed: the same 502 keys and values
+  (`ThemeColorsTests` compares them with the upstream file and checks every literal `Color.*` / `SolidColorBrush.*`
+  key used by the linked code). Edit `Colors.xaml` upstream first, then re-sync this file.
+- `Styles/Theme.axaml` is the single entry point (`App.axaml` includes it after `FluentTheme`; the headless `TestApp`
+  does the same). Each dictionary is merged there.
 
 ## Ported views
 

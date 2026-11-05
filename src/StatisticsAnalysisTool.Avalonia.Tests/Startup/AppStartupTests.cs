@@ -53,12 +53,6 @@ public class AppStartupTests
     [AvaloniaTest]
     public async Task FullSequence_CreatesTheMainWindowWithTheRealViewModel_ThenCleansUpOnce()
     {
-        // The theme (T08) defines these keys; the view model reads them while tracking is initialized.
-        foreach (var key in new[] { "Color.Accent.Blue.2", "Color.Text.1" })
-        {
-            System.Windows.Application.Current.Resources[key] = System.Windows.Media.Colors.White;
-        }
-
         var lifetime = new FakeLifetime();
         var infoDialogs = new List<(string, string)>();
         var progress = new List<double>();
