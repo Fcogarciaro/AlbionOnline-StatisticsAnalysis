@@ -10,8 +10,8 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <!-- Set to true to link the non-view sources of the WPF project (compile spike). -->
-    <LinkWpfSources Condition="'$(LinkWpfSources)' == ''">false</LinkWpfSources>
+    <!-- Links the non-view sources of the WPF project (set to false to build only the shell). -->
+    <LinkWpfSources Condition="'$(LinkWpfSources)' == ''">true</LinkWpfSources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,12 +38,18 @@
     <PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.11" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.11" />
     <PackageReference Include="System.Linq.Async" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\StatisticAnalysisTool.Extractor\StatisticAnalysisTool.Extractor.csproj" />
     <ProjectReference Include="..\StatisticsAnalysisTool.Network\StatisticsAnalysisTool.Network.csproj" />
+  </ItemGroup>
+
+  <!-- Linux replacements for excluded Windows-only files (see PORTING.md). -->
+  <ItemGroup Condition="'$(LinkWpfSources)' != 'true'">
+    <Compile Remove="Linux\**" />
   </ItemGroup>
 
   <!-- Compile spike: link the non-view, non-Windows-only sources of the WPF project. -->
@@ -60,6 +66,13 @@
       ..\StatisticsAnalysisTool\App.xaml.cs;
       ..\StatisticsAnalysisTool\Properties\AssemblyInfo.cs;
       ..\StatisticsAnalysisTool\Properties\Resources.Designer.cs;
+      ..\StatisticsAnalysisTool\Updater\AutoUpdateController.cs;
+      ..\StatisticsAnalysisTool\Updater\UpdateDownloadSession.cs;
+      ..\StatisticsAnalysisTool\Common\SoundController.cs;
+      ..\StatisticsAnalysisTool\Common\SystemInfo.cs;
+      ..\StatisticsAnalysisTool\Common\Utilities.cs;
+      ..\StatisticsAnalysisTool\Notification\SatNotificationManager.cs;
+      ..\StatisticsAnalysisTool\Localization\Culture.cs;
       ..\StatisticsAnalysisTool\Common\Controls\**;
       ..\StatisticsAnalysisTool\Common\TextBoxHelper.cs;
       ..\StatisticsAnalysisTool\Common\ScrollViewerExtensions.cs;
