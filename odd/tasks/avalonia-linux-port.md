@@ -99,9 +99,11 @@ Each task records its route and trigger.
 - [x] T16 Icon packs (FontAwesome, GameIcons). Commits e3b67184, 30485bf0.
   - Evidence: tests 398/398 (re-run by the parent); upstream diff is empty.
   - Licence files must ship in T19.
-- [ ] T17 Notifications, sounds, alert windows, clipboard.
-- [ ] T18 Linux integration: autostart .desktop, Proton/Wine process detection, attention request.
-- [ ] T19 Packaging (PKGBUILD/AppImage), README-linux, CI.
+- [x] T17 Notifications, sounds, alert windows, clipboard. Commits df24e9d6, 6a2985bc. The updater is notify-only (reasons in PORTING.md).
+- [x] T18 Linux integration: autostart .desktop, Proton/Wine process detection, attention request. Commit 5aceacb1 (Linux wording).
+- [x] T19 Packaging (PKGBUILD/AppImage), README-linux, CI. Commits 0fa54d7f, 1908539b; test hygiene in 4f88da54 and cbf38bac.
+  - Evidence: tests 665/665 across 5 runs (writer) and 1 run (parent); the tarball builds and its sha256 verifies.
+  - Open: the CI run is unverified; the icons are upscaled.
 - [ ] T20 Parity pass versus the original screens.
 
 ## Acceptance Criteria
