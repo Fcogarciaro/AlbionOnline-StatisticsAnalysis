@@ -1,0 +1,82 @@
+<!-- Port of Styles/ItemSearchStyles.xaml. The list is a DataGrid (see DataGridStyles.axaml): the GridView cell templates are
+     DataGrid template columns. The PastTime DataTriggers of the value are classes. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:enum="clr-namespace:StatisticsAnalysisTool.Enumerations"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="ItemSearchTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="Padding" Value="8,0" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Width" Value="NaN" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="ItemSearch.FilterComboBox" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="MinWidth" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="ItemSearch.FilterField" TargetType="StackPanel">
+      <Setter Property="Margin" Value="4,0,4,6" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="ItemSearch.Value.Text" TargetType="TextBlock">
+      <Setter Property="Margin" Value="5,0,0,0" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.6}" />
+      <Style Selector="^.veryveryold"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.7}" /></Style>
+      <Style Selector="^.veryold"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.6}" /></Style>
+      <Style Selector="^.old"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.5}" /></Style>
+      <Style Selector="^.bitold"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.4}" /></Style>
+      <Style Selector="^.littlenew"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.3}" /></Style>
+      <Style Selector="^.almostnew"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.2}" /></Style>
+      <Style Selector="^.new"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.1}" /></Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="ItemSearch.GridViewColumnIconTemplate" DataType="models:Item">
+      <Grid>
+        <Image Source="{Binding Icon, Mode=OneWay}" Width="75" Height="75" Stretch="Fill" />
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ItemSearch.GridViewColumnNameTemplate" DataType="models:Item">
+      <Grid Width="400" HorizontalAlignment="Left">
+        <StackPanel Orientation="Vertical">
+          <TextBlock TextWrapping="Wrap">
+            <InlineUIContainer BaselineAlignment="Center">
+              <fa:FontAwesomeImage Icon="SolidBell" Width="14" Height="14" Margin="0,0,4,0"
+                                   Foreground="{DynamicResource SolidColorBrush.Accent.Yellow.1}"
+                                   IsVisible="{Binding IsAlertActive}" />
+            </InlineUIContainer><Run Text="{Binding LocalizedNameAndEnglish, Mode=OneWay}" />
+          </TextBlock>
+          <StackPanel Orientation="Horizontal">
+            <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="12" Height="12" ToolTip.Tip="{Binding TranslationEstMarketValue, Mode=OneWay}" />
+            <TextBlock Text="{Binding AverageEstMarketValue, Mode=OneWay, StringFormat='{}{0:N0}', ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}"
+                       ToolTip.Tip="{Binding LastEstimatedUpdateTimeString, Mode=OneWay}"
+                       Theme="{StaticResource ItemSearch.Value.Text}"
+                           Classes.veryveryold="{Binding EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.VeryVeryOld}}"
+                           Classes.veryold="{Binding EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.VeryOld}}"
+                           Classes.old="{Binding EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.Old}}"
+                           Classes.bitold="{Binding EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.BitOld}}"
+                           Classes.littlenew="{Binding EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.LittleNew}}"
+                           Classes.almostnew="{Binding EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.AlmostNew}}"
+                           Classes.new="{Binding EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.New}}" />
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ItemSearch.GridViewColumnFavoriteTemplate" DataType="models:Item">
+      <Grid>
+        <CheckBox IsChecked="{Binding IsFavorite}" />
+      </Grid>
+    </DataTemplate>
+
+  </Styles.Resources>
+</Styles>

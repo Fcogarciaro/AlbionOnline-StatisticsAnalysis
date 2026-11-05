@@ -24,4 +24,6 @@
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/PartyStyle.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/StorageHistoryStyle.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/GuildStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DataGridStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ItemSearchStyles.axaml" />
 </Styles>

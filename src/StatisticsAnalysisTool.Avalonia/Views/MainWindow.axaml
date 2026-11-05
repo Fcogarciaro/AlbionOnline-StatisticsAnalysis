@@ -173,7 +173,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding ItemSearchTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.ItemSearch, FallbackValue=ITEM__SEARCH}" Tag="pack://application:,,,/Assets/Navigation/magnifying-glass.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="ItemSearchControl" />
+          <userControls:ItemSearchControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding LoggingTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Logging, FallbackValue=LOGGING}" Tag="pack://application:,,,/Assets/Navigation/log.png">

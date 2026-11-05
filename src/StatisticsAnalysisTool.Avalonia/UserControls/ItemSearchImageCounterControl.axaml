@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+             xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+             x:Class="StatisticsAnalysisTool.UserControls.ItemSearchImageCounterControl"
+             x:DataType="viewModels:MainWindowViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="40" d:DesignWidth="200">
+    <StackPanel Orientation="Horizontal">
+        <Grid Margin="10,0,0,0" Width="24" Height="24" VerticalAlignment="Center">
+            <fa:FontAwesomeImage Icon="RegularImage" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+        </Grid>
+        <Label Content="{Binding LocalImageCounter, FallbackValue=0}" Height="24" Margin="0,0,0,2" VerticalAlignment="Center"
+               Foreground="{DynamicResource SolidColorBrush.Text.1}" VerticalContentAlignment="Center" />
+        <StackPanel Orientation="Horizontal" Height="24" VerticalAlignment="Center" Margin="10,0,10,0">
+            <!-- ToolBar.SeparatorStyleKey: a thin vertical line -->
+            <Border Width="1" Margin="0,2" Background="{DynamicResource SolidColorBrush.Text.5}" />
+        </StackPanel>
+        <Label Content="{Binding ItemCounterString, FallbackValue=0/0}" Height="24" Margin="0,0,10,0" VerticalAlignment="Center"
+               Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalContentAlignment="Center" HorizontalAlignment="Center" />
+    </StackPanel>
+</UserControl>

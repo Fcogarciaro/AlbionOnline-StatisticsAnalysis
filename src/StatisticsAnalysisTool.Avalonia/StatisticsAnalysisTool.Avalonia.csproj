@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.12" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.22" />
@@ -74,44 +75,7 @@
 
   <!-- Compile spike: link the non-view, non-Windows-only sources of the WPF project. -->
   <ItemGroup Condition="'$(LinkWpfSources)' == 'true'">
-    <Compile Include="..\StatisticsAnalysisTool\**\*.cs" LinkBase="Wpf" Exclude="
-      ..\StatisticsAnalysisTool\bin\**;
-      ..\StatisticsAnalysisTool\Models\StatPricesTotal.cs;
-      ..\StatisticsAnalysisTool\Network\Handler\JoinHandler.cs;
-      ..\StatisticsAnalysisTool\Network\SilverCountUpTimer.cs;
-      ..\StatisticsAnalysisTool\obj\**;
-      ..\StatisticsAnalysisTool\Views\**;
-      ..\StatisticsAnalysisTool\UserControls\**;
-      ..\StatisticsAnalysisTool\**\*.xaml.cs;
-      ..\StatisticsAnalysisTool\App.xaml.cs;
-      ..\StatisticsAnalysisTool\Properties\AssemblyInfo.cs;
-      ..\StatisticsAnalysisTool\Properties\Resources.Designer.cs;
-      ..\StatisticsAnalysisTool\Updater\AutoUpdateController.cs;
-      ..\StatisticsAnalysisTool\Updater\UpdateDownloadSession.cs;
-      ..\StatisticsAnalysisTool\Common\AppDataPaths.cs;
-      ..\StatisticsAnalysisTool\Core\ApplicationCore.cs;
-      ..\StatisticsAnalysisTool\Localization\LocalizationController.cs;
-      ..\StatisticsAnalysisTool\Network\PacketProviders\LibpcapPacketProvider.cs;
-      ..\StatisticsAnalysisTool\Network\PacketProviders\SocketsPacketProvider.cs;
-      ..\StatisticsAnalysisTool\Common\AlbionGameProcessMonitor.cs;
-      ..\StatisticsAnalysisTool\Common\SoundController.cs;
-      ..\StatisticsAnalysisTool\Common\SystemInfo.cs;
-      ..\StatisticsAnalysisTool\Common\Utilities.cs;
-      ..\StatisticsAnalysisTool\Notification\SatNotificationManager.cs;
-      ..\StatisticsAnalysisTool\Localization\Culture.cs;
-      ..\StatisticsAnalysisTool\Common\Controls\**;
-      ..\StatisticsAnalysisTool\Common\TextBoxHelper.cs;
-      ..\StatisticsAnalysisTool\Common\ScrollViewerExtensions.cs;
-      ..\StatisticsAnalysisTool\Common\ProgressBarSmoother.cs;
-      ..\StatisticsAnalysisTool\Common\CultureAwareBinding.cs;
-      ..\StatisticsAnalysisTool\Common\Validation\**;
-      ..\StatisticsAnalysisTool\Common\Converters\ValidationErrorConverter.cs;
-      ..\StatisticsAnalysisTool\Shortcut\**;
-      ..\StatisticsAnalysisTool\**\SystemTrayService.cs;
-      ..\StatisticsAnalysisTool\**\SystemTrayMenuRenderer.cs;
-      ..\StatisticsAnalysisTool\**\WindowChromeController.cs;
-      ..\StatisticsAnalysisTool\**\AuthenticodeSignatureVerifier.cs;
-      ..\StatisticsAnalysisTool\**\WindowsStartupService.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\**\*.cs" LinkBase="Wpf" Exclude="&#xA;      ..\StatisticsAnalysisTool\bin\**;&#xA;      ..\StatisticsAnalysisTool\Models\StatPricesTotal.cs;&#xA;      ..\StatisticsAnalysisTool\Network\Handler\JoinHandler.cs;&#xA;      ..\StatisticsAnalysisTool\Network\SilverCountUpTimer.cs;&#xA;      ..\StatisticsAnalysisTool\obj\**;&#xA;      ..\StatisticsAnalysisTool\Views\**;&#xA;      ..\StatisticsAnalysisTool\UserControls\**;&#xA;      ..\StatisticsAnalysisTool\**\*.xaml.cs;&#xA;      ..\StatisticsAnalysisTool\App.xaml.cs;&#xA;      ..\StatisticsAnalysisTool\Properties\AssemblyInfo.cs;&#xA;      ..\StatisticsAnalysisTool\Properties\Resources.Designer.cs;&#xA;      ..\StatisticsAnalysisTool\Updater\AutoUpdateController.cs;&#xA;      ..\StatisticsAnalysisTool\Updater\UpdateDownloadSession.cs;&#xA;      ..\StatisticsAnalysisTool\Common\AppDataPaths.cs;&#xA;      ..\StatisticsAnalysisTool\Core\ApplicationCore.cs;&#xA;      ..\StatisticsAnalysisTool\Localization\LocalizationController.cs;&#xA;      ..\StatisticsAnalysisTool\Network\PacketProviders\LibpcapPacketProvider.cs;&#xA;      ..\StatisticsAnalysisTool\Network\PacketProviders\SocketsPacketProvider.cs;&#xA;      ..\StatisticsAnalysisTool\Common\AlbionGameProcessMonitor.cs;&#xA;      ..\StatisticsAnalysisTool\Common\SoundController.cs;&#xA;      ..\StatisticsAnalysisTool\Common\SystemInfo.cs;&#xA;      ..\StatisticsAnalysisTool\Common\Utilities.cs;&#xA;      ..\StatisticsAnalysisTool\Notification\SatNotificationManager.cs;&#xA;      ..\StatisticsAnalysisTool\Localization\Culture.cs;&#xA;      ..\StatisticsAnalysisTool\Common\Controls\**;&#xA;      ..\StatisticsAnalysisTool\Common\TextBoxHelper.cs;&#xA;      ..\StatisticsAnalysisTool\Common\ScrollViewerExtensions.cs;&#xA;      ..\StatisticsAnalysisTool\Common\ProgressBarSmoother.cs;&#xA;      ..\StatisticsAnalysisTool\Common\CultureAwareBinding.cs;&#xA;      ..\StatisticsAnalysisTool\Common\Validation\**;&#xA;      ..\StatisticsAnalysisTool\Common\Converters\ValidationErrorConverter.cs;&#xA;      ..\StatisticsAnalysisTool\Shortcut\**;&#xA;      ..\StatisticsAnalysisTool\**\SystemTrayService.cs;&#xA;      ..\StatisticsAnalysisTool\**\SystemTrayMenuRenderer.cs;&#xA;      ..\StatisticsAnalysisTool\**\WindowChromeController.cs;&#xA;      ..\StatisticsAnalysisTool\**\AuthenticodeSignatureVerifier.cs;&#xA;      ..\StatisticsAnalysisTool\**\WindowsStartupService.cs" />
   </ItemGroup>
 
 </Project>
