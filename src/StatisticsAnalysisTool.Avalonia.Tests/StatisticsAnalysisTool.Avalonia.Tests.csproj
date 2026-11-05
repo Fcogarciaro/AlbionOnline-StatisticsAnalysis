@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Include="Fixtures\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\StatisticsAnalysisTool.Avalonia\StatisticsAnalysisTool.Avalonia.csproj" />
   </ItemGroup>
 

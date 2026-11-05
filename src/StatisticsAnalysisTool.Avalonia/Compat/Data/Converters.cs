@@ -1,7 +1,6 @@
 // Compatibility shim: System.Windows.Data converter contracts and Binding sentinels.
 using System.Collections.Generic;
 using System.Globalization;
-using Avalonia.Data;
 
 namespace System.Windows.Data;
 
@@ -38,5 +37,26 @@ public static class MultiValueConverterExtensions
 public static class Binding
 {
     /// <summary>Equivalent of WPF Binding.DoNothing: the binding engine ignores the converted value.</summary>
-    public static object DoNothing => BindingOperations.DoNothing;
+    public static object DoNothing => Avalonia.Data.BindingOperations.DoNothing;
 }
+
+/// <summary>
+/// WPF cross-thread collection synchronization hooks. Avalonia has no equivalent; the linked code always
+/// mutates collections through the UI dispatcher where it matters, so these are intentionally no-ops.
+/// </summary>
+public static class BindingOperations
+{
+    public static void EnableCollectionSynchronization(System.Collections.IEnumerable collection, object lockObject)
+    {
+    }
+
+    public static void EnableCollectionSynchronization(System.Collections.IEnumerable collection, object context, CollectionSynchronizationCallback synchronizationCallback)
+    {
+    }
+
+    public static void DisableCollectionSynchronization(System.Collections.IEnumerable collection)
+    {
+    }
+}
+
+public delegate void CollectionSynchronizationCallback(System.Collections.IEnumerable collection, object context, Action accessMethod, bool writeAccess);

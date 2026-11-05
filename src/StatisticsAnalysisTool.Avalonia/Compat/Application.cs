@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Avalonia.Controls;
+using Avalonia.Platform;
 using Avalonia.Controls.ApplicationLifetimes;
 using AvaloniaApplication = Avalonia.Application;
 
@@ -19,11 +20,27 @@ public class Application
     public ResourceDictionary Resources { get; } = new();
 
     public Window MainWindow =>
-        (AvaloniaApplication.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        (AvaloniaApplication.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as Window;
 
-    public IReadOnlyList<Window> Windows =>
+    public IReadOnlyList<Avalonia.Controls.Window> Windows =>
         (AvaloniaApplication.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-        ?? (IReadOnlyList<Window>) [];
+        ?? (IReadOnlyList<Avalonia.Controls.Window>) [];
+
+    /// <summary>
+    /// WPF Application.GetResourceStream: opens an embedded resource (pack:// URIs are mapped to avares://)
+    /// and throws <see cref="IO.IOException"/> when it does not exist.
+    /// </summary>
+    public static Resources.StreamResourceInfo GetResourceStream(Uri uriResource)
+    {
+        ArgumentNullException.ThrowIfNull(uriResource);
+        var uri = Media.Imaging.BitmapImage.MapPackUri(uriResource);
+        if (!AssetLoader.Exists(uri))
+        {
+            throw new IO.IOException($"Cannot locate resource '{uriResource}'.");
+        }
+
+        return new Resources.StreamResourceInfo(AssetLoader.Open(uri), null);
+    }
 
     public object TryFindResource(object resourceKey) => Resources.Lookup(resourceKey);
 

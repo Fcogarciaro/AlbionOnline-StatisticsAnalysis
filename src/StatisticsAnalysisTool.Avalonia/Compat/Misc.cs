@@ -37,3 +37,15 @@ namespace System.Windows.Markup
         }
     }
 }
+
+namespace System.Windows.Resources
+{
+    public class StreamResourceInfo(IO.Stream stream, string contentType) : IDisposable
+    {
+        public IO.Stream Stream { get; } = stream;
+
+        public string ContentType { get; } = contentType;
+
+        public void Dispose() => Stream?.Dispose();
+    }
+}

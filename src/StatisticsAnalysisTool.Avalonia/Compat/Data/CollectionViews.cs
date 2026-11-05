@@ -51,8 +51,15 @@ namespace System.Windows.Data
         private readonly IEnumerable _source;
         private readonly List<object> _items = [];
         private Predicate<object> _filter;
+        private readonly HashSet<INotifyPropertyChanged> _observedItems = new(ReferenceEqualityComparer.Instance);
         private int _deferLevel;
         private bool _refreshPending;
+        private bool _liveRefreshQueued;
+        private bool? _isLiveSorting;
+        private bool? _isLiveFiltering;
+        private IComparer _customSort;
+        private object _currentItem;
+        private int _currentPosition = -1;
 
         public ListCollectionView(IList list) : this((IEnumerable) list)
         {
@@ -70,9 +77,13 @@ namespace System.Windows.Data
             }
 
             Rebuild();
+            _currentPosition = _items.Count > 0 ? 0 : -1;
+            _currentItem = _currentPosition == 0 ? _items[0] : null;
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public event EventHandler CurrentChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -94,7 +105,66 @@ namespace System.Windows.Data
 
         public SortDescriptionCollection SortDescriptions { get; }
 
+        public IComparer CustomSort
+        {
+            get => _customSort;
+            set
+            {
+                _customSort = value;
+                RefreshOrDefer();
+            }
+        }
+
+        public bool? IsLiveSorting
+        {
+            get => _isLiveSorting;
+            set
+            {
+                _isLiveSorting = value;
+                SyncObservedItems();
+            }
+        }
+
+        public bool? IsLiveFiltering
+        {
+            get => _isLiveFiltering;
+            set
+            {
+                _isLiveFiltering = value;
+                SyncObservedItems();
+            }
+        }
+
+        public ObservableCollection<string> LiveSortingProperties { get; } = [];
+
+        public ObservableCollection<string> LiveFilteringProperties { get; } = [];
+
         public int Count => _items.Count;
+
+        public object CurrentItem => _currentItem;
+
+        public int CurrentPosition => _currentPosition;
+
+        public bool MoveCurrentToFirst() => MoveCurrentToPosition(0);
+
+        public bool MoveCurrentToLast() => MoveCurrentToPosition(_items.Count - 1);
+
+        public bool MoveCurrentToNext() => MoveCurrentToPosition(_currentPosition + 1);
+
+        public bool MoveCurrentToPrevious() => MoveCurrentToPosition(_currentPosition - 1);
+
+        public bool MoveCurrentTo(object item) => MoveCurrentToPosition(_items.IndexOf(item));
+
+        public bool MoveCurrentToPosition(int position)
+        {
+            if (position < 0 || position >= _items.Count)
+            {
+                return false;
+            }
+
+            SetCurrent(position, _items[position]);
+            return true;
+        }
 
         public object GetItemAt(int index) => _items[index];
 
@@ -105,6 +175,8 @@ namespace System.Windows.Data
         public void Refresh()
         {
             Rebuild();
+            SyncObservedItems();
+            RestoreCurrency();
             RaiseReset();
         }
 
@@ -143,7 +215,7 @@ namespace System.Windows.Data
             }
 
             // Fast path: unsorted append at the end of the source keeps order without a full rebuild.
-            if (e.Action == NotifyCollectionChangedAction.Add && SortDescriptions.Count == 0 && e.NewItems != null
+            if (e.Action == NotifyCollectionChangedAction.Add && SortDescriptions.Count == 0 && _customSort == null && e.NewItems != null
                 && e.NewStartingIndex >= 0 && e.NewStartingIndex + e.NewItems.Count == CountSource())
             {
                 var added = e.NewItems.Cast<object>().Where(PassesFilter).ToList();
@@ -153,6 +225,7 @@ namespace System.Windows.Data
                 }
 
                 _items.AddRange(added);
+                SyncObservedItems();
                 RaiseReset();
                 return;
             }
@@ -167,6 +240,14 @@ namespace System.Windows.Data
         private void Rebuild()
         {
             IEnumerable<object> query = _source.Cast<object>().ToList().Where(PassesFilter);
+
+            if (_customSort != null)
+            {
+                var comparer = Comparer<object>.Create(_customSort.Compare);
+                _items.Clear();
+                _items.AddRange(query.OrderBy(i => i, comparer));
+                return;
+            }
 
             IOrderedEnumerable<object> ordered = null;
             foreach (var description in SortDescriptions)
@@ -210,6 +291,94 @@ namespace System.Windows.Data
             return x is string sx && y is string sy
                 ? string.Compare(sx, sy, Globalization.CultureInfo.CurrentCulture, Globalization.CompareOptions.None)
                 : Comparer<object>.Default.Compare(x, y);
+        }
+
+        private void SetCurrent(int position, object item)
+        {
+            var changed = !ReferenceEquals(_currentItem, item);
+            _currentPosition = position;
+            _currentItem = item;
+            if (changed)
+            {
+                CurrentChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void RestoreCurrency()
+        {
+            if (_currentItem != null)
+            {
+                var index = _items.IndexOf(_currentItem);
+                if (index >= 0)
+                {
+                    _currentPosition = index;
+                    return;
+                }
+            }
+
+            if (_items.Count > 0)
+            {
+                SetCurrent(0, _items[0]);
+            }
+            else
+            {
+                SetCurrent(-1, null);
+            }
+        }
+
+        private void SyncObservedItems()
+        {
+            var wanted = (_isLiveSorting == true || _isLiveFiltering == true)
+                ? _source.Cast<object>().OfType<INotifyPropertyChanged>().ToHashSet<INotifyPropertyChanged>(ReferenceEqualityComparer.Instance)
+                : [];
+
+            foreach (var stale in _observedItems.Where(i => !wanted.Contains(i)).ToList())
+            {
+                stale.PropertyChanged -= OnItemPropertyChanged;
+                _observedItems.Remove(stale);
+            }
+
+            foreach (var item in wanted)
+            {
+                if (_observedItems.Add(item))
+                {
+                    item.PropertyChanged += OnItemPropertyChanged;
+                }
+            }
+        }
+
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var name = e.PropertyName;
+            var all = string.IsNullOrEmpty(name);
+            var affectsSort = _isLiveSorting == true
+                              && (all || LiveSortingProperties.Contains(name) || SortDescriptions.Any(d => d.PropertyName == name));
+            var affectsFilter = _isLiveFiltering == true && (all || LiveFilteringProperties.Contains(name));
+            if (!affectsSort && !affectsFilter)
+            {
+                return;
+            }
+
+            // Coalesce bursts of property changes into a single refresh on the UI thread.
+            lock (_observedItems)
+            {
+                if (_liveRefreshQueued)
+                {
+                    return;
+                }
+
+                _liveRefreshQueued = true;
+            }
+
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                lock (_observedItems)
+                {
+                    _liveRefreshQueued = false;
+                }
+
+                RefreshOrDefer();
+            });
         }
 
         private void RaiseReset()

@@ -2,8 +2,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Data;
+using Avalonia.Headless.NUnit;
 using FluentAssertions;
 using NUnit.Framework;
+using AvaloniaDispatcher = Avalonia.Threading.Dispatcher;
 
 namespace StatisticsAnalysisTool.Avalonia.Tests.Compat.Data;
 
@@ -149,5 +151,115 @@ public class ListCollectionViewTests
 
         view.Cast<Row>().Should().ContainSingle();
         view.CanFilter.Should().BeTrue();
+    }
+
+    private sealed class Observable : INotifyPropertyChanged
+    {
+        private int _value;
+
+        public string Name { get; init; }
+
+        public int Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
+    private sealed class ByValueDescending : System.Collections.IComparer
+    {
+        public int Compare(object x, object y) => ((Observable) y).Value.CompareTo(((Observable) x).Value);
+    }
+
+    [Test]
+    public void CustomSort_OrdersItemsWithComparer_AndOverridesSortDescriptions()
+    {
+        var source = new ObservableCollection<Observable> { new() { Name = "a", Value = 1 }, new() { Name = "b", Value = 3 }, new() { Name = "c", Value = 2 } };
+        var view = new ListCollectionView(source);
+
+        view.CustomSort = new ByValueDescending();
+
+        view.Cast<Observable>().Select(o => o.Name).Should().Equal("b", "c", "a");
+        view.CustomSort.Should().BeOfType<ByValueDescending>();
+    }
+
+    [AvaloniaTest]
+    public void LiveSorting_ResortsWhenObservedPropertyChanges()
+    {
+        var a = new Observable { Name = "a", Value = 1 };
+        var b = new Observable { Name = "b", Value = 2 };
+        var source = new ObservableCollection<Observable> { a, b };
+        var view = new ListCollectionView(source) { IsLiveSorting = true, CustomSort = new ByValueDescending() };
+        view.LiveSortingProperties.Add(nameof(Observable.Value));
+        view.Cast<Observable>().Select(o => o.Name).Should().Equal("b", "a");
+
+        a.Value = 10;
+        AvaloniaDispatcher.UIThread.RunJobs();
+
+        view.Cast<Observable>().Select(o => o.Name).Should().Equal("a", "b");
+    }
+
+    [AvaloniaTest]
+    public void LiveFiltering_ReevaluatesFilterWhenObservedPropertyChanges()
+    {
+        var a = new Observable { Name = "a", Value = 1 };
+        var source = new ObservableCollection<Observable> { a };
+        var view = new ListCollectionView(source) { IsLiveFiltering = true, Filter = o => ((Observable) o).Value > 5 };
+        view.LiveFilteringProperties.Add(nameof(Observable.Value));
+        view.Count.Should().Be(0);
+
+        a.Value = 9;
+        AvaloniaDispatcher.UIThread.RunJobs();
+
+        view.Count.Should().Be(1);
+    }
+
+    [AvaloniaTest]
+    public void LiveShaping_Disabled_IgnoresPropertyChanges()
+    {
+        var a = new Observable { Name = "a", Value = 1 };
+        var view = new ListCollectionView(new ObservableCollection<Observable> { a }) { Filter = o => ((Observable) o).Value > 5 };
+
+        a.Value = 9;
+        AvaloniaDispatcher.UIThread.RunJobs();
+
+        view.Count.Should().Be(0);
+    }
+
+    [Test]
+    public void Currency_StartsAtFirstItem_AndCurrentChangedFiresOnMove()
+    {
+        var view = new ListCollectionView(Source());
+        var changed = 0;
+        view.CurrentChanged += (_, _) => changed++;
+        view.CurrentPosition.Should().Be(0);
+
+        view.MoveCurrentToLast();
+
+        ((Row) view.CurrentItem).Name.Should().Be("b");
+        changed.Should().Be(1);
+    }
+
+    [Test]
+    public void Refresh_KeepsCurrentItemWhenStillPresent_AndMovesToFirstWhenRemoved()
+    {
+        var source = Source();
+        var view = new ListCollectionView(source);
+        view.MoveCurrentToLast();
+        var changed = 0;
+        view.CurrentChanged += (_, _) => changed++;
+
+        view.Refresh();
+        changed.Should().Be(0);
+        source.RemoveAt(2);
+
+        ((Row) view.CurrentItem).Name.Should().Be("c");
+        changed.Should().Be(1);
     }
 }
