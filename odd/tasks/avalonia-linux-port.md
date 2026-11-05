@@ -37,8 +37,19 @@ Each task records its route and trigger.
   - Evidence: the Linux sln builds with 0 errors (writer + parent spot check). Spike with LinkWpfSources=true: 468 unique errors (675 before the shims).
   - Assess: high. RDD off, so an independent verifier ran: PASS on build, csproj and collisions.
   - Carried into T02: `InvokeAsync` must return `DispatcherOperation` (BaseViewModel.cs:43,57 uses `.Task`); `BeginInvoke` must unwrap `TargetInvocationException`; touch `UIThread` in Main.
-- [ ] T02 Complete the WPF compat shim until `LinkWpfSources=true` builds. Covers: DispatcherOperation, Brush/Color, GridLength, IValueConverter, ICollectionView/ListCollectionView, BitmapImage facade, DispatcherTimer and the Properties.Settings shape. Package swap: LiveCharts Avalonia. Stub interfaces for NetSparkle, Ookii, MediaPlayer, Notification.Wpf and Management. Add a test project with TDD on the shim logic. Route: delegated (writer).
-- [ ] T03 Platform abstractions + Linux impls (tray, autostart, dialogs, sound, flash, notifications, process monitor).
+- [x] T02 Complete the WPF compat shim until `LinkWpfSources=true` builds. Covers: DispatcherOperation, Brush/Color, GridLength, IValueConverter, ICollectionView/ListCollectionView, BitmapImage facade, DispatcherTimer and the Properties.Settings shape. Package swap: LiveCharts Avalonia. Stub interfaces for NetSparkle, Ookii, MediaPlayer, Notification.Wpf and Management. Add a test project with TDD on the shim logic. Route: delegated (writer).
+  - Commits: 31a48684, f8ababf7, c6c94027, 9cd26d28, 71602d9d.
+  - Evidence: Linux sln builds with 0 errors; tests 78/78 (re-run by the parent); upstream diff is empty.
+  - Verifier: no build- or test-breaking defects. Scoped correction T02c queued:
+    - `IsRoot` should use `Environment.IsPrivilegedProcess`.
+    - `BitmapImage.LoadTask` should complete after `Finish`; `ShowDialog` hangs when the dialog task faults.
+    - `ShowDialog` should return null when closed without a result.
+    - `ListCollectionView` should emit incremental events (no full reset) when unsorted and unfiltered.
+- [x] T02c Verifier correction (see above). Route: delegated (writer, together with T03). Commit 70a5c8e0. The 6 RED tests now pass.
+- [x] T03 Platform abstractions + Linux impls (tray, autostart, dialogs, sound, flash, notifications, process monitor). Route: delegated (writer).
+  - Commits: ef44e024, 1fa12448, 0c84102f, 357bb3d2.
+  - Evidence: tests 176/176 (re-run by the parent); upstream diff is empty. Behavior differences are listed in PORTING.md.
+  - Open: wire `SystemTrayService` in T09; live desktop verification is pending (T20).
 - [ ] T04 XDG paths + settings and resources without resx/Settings.settings.
 - [ ] T05 Unit tests on net10.0 against Core, green on Linux.
 - [ ] T06 Linux network capture (libpcap default, capability check, first-run guidance).
