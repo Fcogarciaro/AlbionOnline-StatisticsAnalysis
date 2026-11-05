@@ -12,6 +12,7 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Updater/AutoUpdateController.cs`, `Updater/UpdateDownloadSession.cs` | NetSparkleUpdater.UI.WPF, Authenticode, WPF update window | `Linux/Updater/AutoUpdateController.cs` | No update check or notification. TODO(T03/T17): GitHub releases check. |
 | `Updater/AuthenticodeSignatureVerifier.cs` | Windows Authenticode | none (only used by the excluded controller) | n/a |
 | generated `AutoUpdateSecurityBuildSettings.g.cs` | MSBuild-generated in the WPF project | `Linux/Updater/AutoUpdateSecurityBuildSettings.cs` | All flags off. |
+| `Common/AppDataPaths.cs` | `LocalApplicationData` is the only root; everything (incl. `Settings.json`) sits in it | `Linux/Common/AppDataPaths.cs` (copy, keep in sync) | Same members and `Instances/<id>/...` sub-structure. `Settings.json` goes to `$XDG_CONFIG_HOME/StatisticsAnalysisTool` (default `~/.config`); `Backups`, `UserData-*`, `logs`, `GameFiles` to `$XDG_DATA_HOME/StatisticsAnalysisTool` (default `~/.local/share`, where .NET already pointed `LocalApplicationData`); `temp`, `ImageResources`, `SpellImageResources` to `$XDG_CACHE_HOME/StatisticsAnalysisTool` (default `~/.cache`, safe to delete). Relative XDG values are ignored per spec. Copy the folders between machines by recreating the same `Instances/<id>` layout. Upstream has no portable mode, so none is offered. Extra member `UserSettingsFile`. |
 | `Common/AlbionGameProcessMonitor.cs` | `Process.GetProcessesByName` misses the game under Wine/Proton (15-char `comm` such as `Albion-Online.e`, wine loader as the exe) | `Linux/Common/AlbionGameProcessMonitor.cs` | Same class, events and 2 s poll; detection scans `/proc/<pid>/comm` and `argv[0]` for `Albion-Online` / `Albion-Online.exe` (`AlbionProcessMatcher`). Processes of other users are matched too (comm and cmdline are world-readable) |
 | `Common/SoundController.cs` | `System.Windows.Media.MediaPlayer` | `Linux/Common/SoundController.cs` | Sound discovery identical (`Sounds/*.wav` are copied to the output from the WPF project). Playback runs the first available of `pw-play`, `paplay`, `aplay` as a detached process. Volume is applied by `pw-play` and `paplay`; `aplay` cannot scale volume. Volume 0 plays nothing (as in WPF). With no player installed a single warning is logged. |
 | `Common/SystemInfo.cs` | WMI (System.Management), `WindowsPrincipal` | `Linux/Common/SystemInfo.cs` | CPU from `/proc/cpuinfo`, admin means root, GPU unknown. TODO(T03). |
@@ -35,7 +36,7 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `DSaladin.FontAwesome.WPF` `FontAwesomeIcon` | `Linux/Icons/FontAwesomeIcon.cs`, an enum generated from the 6.7.1 package (identical names and values); the icon control is T16 |
 | `Ookii.Dialogs.Wpf` (`VistaOpenFileDialog`, `VistaFolderBrowserDialog`) | `Compat/VistaOpenFileDialog.cs`, `Compat/MessageBox.cs`: Avalonia `StorageProvider` pickers, blocking via a nested dispatcher frame. Returns false when no visible window exists. `ShowNewFolderButton` is ignored (the portal picker always offers it) |
 | `Microsoft.Win32.SaveFileDialog`, `System.Windows.MessageBox` | `Compat/MessageBox.cs`: `SaveFileDialog` uses the save picker (DefaultExt appended when the name has no extension, as Win32 AddExtension); `MessageBox.Show` opens a modal `MessageBoxDialog` (`Compat/Dialogs/`). Button labels are English; closing a YesNo box with Escape or the close button returns No (WPF disables closing it) |
-| `Properties/Settings.Designer.cs` | Linked unchanged; `System.Configuration.ConfigurationManager` stores user settings under the user's local data directory. TODO(T04): XDG paths |
+| `Properties/Settings.Designer.cs` | Linked unchanged. The stock `LocalFileSettingsProvider` cannot save on Linux and `Upgrade()` throws, so `Linux/Settings/JsonSettingsProvider.cs` is attached to the partial `Settings` class. User-scoped values are stored as JSON in `$XDG_CONFIG_HOME/StatisticsAnalysisTool/Instances/<id>/UserSettings.json`; `Upgrade()` is a no-op (no earlier versions). Only `UpgradeRequired` is ever written; the real settings stay in `Settings.json` (`SettingsController`). |
 | `System.Drawing.Icon` (exe icon in Settings) | `System.Drawing.Common` compiles; the call throws on Linux and is caught, so no icon is shown |
 | `pack://application:,,,/...` URIs | `pack` scheme registered at startup (`Compat/PackUri.cs`); `BitmapImage` and `Application.GetResourceStream` map them to `avares://` |
 
@@ -56,3 +57,9 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
 `Linux/Views/Placeholders.cs` declares `DialogWindow`, `ItemAlertWindow`, `GameDataPreparationWindow`,
 `LanguageSelectionWindow` and `EventValidationWindow` so linked code compiles. Each is deleted when the real view
 with the same name lands (T09/T10).
+
+## Data migration
+
+`Common/AppDataMigration.cs` is linked unchanged: it only copies directories and files and has no Windows API. Its
+legacy sources (the installation directory and `<data>/Default`) are simply absent on a fresh Linux install, so it
+is a no-op there; if they exist it migrates into the XDG targets above.
