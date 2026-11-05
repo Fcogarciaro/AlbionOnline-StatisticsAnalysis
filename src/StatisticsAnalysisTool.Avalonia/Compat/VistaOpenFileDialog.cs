@@ -1,7 +1,8 @@
-// Linux replacement for Ookii.Dialogs.Wpf.VistaOpenFileDialog (Windows-only). The linked logging code only needs
-// Filter, Title, Multiselect, ShowDialog() and FileNames.
-// TODO(T03): implement with Avalonia's IStorageProvider.OpenFilePickerAsync (blocking via a nested dispatcher frame).
+// Linux replacement for Ookii.Dialogs.Wpf.VistaOpenFileDialog (Windows-only). The linked logging code needs
+// Filter, Title, Multiselect, InitialDirectory, ShowDialog() and FileNames; backed by Avalonia's StorageProvider.
+using Avalonia.Platform.Storage;
 using System;
+using System.Linq;
 
 namespace Ookii.Dialogs.Wpf;
 
@@ -17,10 +18,27 @@ public class VistaOpenFileDialog
 
     public string[] FileNames { get; private set; } = [];
 
-    /// <summary>Currently always returns false (cancelled) until the Avalonia picker is wired in.</summary>
+    /// <summary>True when at least one file was picked; false when cancelled or no window exists.</summary>
     public bool? ShowDialog()
     {
         FileNames = [];
-        return false;
+        var provider = System.Windows.PickerHost.GetStorageProvider();
+        if (provider == null)
+        {
+            return false;
+        }
+
+        var options = new FilePickerOpenOptions
+        {
+            Title = string.IsNullOrWhiteSpace(Title) ? null : Title,
+            AllowMultiple = Multiselect,
+            FileTypeFilter = Microsoft.Win32.FilePickerFilter.Parse(Filter)
+                .Select(e => new FilePickerFileType(e.Name) { Patterns = e.Patterns.ToList() }).ToList(),
+            SuggestedStartLocation = System.Windows.PickerHost.StartLocation(provider, InitialDirectory)
+        };
+
+        var files = System.Windows.BlockingUi.Run(() => provider.OpenFilePickerAsync(options));
+        FileNames = files.Select(f => f.TryGetLocalPath()).Where(p => p != null).ToArray();
+        return FileNames.Length > 0;
     }
 }
