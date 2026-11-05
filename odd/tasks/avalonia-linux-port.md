@@ -86,8 +86,10 @@ Each task records its route and trigger.
 - [x] T11 Simple tabs: Guild, Party, StorageHistory, MapHistory, ItemSearch, Donation, Thanks, PlayerInformation. Commits 46ef5cd3..0ccc77a8.
   - Evidence: tests 556/556 (re-run by the parent).
   - Changes: ItemSearch uses a DataGrid (Avalonia.Controls.DataGrid 11.3.12); ItemDetails stays a placeholder until T15.
-- [ ] T12 Logging + EventValidation (virtualized lists).
-- [ ] T13 Dashboard, DashboardLoot, Gathering, Crafting (LiveCharts Avalonia).
+- [x] T12 Logging + EventValidation (virtualized lists). Commit 1f5d2e51; a test with 5000 events realizes fewer than 200 rows.
+- [x] T13 Dashboard, DashboardLoot, Gathering, Crafting (LiveCharts Avalonia). Commits 64c234e8, 8335c7f0, 304b36ff.
+  - Evidence: tests 579/579 (re-run by the parent).
+  - LossExplorer moved to T14.
 - [ ] T14 DamageMeter (+ window), Dungeon, LossExplorer.
 - [ ] T15 TradeMonitoring (+ Skia heatmap), ItemDetails.
 - [x] T16 Icon packs (FontAwesome, GameIcons). Commits e3b67184, 30485bf0.
