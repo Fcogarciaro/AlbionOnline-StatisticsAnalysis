@@ -203,7 +203,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding CraftingTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Crafting, FallbackValue=CRAFTING}" Tag="pack://application:,,,/Assets/Navigation/anvil.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="CraftingControl" />
+          <userControls:CraftingControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding PartyTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Party, FallbackValue=PARTY}" Tag="pack://application:,,,/Assets/Navigation/teamwork.png">

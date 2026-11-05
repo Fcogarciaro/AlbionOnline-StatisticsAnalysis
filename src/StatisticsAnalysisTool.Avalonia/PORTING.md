@@ -208,7 +208,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
 - **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DungeonControl,
-  DamageMeterControl, TradeMonitoringControl and CraftingControl (SettingsControl is real since T10; ItemSearch,
+  DamageMeterControl and TradeMonitoringControl (SettingsControl is real since T10; ItemSearch,
   Party, Guild, StorageHistory, MapHistory, PlayerInformation, Donation and Thanks since T11). Each is replaced where it is ported
   (T12-T15). `ItemSearchControl` hosts a placeholder named ItemDetailsControl in its details slot until the item details view lands.
 
@@ -369,6 +369,20 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
   Tests that need it use `ViewHarness.UseTrackingController()`.
 - Fidelity gaps: the expander chevrons and the status overlay of looted slots were not compared on a real desktop; the dashboard history chart is only checked for its
   bindings (the dashboard controller refreshes its series itself), the line/pie drawing is covered by the gathering tests.
+
+### CraftingControl (T13)
+
+- `UserControls/CraftingControl.axaml(.cs)` + `Styles/CraftingStyles.axaml` (the former `UserControl.Resources`). Same editor, resource list, journal block, result tiles, saved list
+  and Black Market tab. The three `ListView` + `GridView` become `DataGrid`s (resource list, saved craftings, Black Market items; headers keep their tooltips); saved rows use `RowHeight=50`
+  instead of the `ListViewItem` style. DataTriggers are classes: profit/ROI/profit per item (`positive`/`negative`, set by every use), the sell price status colors (`normal`, `old1`..`old3`,
+  `none`), tier and enchantment level colors (`t1`..`t8`, `l0`..`l4`) and the saved focus icon (`Crafting.FocusIcon` + `on`).
+- Price and search popups are `Popup`s with `IsLightDismissEnabled` and `OverlayInputPassThroughElement` (the text box); their content inherits the data context (no
+  `PlacementTarget.DataContext` hop). WPF `Preview*MouseLeftButton*` handlers are tunnelling pointer handlers on the control (`handledEventsToo`), dispatched by the text box
+  (`Classes` `price-input`, `resource-price`). `LostKeyboardFocus` handlers read the focused element after the focus moved (Avalonia gives no `NewFocus`); the popup lists are separate top
+  levels and never take focus from the text box.
+- `Journal` and `Calculation` are null until a crafting exists: bindings use `?.` and the journal popup flags use `TargetNullValue=False`.
+- **`LossExplorerControl` is not ported yet**: its tab hosts a `PortingPlaceholderControl` (it was not part of T12/T13).
+- Not verified on a real desktop: popup placement and light dismiss with the price text boxes, and the `DataGrid` row look.
 
 ## View placeholders
 

@@ -66,10 +66,10 @@ public class GatheringControlTests
     public void CartesianChart_DrawsTheBoundLine()
     {
         using var harness = new ViewHarness();
-        var control = harness.Show(new GatheringControl(), harness.MainViewModel, width: 1500, height: 1000);
         var stats = harness.MainViewModel.GatheringBindings.GatheringStats;
         stats.ResourceChartSeries = [new LineSeries<double> { Values = [1d, 3d, 2d], Stroke = new SolidColorPaint(new SKColor(255, 0, 255), 6), Fill = null, GeometrySize = 0 }];
         stats.ResourceChartXAxes = [new Axis { Labels = ["a", "b", "c"] }];
+        var control = harness.Show(new GatheringControl(), harness.MainViewModel, width: 1500, height: 1000);
         var n = 0;
         for (var i = 0; i < 20 && n == 0; i++)
         {

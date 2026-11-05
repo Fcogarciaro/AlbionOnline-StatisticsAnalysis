@@ -1,0 +1,153 @@
+<!-- Port of the UserControl.Resources of CraftingControl.xaml (conventions: PORTING.md, "Style mapping"). DataTriggers are classes set by the usages. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="CraftingResultTile" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="1" />
+            <Setter Property="Height" Value="55" />
+            <Setter Property="MinWidth" Value="120" />
+            <Setter Property="Padding" Value="5,5" />
+            <Setter Property="Margin" Value="0,0,5,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingEditorLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+            <Setter Property="Margin" Value="0,0,5,0" />
+            <Setter Property="MaxWidth" Value="250" />
+            <Setter Property="MinWidth" Value="150" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,2,0,0" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultCostValue" TargetType="TextBlock" BasedOn="{StaticResource CraftingResultValue}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultRevenueValue" TargetType="TextBlock" BasedOn="{StaticResource CraftingResultValue}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultInfoValue" TargetType="TextBlock" BasedOn="{StaticResource CraftingResultValue}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultBreakEvenValue" TargetType="TextBlock" BasedOn="{StaticResource CraftingResultValue}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultProfitValue" TargetType="TextBlock" BasedOn="{StaticResource CraftingResultValue}">
+        <!-- DataTriggers on the *Positive / *Negative flags: the usages set Classes.positive / Classes.negative. -->
+        <Style Selector="^.positive"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+        <Style Selector="^.negative"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultRoiValue" TargetType="TextBlock" BasedOn="{StaticResource CraftingResultValue}">
+        <!-- DataTriggers on the *Positive / *Negative flags: the usages set Classes.positive / Classes.negative. -->
+        <Style Selector="^.positive"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+        <Style Selector="^.negative"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResultProfitPerItemValue" TargetType="TextBlock" BasedOn="{StaticResource CraftingResultValue}">
+        <!-- DataTriggers on the *Positive / *Negative flags: the usages set Classes.positive / Classes.negative. -->
+        <Style Selector="^.positive"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+        <Style Selector="^.negative"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+    </ControlTheme>
+    <ControlTheme x:Key="SavedCraftingCellText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="SavedCraftingCostText" TargetType="TextBlock" BasedOn="{StaticResource SavedCraftingCellText}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="SavedCraftingProfitText" TargetType="TextBlock" BasedOn="{StaticResource SavedCraftingCellText}">
+        <!-- DataTriggers on the *Positive / *Negative flags: the usages set Classes.positive / Classes.negative. -->
+        <Style Selector="^.positive"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+        <Style Selector="^.negative"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+    </ControlTheme>
+    <ControlTheme x:Key="SavedCraftingProfitPerItemText" TargetType="TextBlock" BasedOn="{StaticResource SavedCraftingCellText}">
+        <!-- DataTriggers on the *Positive / *Negative flags: the usages set Classes.positive / Classes.negative. -->
+        <Style Selector="^.positive"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+        <Style Selector="^.negative"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+    </ControlTheme>
+    <ControlTheme x:Key="SavedCraftingRoiText" TargetType="TextBlock" BasedOn="{StaticResource SavedCraftingCellText}">
+        <!-- DataTriggers on the *Positive / *Negative flags: the usages set Classes.positive / Classes.negative. -->
+        <Style Selector="^.positive"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" /></Style>
+        <Style Selector="^.negative"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+    </ControlTheme>
+    <ControlTheme x:Key="SavedCraftingBreakEvenText" TargetType="TextBlock" BasedOn="{StaticResource SavedCraftingCellText}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResourceQuantityText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResourceCostText" TargetType="TextBlock" BasedOn="{StaticResource CraftingResourceQuantityText}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingResourceNetQuantityText" TargetType="TextBlock" BasedOn="{StaticResource CraftingResourceQuantityText}">
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.3}" />
+    </ControlTheme>
+    <ControlTheme x:Key="CraftingSellPriceOptionText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.7}" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <!-- PriceDateStatus DataTriggers: one class per ValueTimeStatus. -->
+        <Style Selector="^.normal"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.1}" /></Style>
+        <Style Selector="^.old1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.3}" /></Style>
+        <Style Selector="^.old2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.5}" /></Style>
+        <Style Selector="^.old3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.7}" /></Style>
+        <Style Selector="^.none"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.7}" /></Style>
+    </ControlTheme>
+
+    
+    <ControlTheme x:Key="Crafting.TierText" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Style Selector="^.t1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.1}" /></Style>
+        <Style Selector="^.t2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.2}" /></Style>
+        <Style Selector="^.t3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.3}" /></Style>
+        <Style Selector="^.t4"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.4}" /></Style>
+        <Style Selector="^.t5"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.5}" /></Style>
+        <Style Selector="^.t6"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.6}" /></Style>
+        <Style Selector="^.t7"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.7}" /></Style>
+        <Style Selector="^.t8"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.8}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Crafting.LevelText" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Style Selector="^.l0"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Level.Color.0}" /></Style>
+        <Style Selector="^.l1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Level.Color.1}" /></Style>
+        <Style Selector="^.l2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Level.Color.2}" /></Style>
+        <Style Selector="^.l3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Level.Color.3}" /></Style>
+        <Style Selector="^.l4"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Item.Level.Color.4}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Crafting.FocusIcon" TargetType="fa:FontAwesomeImage">
+        <Setter Property="Icon" Value="SolidXmark" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.4}" />
+        <Style Selector="^.on">
+            <Setter Property="Icon" Value="SolidCheck" />
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.4}" />
+        </Style>
+    </ControlTheme>
+
+  </Styles.Resources>
+</Styles>
