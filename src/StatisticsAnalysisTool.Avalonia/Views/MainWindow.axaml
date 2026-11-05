@@ -193,7 +193,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding TradeMonitoringTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.TradeMonitoring, FallbackValue=TRADE__MONITORING}" Tag="pack://application:,,,/Assets/Navigation/market.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="TradeMonitoringControl" />
+          <userControls:TradeMonitoringControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding GatheringTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Gathering, FallbackValue=GATHERING}" Tag="pack://application:,,,/Assets/Navigation/pickaxe.png">

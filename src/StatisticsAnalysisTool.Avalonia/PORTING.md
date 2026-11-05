@@ -430,6 +430,24 @@ element). Visibility triggers become `IsVisible` with `Name=True|*=False`.
 - Fidelity gaps: not compared pixel by pixel on a real desktop (card look, image-brush banners, tooltips); the stats templates are exercised through their view model
   in tests, the run entries with two fragment types.
 
+### TradeMonitoringControl, TradeMonitoringStyle (T15)
+
+- Converted like the dungeon files (value maps, null-safe paths, `IsAsync` dropped, `ContentPresenter` outside templates not used). Differences:
+  - **Heatmap**: `fa:SKElement` (`Linux/Controls/SKElement.cs`) replaces `skia:SKElement` of SkiaSharp.Views.WPF. It raises `PaintSurface` with a canvas sized like the control
+    (`SKPaintSurfaceEventArgs.Canvas` / `.Info`, so `e.Surface.Canvas` becomes `e.Canvas`; the drawing code of `ProfitByTimeOfDayHeatmap_OnPaintSurface`, the layout and the
+    cell color blend are the upstream code unchanged). It draws through an `ICustomDrawOperation` and `ISkiaSharpApiLeaseFeature`, clipped to the element and inside a transparent
+    layer (a WPF element owns a transparent bitmap, whereas `Canvas.Clear(Transparent)` on the shared Avalonia canvas would erase the parent; tests cover both). Hover tooltips use
+    `ToolTip.SetTip` from `PointerMoved`/`PointerExited`. Tests read the pixels of the profit, loss and zero cells of a rendered window.
+  - `DatePicker` is `CalendarDatePicker` (text box plus calendar popup, the closest control; the `DatePickerTextBox` template is dropped).
+  - `TradeDataTemplateSelector` holds shim `System.Windows.DataTemplate`s, which XAML cannot fill, so the control builds it in its constructor from the application resources
+    and assigns it to `TradeList.ItemTemplate`; the list is a `ScrollViewer` around a virtualizing `ItemsControl`.
+  - The location statistics table is shown through `CollectionViewSource.GetDefaultView(LocationStatistics)` (assigned in code on every change) so the header sort still works.
+  - `PreviewMouseWheel` on the charts and the heatmap is a tunnelling `PointerWheelChanged` handler on the diagrams `ScrollViewer` (only for events from a chart or the heatmap, which scrolls
+    the page instead of zooming). The handler on the ranking lists was dead code upstream (`IsHitTestVisible=False`) and stays unattached.
+  - Charts are `lvc:CartesianChart` (`LiveChartsCore.SkiaSharpView.Avalonia`).
+  - The tracking status text and the "most expensive" value texts (a trigger swapping the bound text) are stacked text blocks switched by `IsVisible`.
+- Fidelity gaps: not compared on a real desktop (card look, calendar popup, wheel behaviour over the charts).
+
 ## View placeholders
 
 `Linux/Views/Placeholders.cs` is gone: every upstream window now has its Avalonia view.
