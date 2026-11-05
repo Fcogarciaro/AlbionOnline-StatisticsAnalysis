@@ -31,6 +31,16 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Views/**`, `UserControls/**`, `*.xaml.cs`, `App.xaml.cs`, `Properties/AssemblyInfo.cs`, `Properties/Resources.Designer.cs` | Views, application shell, resx image resources | ported views (T07-T15) | See view placeholders below. |
 | `Models/StatPricesTotal.cs`, `Network/Handler/JoinHandler.cs`, `Network/SilverCountUpTimer.cs` | Excluded since T01 | n/a | n/a |
 
+## Single instance
+
+Upstream has no single-instance check (and no activation of an existing instance); `AppInstance.InstanceId` (hash of the
+install directory, `Debug` in debug builds) only separates data directories. Two processes with one id would write the
+same data, so `Program.Main` takes an exclusive lock file `instance-<id>.lock` in `$XDG_RUNTIME_DIR/StatisticsAnalysisTool`
+(absolute value only, else the cache root) through `Linux/Startup/SingleInstanceLock.cs` (`FileShare.None`, kernel flock,
+released when the process dies). The second process prints a message on stderr and exits with code 1; it does not
+activate the first window. Different installs (different ids) can run together, as on Windows. If the lock file cannot be
+created the tool starts without the guard.
+
 ## Package and API replacements
 
 | WPF | Linux |
