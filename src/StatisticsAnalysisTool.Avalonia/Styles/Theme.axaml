@@ -23,6 +23,7 @@
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DamageMeterStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DungeonStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/TradeMonitoringStyle.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ItemDetailsStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/EventValidationStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/SettingsStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ThanksStyle.axaml" />

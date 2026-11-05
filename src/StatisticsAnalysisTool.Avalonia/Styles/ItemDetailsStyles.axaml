@@ -1,0 +1,654 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
+        xmlns:enum="clr-namespace:StatisticsAnalysisTool.Enumerations"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:itemDetailsModels="clr-namespace:StatisticsAnalysisTool.Models.ItemDetailsModel"
+        xmlns:converters="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:globalization="clr-namespace:System.Globalization;assembly=System.Runtime"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        x:CompileBindings="False">
+  <Styles.Resources>
+    <LinearGradientBrush x:Key="ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.0" StartPoint="0%,0%" EndPoint="100%,0%">
+      <GradientStop Color="{StaticResource Item.Level.Color.0}" Offset="0.0" />
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.1" StartPoint="0%,0%" EndPoint="100%,0%">
+      <GradientStop Color="{StaticResource Item.Level.Color.1}" Offset="0.0" />
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.2" StartPoint="0%,0%" EndPoint="100%,0%">
+      <GradientStop Color="{StaticResource Item.Level.Color.2}" Offset="0.0" />
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.3" StartPoint="0%,0%" EndPoint="100%,0%">
+      <GradientStop Color="{StaticResource Item.Level.Color.3}" Offset="0.0" />
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.4" StartPoint="0%,0%" EndPoint="100%,0%">
+      <GradientStop Color="{StaticResource Item.Level.Color.4}" Offset="0.0" />
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.CaerleonMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.Caerleon}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.ThetfordMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.Thetford}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.MartlockMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.Martlock}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.FortSterlingMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.FortSterling}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.BridgewatchMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.Bridgewatch}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.LymhurstMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.Lymhurst}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.BrecilienMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.Brecilien}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.ArthursRest"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.ArthursRest}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.MorganasRest"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.MorganasRest}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.MerlynsRest"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.MerlynsRest}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.BlackMarket"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.BlackMarket}" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ListView.City.Color.Style.Background.SmugglersDen"
+                         EndPoint="100%,0%"
+                         StartPoint="50%,0%">
+      <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
+      <GradientStop Color="{DynamicResource Color.City.SmugglersDen}" />
+    </LinearGradientBrush>
+    <converters:ZeroToDashConverter x:Key="ZeroToDashConverter" />
+    <ControlTheme x:Key="ItemDetails.Section.Border" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.1}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="ClipToBounds" Value="True" />
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.Filter.Border" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.1}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="7,5" />
+      <Setter Property="Margin" Value="0,0,0,6" />
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.Filter.ListBox" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+      <Setter Property="Height" Value="26" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="SelectionMode" Value="Single" />
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+      <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+      <Setter Property="ItemsPanel">
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.Filter.ListBoxItem" TargetType="ListBoxItem">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="9,3" />
+      <Setter Property="Margin" Value="0,0,3,0" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Template">
+        <ControlTemplate TargetType="ListBoxItem">
+          <Border x:Name="SelectionBorder"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="4"
+                  Padding="{TemplateBinding Padding}">
+            <ContentPresenter Name="PART_ContentPresenter"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="ListView.Grid.Item.Price" TargetType="Grid">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="Height" Value="24" />
+    </ControlTheme>
+    <ControlTheme x:Key="ListView.Grid.Item.Date" TargetType="Grid">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="Height" Value="24" />
+    </ControlTheme>
+    <ControlTheme x:Key="ListView.Grid.StackPanel.Item.Price" TargetType="StackPanel">
+      <Setter Property="Orientation" Value="Horizontal" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="22,0,0,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="ListView.Grid.StackPanel.Image.Price.Silver" TargetType="Image">
+      <Setter Property="Height" Value="20" />
+      <Setter Property="Width" Value="20" />
+      <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/silver.png" />
+    </ControlTheme>
+    <ControlTheme x:Key="ListView.Grid.StackPanel.Icon.Price.RealMoney" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Height" Value="20" />
+      <Setter Property="Width" Value="20" />
+      <Setter Property="Icon" Value="SolidDollarSign" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.3}" />
+    </ControlTheme>
+    <ControlTheme x:Key="InfoDescription.TextBlock" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.BorderColor.ItemLevel.Style" TargetType="Border">
+      <Setter Property="BorderThickness" Value="0,3,0,0" />
+      <Setter Property="Margin" Value="0,0,0,0" />
+      <Setter Property="BorderBrush"
+              Value="{Binding Level, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='0=@ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.0|1=@ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.1|2=@ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.2|3=@ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.3|4=@ItemDetails.BorderColor.ItemLevel.Style.BorderBrush.4'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="ListView.City.Color.Style" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Width" Value="112" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="Background"
+              Value="{Binding MarketLocation, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='CaerleonMarket=@ListView.City.Color.Style.Background.CaerleonMarket|ThetfordMarket=@ListView.City.Color.Style.Background.ThetfordMarket|MartlockMarket=@ListView.City.Color.Style.Background.MartlockMarket|FortSterlingMarket=@ListView.City.Color.Style.Background.FortSterlingMarket|BridgewatchMarket=@ListView.City.Color.Style.Background.BridgewatchMarket|LymhurstMarket=@ListView.City.Color.Style.Background.LymhurstMarket|BrecilienMarket=@ListView.City.Color.Style.Background.BrecilienMarket|ArthursRest=@ListView.City.Color.Style.Background.ArthursRest|MorganasRest=@ListView.City.Color.Style.Background.MorganasRest|MerlynsRest=@ListView.City.Color.Style.Background.MerlynsRest|BlackMarket=@ListView.City.Color.Style.Background.BlackMarket|SmugglersDen=@ListView.City.Color.Style.Background.SmugglersDen'}" />
+      <Setter Property="Foreground"
+              Value="{Binding MarketLocation, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='FortSterlingMarket=@SolidColorBrush.Text.7|*=@SolidColorBrush.Text.1'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.Information.FullInfoValue" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="0,5,0,0" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+    <ControlTheme x:Key="ListView.Grid.StackPanel.Item.Icon" TargetType="StackPanel">
+      <Setter Property="Orientation" Value="Horizontal" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <!-- Grid view column templates -->
+    <DataTemplate x:Key="GridViewColumnCityTemplate" DataType="models:ItemPricesObject">
+      <Label Content="{Binding LocationName}"
+             Theme="{StaticResource ListView.City.Color.Style}"
+             IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+             common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+             common:MouseCommands.CommandParameter="{Binding LocationName}" />
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnSellPriceMinTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMin,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMin}"
+                 HorizontalContentAlignment="Left"
+                 MinWidth="75"
+                 Foreground="{Binding IsBestSellMinPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 FontWeight="{Binding IsBestSellMinPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold|*=Normal'}"
+                 Margin="{Binding IsBestSellMinPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnSellPriceMinDateTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Date}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Label Content="{Binding SellPriceMinDateLastUpdateTime}"
+               ToolTip.Tip="{Binding SellPriceMinDate, StringFormat='G'}"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="0"
+               Foreground="{Binding SellPriceMinDateStatus, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='NoValue=@SolidColorBrush.Text.7|ToOldThird=@SolidColorBrush.Text.6|ToOldSecond=@SolidColorBrush.Text.5|ToOldFirst=@SolidColorBrush.Text.4|Normal=@SolidColorBrush.Text.1|*=@SolidColorBrush.Text.7'}" />
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnSellPriceMaxTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMax,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMax}"
+                 HorizontalContentAlignment="Left"
+                 MinWidth="75"
+                 Foreground="{Binding IsBestSellMaxPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 FontWeight="{Binding IsBestSellMaxPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold|*=Normal'}"
+                 Margin="{Binding IsBestSellMaxPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnSellPriceMaxDateTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Date}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Label Content="{Binding SellPriceMaxDateLastUpdateTime}"
+               ToolTip.Tip="{Binding SellPriceMaxDate, StringFormat='G'}"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="0"
+               Foreground="{Binding SellPriceMaxDateStatus, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='NoValue=@SolidColorBrush.Text.7|ToOldThird=@SolidColorBrush.Text.6|ToOldSecond=@SolidColorBrush.Text.5|ToOldFirst=@SolidColorBrush.Text.4|Normal=@SolidColorBrush.Text.1|*=@SolidColorBrush.Text.7'}" />
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnBuyPriceMinTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding BuyPriceMin,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding BuyPriceMin}"
+                 HorizontalContentAlignment="Left"
+                 MinWidth="75"
+                 Foreground="{Binding IsBestBuyMinPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 FontWeight="{Binding IsBestBuyMinPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold|*=Normal'}"
+                 Margin="{Binding IsBestBuyMinPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnBuyPriceMinDateTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Date}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Label Content="{Binding BuyPriceMinDateLastUpdateTime}"
+               ToolTip.Tip="{Binding BuyPriceMinDate, StringFormat='G'}"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="0"
+               Foreground="{Binding BuyPriceMinDateStatus, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='NoValue=@SolidColorBrush.Text.7|ToOldThird=@SolidColorBrush.Text.6|ToOldSecond=@SolidColorBrush.Text.5|ToOldFirst=@SolidColorBrush.Text.4|Normal=@SolidColorBrush.Text.1|*=@SolidColorBrush.Text.7'}" />
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnBuyPriceMaxTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding BuyPriceMax,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding BuyPriceMax}"
+                 HorizontalContentAlignment="Left"
+                 MinWidth="75"
+                 Foreground="{Binding IsBestBuyMaxPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 FontWeight="{Binding IsBestBuyMaxPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold|*=Normal'}"
+                 Margin="{Binding IsBestBuyMaxPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumnBuyPriceMaxDateTemplate" DataType="models:ItemPricesObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Date}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Label Content="{Binding BuyPriceMaxDateLastUpdateTime}"
+               ToolTip.Tip="{Binding BuyPriceMaxDate, StringFormat='G'}"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="0"
+               Foreground="{Binding BuyPriceMaxDateStatus, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='NoValue=@SolidColorBrush.Text.7|ToOldThird=@SolidColorBrush.Text.6|ToOldSecond=@SolidColorBrush.Text.5|ToOldFirst=@SolidColorBrush.Text.4|Normal=@SolidColorBrush.Text.1|*=@SolidColorBrush.Text.7'}" />
+      </Grid>
+    </DataTemplate>
+    <!-- MarketQualityObject -->
+    <DataTemplate x:Key="GridViewColumn.CityForMarketQualityObjectTemplate" DataType="models:MarketQualityObject">
+      <Label Content="{Binding LocationName}"
+             Theme="{StaticResource ListView.City.Color.Style}"
+             IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+             common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+             common:MouseCommands.CommandParameter="{Binding LocationName}" />
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinNormalTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinNormal,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 ToolTip.Tip="{Binding SellPriceMinNormalDate, StringFormat='G'}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinNormal}"
+                 Foreground="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinGoodTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinGood,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 ToolTip.Tip="{Binding SellPriceMinGoodDate, StringFormat='G'}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinGood}"
+                 Foreground="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinOutstandingTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinOutstanding,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 ToolTip.Tip="{Binding SellPriceMinOutstandingDate, StringFormat='G'}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinOutstanding}"
+                 Foreground="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinExcellentTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinExcellent,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 ToolTip.Tip="{Binding SellPriceMinExcellentDate, StringFormat='G'}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinExcellent}"
+                 Foreground="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinMasterpieceTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinMasterpiece,                      StringFormat='N0',                      Converter={StaticResource ZeroToDashConverter},                      ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}}"
+                 ToolTip.Tip="{Binding SellPriceMinMasterpieceDate, StringFormat='G'}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinMasterpiece}"
+                 Foreground="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <Image Theme="{StaticResource ListView.Grid.StackPanel.Image.Price.Silver}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <!-- MarketQualityObject (real money) -->
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinNormalRmTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinNormalRealMoney}"
+                 ToolTip.Tip="{Binding SellPriceMinNormalDate}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinNormal}"
+                 Foreground="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinNormalBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <fa:FontAwesomeImage Theme="{StaticResource ListView.Grid.StackPanel.Icon.Price.RealMoney}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinGoodRmTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinGoodRealMoney}"
+                 ToolTip.Tip="{Binding SellPriceMinGoodDate}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinGood}"
+                 Foreground="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinGoodBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <fa:FontAwesomeImage Theme="{StaticResource ListView.Grid.StackPanel.Icon.Price.RealMoney}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinOutstandingRmTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinOutstandingRealMoney}"
+                 ToolTip.Tip="{Binding SellPriceMinOutstandingDate}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinOutstanding}"
+                 Foreground="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinOutstandingBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <fa:FontAwesomeImage Theme="{StaticResource ListView.Grid.StackPanel.Icon.Price.RealMoney}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinExcellentRmTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinExcellentRealMoney}"
+                 ToolTip.Tip="{Binding SellPriceMinExcellentDate}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinExcellent}"
+                 Foreground="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinExcellentBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <fa:FontAwesomeImage Theme="{StaticResource ListView.Grid.StackPanel.Icon.Price.RealMoney}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="GridViewColumn.SellPriceMinMasterpieceRmTemplate" DataType="models:MarketQualityObject">
+      <Grid Theme="{StaticResource ListView.Grid.Item.Price}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Price}">
+          <Label Content="{Binding SellPriceMinMasterpieceRealMoney}"
+                 ToolTip.Tip="{Binding SellPriceMinMasterpieceDate}"
+                 common:MouseCommands.LeftDoubleClick="{Binding CopyTextToClipboard}"
+                 common:MouseCommands.CommandParameter="{Binding SellPriceMinMasterpiece}"
+                 Foreground="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=@SolidColorBrush.Accent.Green.4|false=@SolidColorBrush.Text.1'}"
+                 HorizontalContentAlignment="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Left|false=Left'}"
+                 FontWeight="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Bold'}"
+                 Width="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=Auto|false=Auto'}"
+                 MinWidth="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='true=80|false=80'}"
+                 Margin="{Binding IsSellPriceMinMasterpieceBestPrice, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='false=0'}" />
+        </StackPanel>
+        <StackPanel Theme="{StaticResource ListView.Grid.StackPanel.Item.Icon}">
+          <fa:FontAwesomeImage Theme="{StaticResource ListView.Grid.StackPanel.Icon.Price.RealMoney}" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="LocationFilterObjectTemplate" DataType="models:MainTabLocationFilterObject">
+      <StackPanel Orientation="Horizontal">
+        <CheckBox IsChecked="{Binding IsChecked}" Width="20" VerticalAlignment="Top" />
+        <TextBlock Text="{Binding Name}" Width="100" TextWrapping="Wrap" />
+      </StackPanel>
+    </DataTemplate>
+    <ControlTheme x:Key="ItemDetails.Information.Card" TargetType="Border">
+      <Setter Property="Margin" Value="0,0,0,10" />
+      <Setter Property="Padding" Value="14,11" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.Information.CardHeader" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.Information.GroupHeader" TargetType="TextBlock">
+      <Setter Property="Margin" Value="0,9,0,6" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="ItemDetails.Information.StatBar" TargetType="ProgressBar">
+      <Setter Property="Height" Value="6" />
+      <Setter Property="Minimum" Value="0" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.4}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="Template">
+        <ControlTemplate TargetType="ProgressBar">
+          <Grid>
+            <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="2" />
+            <Border x:Name="PART_Indicator" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}" CornerRadius="2" />
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+    <DataTemplate x:Key="ItemDetails.Information.StatTemplate" DataType="itemDetailsModels:ItemStat">
+      <Border Height="38" BorderBrush="{DynamicResource SolidColorBrush.Background.4}" BorderThickness="0,0,0,1">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="*" MinWidth="90" />
+          </Grid.ColumnDefinitions>
+          <fa:FontAwesomeImage Icon="{Binding Icon}"
+                               Width="15"
+                               Height="15"
+                               Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                               VerticalAlignment="Center" />
+          <TextBlock Grid.Column="1"
+                     Text="{Binding Name}"
+                     Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                     VerticalAlignment="Center"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Grid.Column="2"
+                     Margin="8,0,12,0"
+                     Text="{Binding ValueText}"
+                     Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                     TextAlignment="Right"
+                     VerticalAlignment="Center" />
+          <ProgressBar Grid.Column="3"
+                       Maximum="{Binding Maximum, Mode=OneWay}"
+                       Value="{Binding Value, Mode=OneWay}"
+                       Theme="{StaticResource ItemDetails.Information.StatBar}"
+                       VerticalAlignment="Center" />
+        </Grid>
+      </Border>
+    </DataTemplate>
+    <DataTemplate x:Key="ItemDetails.Information.SpellTemplate" DataType="itemDetailsModels:ItemSpellInformation">
+      <Border Width="154"
+              MinHeight="112"
+              Margin="0,0,8,8"
+              Padding="8"
+              Background="{DynamicResource SolidColorBrush.Background.2}"
+              BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+              BorderThickness="1"
+              CornerRadius="4">
+        <ToolTip.Tip>
+          <ContentControl Content="{Binding}"
+                          ContentTemplate="{StaticResource Spell.ToolTipContentTemplate}"
+                          DataContext="{Binding PlacementTarget?.DataContext, RelativeSource={RelativeSource Self}}" />
+        </ToolTip.Tip>
+        <StackPanel>
+          <Image Source="{Binding Icon}" Width="64" Height="64" HorizontalAlignment="Center" />
+          <TextBlock Margin="2,4,2,0"
+                     Text="{Binding Name}"
+                     FontSize="12"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                     TextAlignment="Center"
+                     TextTrimming="CharacterEllipsis"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+      </Border>
+    </DataTemplate>
+  </Styles.Resources>
+</Styles>

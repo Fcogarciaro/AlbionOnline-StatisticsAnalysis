@@ -110,6 +110,11 @@ public sealed class ValueMapConverter : IValueConverter
             return Thickness.Parse(result);
         }
 
+        if (type == typeof(double) && result.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+        {
+            return double.NaN;
+        }
+
         if (type == typeof(bool))
         {
             return bool.Parse(result);

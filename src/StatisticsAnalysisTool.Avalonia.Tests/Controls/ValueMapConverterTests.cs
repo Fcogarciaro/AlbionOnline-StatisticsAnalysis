@@ -44,6 +44,13 @@ public class ValueMapConverterTests
         Convert("a", "a=1,2,3,4", typeof(Thickness)).Should().Be(new Thickness(1, 2, 3, 4));
     }
 
+    [Test]
+    public void Convert_AutoIsNaNForDoubles()
+    {
+        Convert("a", "a=Auto|*=10", typeof(double)).Should().Be(double.NaN);
+        Convert("b", "a=Auto|*=10", typeof(double)).Should().Be(10d);
+    }
+
     [AvaloniaTest]
     public void Convert_ResolvesAtPrefixedEntriesAsApplicationResources()
     {

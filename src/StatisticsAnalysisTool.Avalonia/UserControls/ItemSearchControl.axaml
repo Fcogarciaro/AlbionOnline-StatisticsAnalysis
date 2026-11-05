@@ -181,8 +181,7 @@
                       Background="{DynamicResource SolidColorBrush.Background.2}"
                       ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" />
 
-        <!-- ItemDetailsControl is ported with the item details view (T13); the placeholder keeps its slot, data context and visibility. -->
-        <userControls:PortingPlaceholderControl Grid.Column="2" ViewName="ItemDetailsControl" DataContext="{Binding SelectedItemDetails}"
-                                                IsVisible="{ReflectionBinding DataContext.IsItemDetailsSelected, ElementName=ItemSearchRoot}" />
+        <userControls:ItemDetailsControl Grid.Column="2" DataContext="{Binding SelectedItemDetails}"
+                                         IsVisible="{ReflectionBinding DataContext.IsItemDetailsSelected, ElementName=ItemSearchRoot}" />
     </Grid>
 </UserControl>

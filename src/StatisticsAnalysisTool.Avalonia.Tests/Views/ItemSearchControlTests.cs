@@ -31,7 +31,7 @@ public class ItemSearchControlTests
         grid.Columns.Should().HaveCount(3);
         grid.CanUserResizeColumns.Should().BeFalse();
         control.GetVisualDescendants().OfType<ItemSearchImageCounterControl>().Should().ContainSingle();
-        control.GetVisualDescendants().OfType<PortingPlaceholderControl>().Should().ContainSingle().Which.IsVisible.Should().BeFalse("no item is selected");
+        control.GetVisualDescendants().OfType<ItemDetailsControl>().Should().ContainSingle().Which.IsVisible.Should().BeFalse("no item is selected");
         harness.Log.Errors.Should().BeEmpty();
     }
 

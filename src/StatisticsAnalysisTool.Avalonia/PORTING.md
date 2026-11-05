@@ -207,9 +207,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   Avalonia) with `ImagePathToBitmapConverter` turning the upstream `pack://application:,,,/Assets/...` tags into bitmaps.
   The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
-- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DungeonControl and TradeMonitoringControl (DamageMeterControl since T14) (SettingsControl is real since T10; ItemSearch,
-  Party, Guild, StorageHistory, MapHistory, PlayerInformation, Donation and Thanks since T11). Each is replaced where it is ported
-  (T12-T15). `ItemSearchControl` hosts a placeholder named ItemDetailsControl in its details slot until the item details view lands.
+- All tabs host their real control since T15 (the temporary placeholder control is gone); `ItemSearchControl` hosts `ItemDetailsControl` in its details slot.
 
 ## Secondary windows (T10)
 
@@ -225,7 +223,7 @@ pointer-delta fallback; double click toggles maximize where upstream did). Resiz
   libraries from `libraryfolders.vdf`, Flatpak Steam, `WINEPREFIX`, `~/.wine`, `~/Games/*`, Bottles); the first valid hit is
   preselected (Confirm stays manual), and the picker opens at the best-guess folder. Validation is `Extractor.IsValidMainGameFolder`.
 - `EventValidationWindow` uses `Styles/EventValidationStyles.axaml` and a `ListBox` for the WpfToolkit `VirtualizingItemsControl`.
-  `DamageMeterWindow` and `DashboardWindow` host `PortingPlaceholderControl` until T14/T13.
+  `DamageMeterWindow` shows the damage meter lists since T14 and `DashboardWindow` the dashboard since T13.
 - `FirstStartGuideWindow`: same six steps and view model (it persists `HasCompletedFirstStartGuide` and saves the settings, as upstream). Linux:
   the tracking step lists `libpcap` and `Sockets (mapped to libpcap)` (texts overridden in `CaptureGuidance`: `FIRST_START_GUIDE_*`,
   English only), the Npcap download link opens the capabilities(7) man page, and a `CapturePermissionPanel` shows
@@ -303,7 +301,7 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
   added to the partial `TrackingStyles.axaml` with the per-mode gradients and butterfly/marker images as classes.
 - **ItemSearchControl** (+ `ItemSearchImageCounterControl`) + `ItemSearchStyles`: the list is a `DataGrid`; saved column widths are
   applied and written back (`DataGridColumn.WidthProperty` observable); the click on an already selected row refreshes the details
-  (tunnelling `PointerPressed`). `ItemDetailsControl` is a placeholder in the details slot (same data context and visibility).
+  (tunnelling `PointerPressed`). `ItemDetailsControl` fills the details slot since T15 (same data context and visibility).
   The counter control keeps binding to the inherited data context, as upstream. The toolbar separator is a 1 px vertical line.
 - **DonationControl** + `DonationStyles`: the logos are clickable grids (`xdg-open`, http(s) only). The Patreon, PayPal and GitHub logos are
   72x72 (the WPF inline size is not defined); the progress bar template keeps the 2.8 s shimmer as a style animation.
@@ -448,9 +446,25 @@ element). Visibility triggers become `IsVisible` with `Name=True|*=False`.
   - The tracking status text and the "most expensive" value texts (a trigger swapping the bound text) are stacked text blocks switched by `IsVisible`.
 - Fidelity gaps: not compared on a real desktop (card look, calendar popup, wheel behaviour over the charts).
 
+### ItemDetailsControl, ItemDetailsStyles (T15)
+
+- Converted like the other T14/T15 files. Differences:
+  - The three `ListView` + `GridView` lists (main prices, quality prices, real money prices) are `DataGrid`s with `DataGridTemplateColumn`s that use the unchanged
+    `GridViewColumn*Template` data templates (width `Auto`, headers are text blocks). The main list keeps its click-to-sort headers: the columns carry the sort property in `Tag`
+    and the grid's `Sorting` event (handled) sorts the default collection view of `MainTabBindings.ItemPrices`, which the control assigns as the grid's items (and re-assigns when
+    the view model replaces the collection), toggling the direction on every click as upstream. `Language="{Binding ItemListViewLanguage}"` is dropped (no per-element language).
+  - The double click that copies a price (`MouseBinding` in the cell labels) is `MouseCommands.LeftDoubleClick`; its parameter `Content.X` of the templated parent is the row property `X`.
+  - The refresh icon: `PointerPressed` (left button) plus `Classes="refresh"` with a `:disabled` style (opacity 0.35, arrow cursor) instead of the `IsEnabled` trigger.
+  - `LinearGradientBrush` points are percentages in Avalonia (`0,0`/`1,0` would be pixels): `StartPoint`/`EndPoint` of every gradient ported in T14/T15 were rewritten to `0%,0%`/`100%,0%`, `MappingMode` dropped.
+  - The history chart is `lvc:CartesianChart`.
+- `TrackingStyles.axaml` now also has `Tracking.Information.*`, `ButtonLabel` and `BarButton` (unreferenced upstream).
+- The placeholder control and its infrastructure were removed: every upstream view has its Avalonia view.
+- Fidelity gaps: not compared on a real desktop (grid row look, tooltips of the spell blocks, gradient banners); item details are checked with a real view model for a fake item (the
+  price requests of `InitAsync` run in the background and are not awaited).
+
 ## View placeholders
 
-`Linux/Views/Placeholders.cs` is gone: every upstream window now has its Avalonia view.
+There are none: every upstream window and tab has its Avalonia view.
 
 ## Data migration
 

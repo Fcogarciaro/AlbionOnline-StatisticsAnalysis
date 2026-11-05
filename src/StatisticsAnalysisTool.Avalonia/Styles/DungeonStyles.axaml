@@ -72,55 +72,55 @@
                 AlignmentY="Center"
                 AlignmentX="Left"
                 Opacity="0.25" />
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.DragonArea" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.DragonArea" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.DragonArea.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.DragonArea.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.AbyssalDepths" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.AbyssalDepths" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.AbyssalDepths.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.AbyssalDepths.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Mists" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Mists" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.Mists.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.Mists.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.MistsDungeon" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.MistsDungeon" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.MistsDungeon.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.MistsDungeon.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Expedition" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Expedition" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.Expedition.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.Expedition.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.HellGate" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.HellGate" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.HellGate.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.HellGate.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Corrupted" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Corrupted" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.Corrupted.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.Corrupted.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Solo" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Solo" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.Solo.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.Solo.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Standard" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Standard" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.Standard.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.Standard.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.StaticDungeon" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.StaticDungeon" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.StaticDungeon.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.StaticDungeon.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Avalon" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="DungeonFragment.Grid.DungeonMode.Background.Avalon" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{StaticResource Dungeon.Mode.Avalon.1}" Offset="0.0" />
       <GradientStop Color="{StaticResource Dungeon.Mode.Avalon.2}" Offset="1.0" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="Fragment.Activity.Background.Active" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="Fragment.Activity.Background.Active" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{DynamicResource Color.Background.2}" Offset="0.0" />
       <GradientStop Color="{DynamicResource Color.Accent.Blue.5}" Offset="1" />
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="Fragment.Activity.Background.Done" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="Fragment.Activity.Background.Done" StartPoint="0%,0%" EndPoint="100%,100%">
       <GradientStop Color="{DynamicResource Color.Background.2}" Offset="0.0" />
       <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1" />
     </LinearGradientBrush>

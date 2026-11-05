@@ -324,7 +324,7 @@
             <Grid>
               <Border CornerRadius="3" IsHitTestVisible="False">
                 <Border.Background>
-                  <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" Opacity="0.12">
+                  <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%" Opacity="0.12">
                     <GradientStop Offset="0" Color="{DynamicResource Color.Accent.Green.3}" />
                     <GradientStop Offset="1" Color="Transparent" />
                   </LinearGradientBrush>
@@ -372,7 +372,7 @@
             <Grid>
               <Border CornerRadius="3" IsHitTestVisible="False">
                 <Border.Background>
-                  <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" Opacity="0.12">
+                  <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%" Opacity="0.12">
                     <GradientStop Offset="0" Color="{DynamicResource Color.Accent.Red.3}" />
                     <GradientStop Offset="1" Color="Transparent" />
                   </LinearGradientBrush>
