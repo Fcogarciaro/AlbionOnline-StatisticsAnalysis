@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.VisualTree;
 using FluentAssertions;
 using NUnit.Framework;
+using Avalonia.Threading;
 using StatisticsAnalysisTool.Alert;
 using StatisticsAnalysisTool.Common;
 using StatisticsAnalysisTool.Models;
@@ -19,10 +20,40 @@ namespace StatisticsAnalysisTool.Avalonia.Tests.Views;
 [NonParallelizable]
 public class ItemDetailsControlTests
 {
+    private LoopbackApiStub _api;
+
+    // Every test in this class runs against the loopback stub: with a TrackingController registered (as left behind by other
+    // tests or as in the app) the view model fires real price requests, so the base URLs must never point at the internet.
+    [SetUp]
+    public void StartApiStub() => _api = new LoopbackApiStub();
+
+    [TearDown]
+    public void StopApiStub() => _api.Dispose();
+
     private static ItemDetailsViewModel CreateViewModel(ViewHarness harness)
     {
         var alertController = new AlertController(new System.Windows.Data.ListCollectionView(new List<Item>()));
         return new ItemDetailsViewModel(new Item { UniqueName = "T4_BAG" }, new ItemRefreshCooldownTracker(), alertController);
+    }
+
+    [AvaloniaTest]
+    public void Opening_AnItem_RequestsPricesOnlyFromTheConfiguredApiBaseUrl()
+    {
+        using var harness = new ViewHarness();
+        harness.UseTrackingController();
+        var viewModel = CreateViewModel(harness);
+        harness.Show(new ItemDetailsControl(), viewModel, 1100, 800);
+
+        var arrived = false;
+        for (var i = 0; i < 100 && !arrived; i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            arrived = _api.WaitForRequests(1, TimeSpan.FromMilliseconds(50));
+        }
+
+        arrived.Should().BeTrue("the price request must go to the stub, not to the real market API");
+        _api.Requests.Should().Contain(path => path.Contains("stats/prices/T4_BAG"));
+        viewModel.Dispose();
     }
 
     [AvaloniaTest]

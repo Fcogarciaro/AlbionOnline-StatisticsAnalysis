@@ -14,10 +14,14 @@ public class AppStartupTests
     private string _root;
     private IDisposable _xdg;
     private readonly List<string> _logs = [];
+    private ServiceLocatorSnapshot _services;
+    private Serilog.ILogger _originalLogger;
 
     [SetUp]
     public void SetUp()
     {
+        _services = new ServiceLocatorSnapshot();
+        _originalLogger = Serilog.Log.Logger;
         Serilog.Log.Logger = new Serilog.LoggerConfiguration().MinimumLevel.Verbose().WriteTo.Sink(new ListSink(_logs)).CreateLogger();
         _root = Directory.CreateTempSubdirectory("sat-startup").FullName;
         _xdg = XdgDirectories.UseForTests(XdgDirectories.Resolve(name => name switch
@@ -32,6 +36,8 @@ public class AppStartupTests
     [TearDown]
     public void TearDown()
     {
+        _services.Dispose();
+        Serilog.Log.Logger = _originalLogger;
         _xdg.Dispose();
         Directory.Delete(_root, true);
     }
