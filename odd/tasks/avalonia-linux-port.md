@@ -108,6 +108,7 @@ Each task records its route and trigger.
 - CI: run 42058043189 succeeded (build + tests on GitHub Actions).
 - [ ] T20 Parity pass versus the original screens. Needs the live user test on Hyprland.
   - Release linux-v0.1.0 (prerelease) crashed on start: Program.Main touched Dispatcher.UIThread before platform init (PlatformNotSupportedException in MainLoop). Fixed in 9e90977f; reproduced and verified against a live X display (:0); tests 665/665. Re-released as linux-v0.1.1 (prerelease); the downloaded tarball verifies and starts to the first-start guide.
+  - Fix 0382c31e: pickers crashed with portal AccessDenied under setcap (non-dumpable); now zenity/kdialog fallback (`Linux/Platform/ExternalFilePicker.cs`). Tests 699/699.
 
 ## Acceptance Criteria
 - `dotnet build` and `dotnet test` succeed on Linux.
