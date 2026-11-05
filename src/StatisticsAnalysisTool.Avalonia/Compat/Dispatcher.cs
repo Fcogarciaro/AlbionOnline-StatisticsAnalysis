@@ -1,6 +1,8 @@
 // Compatibility shim: mirrors the subset of System.Windows.Threading.Dispatcher used by the linked
 // WPF logic and forwards to Avalonia's UI-thread dispatcher.
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Threading;
 using AvaloniaDispatcher = Avalonia.Threading.Dispatcher;
 using AvaloniaPriority = Avalonia.Threading.DispatcherPriority;
 
@@ -63,19 +65,38 @@ public sealed class Dispatcher
         return CheckAccess() ? callback() : AvaloniaDispatcher.UIThread.Invoke(callback, Map(priority));
     }
 
-    public Task InvokeAsync(Action callback) => InvokeAsync(callback, DispatcherPriority.Normal);
+    public DispatcherOperation InvokeAsync(Action callback) => InvokeAsync(callback, DispatcherPriority.Normal);
 
-    public Task InvokeAsync(Action callback, DispatcherPriority priority) =>
-        AvaloniaDispatcher.UIThread.InvokeAsync(callback, Map(priority)).GetTask();
+    public DispatcherOperation InvokeAsync(Action callback, DispatcherPriority priority) =>
+        InvokeAsync(callback, priority, CancellationToken.None);
 
-    public Task<T> InvokeAsync<T>(Func<T> callback) => InvokeAsync(callback, DispatcherPriority.Normal);
+    public DispatcherOperation InvokeAsync(Action callback, DispatcherPriority priority, CancellationToken cancellationToken) =>
+        new(AvaloniaDispatcher.UIThread.InvokeAsync(callback, Map(priority), cancellationToken));
 
-    public Task<T> InvokeAsync<T>(Func<T> callback, DispatcherPriority priority) =>
-        AvaloniaDispatcher.UIThread.InvokeAsync(callback, Map(priority)).GetTask();
+    public DispatcherOperation<T> InvokeAsync<T>(Func<T> callback) => InvokeAsync(callback, DispatcherPriority.Normal);
 
-    public Task BeginInvoke(Delegate method, params object[] args) =>
+    public DispatcherOperation<T> InvokeAsync<T>(Func<T> callback, DispatcherPriority priority) =>
+        InvokeAsync(callback, priority, CancellationToken.None);
+
+    public DispatcherOperation<T> InvokeAsync<T>(Func<T> callback, DispatcherPriority priority, CancellationToken cancellationToken) =>
+        new(AvaloniaDispatcher.UIThread.InvokeAsync(callback, Map(priority), cancellationToken));
+
+    public DispatcherOperation BeginInvoke(Delegate method, params object[] args) =>
         BeginInvoke(DispatcherPriority.Normal, method, args);
 
-    public Task BeginInvoke(DispatcherPriority priority, Delegate method, params object[] args) =>
-        AvaloniaDispatcher.UIThread.InvokeAsync(() => method.DynamicInvoke(args), Map(priority)).GetTask();
+    public DispatcherOperation BeginInvoke(DispatcherPriority priority, Delegate method, params object[] args) =>
+        InvokeAsync(() => InvokeUnwrapped(method, args), priority);
+
+    // Delegate.DynamicInvoke wraps exceptions in TargetInvocationException; WPF surfaces the original one.
+    private static void InvokeUnwrapped(Delegate method, object[] args)
+    {
+        try
+        {
+            method.DynamicInvoke(args);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException != null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+        }
+    }
 }
