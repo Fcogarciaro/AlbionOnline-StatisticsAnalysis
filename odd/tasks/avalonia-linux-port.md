@@ -90,8 +90,12 @@ Each task records its route and trigger.
 - [x] T13 Dashboard, DashboardLoot, Gathering, Crafting (LiveCharts Avalonia). Commits 64c234e8, 8335c7f0, 304b36ff.
   - Evidence: tests 579/579 (re-run by the parent).
   - LossExplorer moved to T14.
-- [ ] T14 DamageMeter (+ window), Dungeon, LossExplorer.
-- [ ] T15 TradeMonitoring (+ Skia heatmap), ItemDetails.
+- [x] T14 DamageMeter (+ window), Dungeon, LossExplorer. Commits c785ea20, 9b3ddd6f.
+- [x] T15 TradeMonitoring (+ Skia heatmap), ItemDetails. Commits 073f2ffa, 9fcdf892.
+  - Evidence: tests 603/603 (re-run by the parent); zero placeholders remain; upstream diff is empty.
+  - Open:
+    - an intermittent full-run flake;
+    - the ItemDetails test fires real network price requests.
 - [x] T16 Icon packs (FontAwesome, GameIcons). Commits e3b67184, 30485bf0.
   - Evidence: tests 398/398 (re-run by the parent); upstream diff is empty.
   - Licence files must ship in T19.
