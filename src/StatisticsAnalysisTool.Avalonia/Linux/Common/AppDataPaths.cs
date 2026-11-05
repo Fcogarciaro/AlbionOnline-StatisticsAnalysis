@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using StatisticsAnalysisTool.Enumerations;
 using StatisticsAnalysisTool.Linux.Platform;
 
@@ -229,9 +230,19 @@ public static class AppDataPaths
         return false;
     }
 
+    // Linux file systems are case-sensitive: upstream asks for "IndexedItems.json" (Settings default) while the
+    // extractor writes "indexedItems.json". An exact match wins, then any case-insensitive match, then the requested name.
     public static string GameFile(string fileName)
     {
-        return Path.Combine(GameFilesDirectory, fileName);
+        var exact = Path.Combine(GameFilesDirectory, fileName);
+        if (File.Exists(exact) || !Directory.Exists(GameFilesDirectory))
+        {
+            return exact;
+        }
+
+        var match = Directory.EnumerateFiles(GameFilesDirectory)
+            .FirstOrDefault(path => string.Equals(Path.GetFileName(path), fileName, StringComparison.OrdinalIgnoreCase));
+        return match ?? exact;
     }
 
     public static string ItemImageFile(string fileName)

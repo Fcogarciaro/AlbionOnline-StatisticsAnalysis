@@ -63,3 +63,18 @@ with the same name lands (T09/T10).
 `Common/AppDataMigration.cs` is linked unchanged: it only copies directories and files and has no Windows API. Its
 legacy sources (the installation directory and `<data>/Default`) are simply absent on a fresh Linux install, so it
 is a no-op there; if they exist it migrates into the XDG targets above.
+
+## Case sensitivity and path separators
+
+- `AppDataPaths.GameFile(name)` (Linux copy) falls back to a case-insensitive match in `GameFiles`. Upstream reads
+  `IndexedItems.json` / `Items.json` (Settings defaults) while the extractor writes `indexedItems.json` / `items.json`.
+- **Edit outside `src/StatisticsAnalysisTool/`:** `src/StatisticAnalysisTool.Extractor` hard-coded
+  `.\Albion-Online_Data\StreamingAssets\GameData\...` and `cluster\world`. On Linux `\` is a file name character, so
+  game data extraction found nothing. `ExtractorUtilities.GetBinFilePath` now joins separate segments, bin names are
+  normalised with `NormalizeBinFileName`, and the unused `outFiles` block in `BinaryDumper` is removed. Behavior on
+  Windows is identical; this is the only upstream-tree edit (a few lines, merge friendly).
+- `Localization/localization.json` is copied to the output (the WPF project does this with a `Content` item).
+- Linked code builds file names with `Path.Combine` and lower-case literals consistently; the only other mismatch found
+  by a case-insensitive scan of all file name literals was the pair above.
+- The game folder is chosen by the user (no registry or `C:\Program Files` default); `StreamingAssets/GameData` is
+  looked up under `<folder>/game` with the exact casing used by the Steam and launcher installs.

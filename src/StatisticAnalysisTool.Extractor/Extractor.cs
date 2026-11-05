@@ -60,7 +60,7 @@ public class Extractor
         try
         {
             string mainGameFolderPath = Path.Combine(mainGameFolder, GetServerTypeString(serverType));
-            var binFilePath = Path.Combine(ExtractorUtilities.GetBinFilePath(mainGameFolderPath), $"{binFileName}.bin");
+            var binFilePath = Path.Combine(ExtractorUtilities.GetBinFilePath(mainGameFolderPath), $"{ExtractorUtilities.NormalizeBinFileName(binFileName)}.bin");
 
             if (!File.Exists(binFilePath))
             {

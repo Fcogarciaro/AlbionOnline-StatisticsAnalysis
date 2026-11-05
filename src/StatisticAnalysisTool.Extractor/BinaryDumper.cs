@@ -9,12 +9,6 @@ internal class BinaryDumper
     public static async Task ExtractAsJsonAsync(string mainGameFolder, string outputFolderPath, string[] binFileNamesToExtract)
     {
         var allFiles = GetBinFilePaths(mainGameFolder, binFileNamesToExtract);
-        var outFiles = (string[]) allFiles.Clone();
-        for (var i = 0; i < outFiles.Length; i++)
-        {
-            outFiles[i] = outFiles[i].Remove(0, outFiles[i].LastIndexOf("GameData\\", StringComparison.Ordinal) + "GameData\\".Length);
-        }
-
         foreach (string binFilePath in allFiles)
         {
             await DecryptBinFileAsJsonAsync(outputFolderPath, binFilePath);
@@ -24,12 +18,6 @@ internal class BinaryDumper
     public static async Task ExtractAsXmlAsync(string mainGameFolder, string outputFolderPath, string[] binFileNamesToExtract)
     {
         var allFiles = GetBinFilePaths(mainGameFolder, binFileNamesToExtract);
-        var outFiles = (string[]) allFiles.Clone();
-        for (var i = 0; i < outFiles.Length; i++)
-        {
-            outFiles[i] = outFiles[i].Remove(0, outFiles[i].LastIndexOf("GameData\\", StringComparison.Ordinal) + "GameData\\".Length);
-        }
-
         foreach (string binFilePath in allFiles)
         {
             await DecryptBinFileAsXmlAsync(outputFolderPath, binFilePath);
@@ -38,7 +26,7 @@ internal class BinaryDumper
 
     private static string[] GetBinFilePaths(string mainGameFolder, IEnumerable<string> binFileNamesToExtract)
     {
-        return binFileNamesToExtract.Select(fileName => Path.Combine(ExtractorUtilities.GetBinFilePath(mainGameFolder), $"{fileName}.bin"))
+        return binFileNamesToExtract.Select(fileName => Path.Combine(ExtractorUtilities.GetBinFilePath(mainGameFolder), $"{ExtractorUtilities.NormalizeBinFileName(fileName)}.bin"))
             .ToArray();
     }
 
