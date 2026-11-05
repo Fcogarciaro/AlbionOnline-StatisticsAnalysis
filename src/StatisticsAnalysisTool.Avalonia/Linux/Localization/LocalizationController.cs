@@ -5,6 +5,7 @@ using Serilog;
 using StatisticsAnalysisTool.Common;
 using StatisticsAnalysisTool.Common.UserSettings;
 using StatisticsAnalysisTool.Linux.Capture;
+using StatisticsAnalysisTool.Linux.Localization;
 using StatisticsAnalysisTool.Models;
 using StatisticsAnalysisTool.Properties;
 using StatisticsAnalysisTool.ViewModels;
@@ -148,6 +149,11 @@ public class LocalizationController
         if (CaptureGuidance.TryGetTextOverride(key, out var overrideText))
         {
             return overrideText;
+        }
+
+        if (LinuxWording.TryGetTextOverride(key, out var linuxText))
+        {
+            return ApplyPlaceholders(linuxText, placeholders, replacements);
         }
 
         var culture = SettingsController.CurrentSettings.CurrentCultureIetfLanguageTag ?? string.Empty;

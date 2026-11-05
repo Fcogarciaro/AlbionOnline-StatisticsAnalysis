@@ -61,6 +61,13 @@ public class SettingsSupportTests
     }
 
     [Test]
+    public void DesktopShortcut_UsesThePackagedFileNameAndThemedIconSoThePackageEntryIsReplacedNotDuplicated()
+    {
+        DesktopShortcut.FileName.Should().Be("statisticsanalysistool.desktop");
+        DesktopShortcut.BuildContent("sat", null, null).Should().Contain("Icon=statisticsanalysistool\n");
+    }
+
+    [Test]
     public void DesktopShortcut_WritesTheMenuEntryAndAnExecutableCopyOnTheDesktop()
     {
         var root = Directory.CreateTempSubdirectory("sat-shortcut").FullName;

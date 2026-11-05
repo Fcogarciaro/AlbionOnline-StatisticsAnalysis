@@ -246,8 +246,12 @@ pointer-delta fallback; double click toggles maximize where upstream did). Resiz
   names are relabeled (above); path validation is the `invalid` class; the settings reload when the tab content is attached (a TabControl
   only keeps the selected content in the tree; upstream used `IsVisibleChanged`); the tracking toggle re-reads the real state with
   `SetCurrentValue` instead of `UpdateTarget()`.
-- Still English/Windows wording in the settings texts that come from the localization table ("Start with Windows", "notification area"):
-  they describe the XDG autostart entry and the tray; no overrides yet.
+- Windows wording is replaced through `Linux/Localization/LinuxWording.cs`, hooked into `LocalizationController.Translation` after
+  `CaptureGuidance` (English only, like the capture texts): "Start at login", "system tray" instead of "notification area",
+  "Create desktop entry", the autostart failure text, and the socket/packet-handler errors that named Administrator or Npcap.
+  Other languages show the same English Linux text for these keys.
+- The desktop entry written by "Create desktop entry" is `statisticsanalysistool.desktop`, the file name of the packaged entry, with
+  `Icon=statisticsanalysistool` (hicolor theme icon) unless an icon file sits next to the executable.
 - Not verified live in this session: the real desktop (see the T20 note in the feature document).
 
 ## Simple tabs (T11)

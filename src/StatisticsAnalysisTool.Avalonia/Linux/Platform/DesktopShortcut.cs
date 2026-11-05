@@ -8,7 +8,11 @@ namespace StatisticsAnalysisTool.Linux.Platform;
 
 internal static class DesktopShortcut
 {
-    public const string FileName = "StatisticsAnalysisTool.desktop";
+    /// <summary>Same file name as packaging/linux/statisticsanalysistool.desktop, so a user-created entry replaces the package one instead of duplicating it.</summary>
+    public const string FileName = "statisticsanalysistool.desktop";
+
+    /// <summary>Icon theme name installed by install.sh and the PKGBUILD under hicolor.</summary>
+    public const string ThemedIconName = "statisticsanalysistool";
 
     public static string BuildContent(string exec, string workingDirectory, string iconPath) =>
         "[Desktop Entry]\n"
@@ -17,7 +21,7 @@ internal static class DesktopShortcut
         + "Comment=Albion Online Statistics Analysis Tool\n"
         + $"Exec={exec}\n"
         + (string.IsNullOrEmpty(workingDirectory) ? string.Empty : $"Path={AutostartEntry.EscapeValue(workingDirectory)}\n")
-        + (string.IsNullOrEmpty(iconPath) ? string.Empty : $"Icon={AutostartEntry.EscapeValue(iconPath)}\n")
+        + $"Icon={(string.IsNullOrEmpty(iconPath) ? ThemedIconName : AutostartEntry.EscapeValue(iconPath))}\n"
         + "Terminal=false\n"
         + "Categories=Game;Utility;\n";
 
