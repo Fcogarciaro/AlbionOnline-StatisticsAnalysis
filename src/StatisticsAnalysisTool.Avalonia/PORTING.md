@@ -137,6 +137,16 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   (`:disabled` replaces the "ancestor Button disabled" DataTrigger) and `App.TrackingStateButton` (two icon/text pairs switched by
   `:checked` instead of setters on template parts).
 
+- **MahApps GameIcons** (`iconPacks:PackIconGameIcons`, `MahApps.Metro.IconPacks.GameIcons` 6.2.1 is WPF-only): same name, namespace and
+  `Kind` values (`xmlns:iconPacks="clr-namespace:MahApps.Metro.IconPacks"`), implemented by `Linux/Controls/PackIconGameIcons.cs`. Only the
+  12 kinds the upstream XAML uses exist (`Awareness`, `Broadsword`, `BulletImpacts`, `CrossedSwords`, `CrystalWand`, `GooeyImpact`,
+  `Healing`, `Hourglass`, `Info`, `ShieldDisabled`, `SkullCrack`, `SnakeBite`); `GameIconsTests` fails if the upstream XAML starts using
+  another one. Path data (512x512 view box, stretched uniformly, default size 26 like MahApps) is in `Linux/Icons/GameIconsData.g.cs`,
+  extracted from the `Icons.json` resource embedded in the NuGet package (MIT). To add a kind, add it to `PackIconGameIconsKind` and the
+  data file. The icons are game-icons.net artwork under CC BY 3.0: attribution is in `Assets/GameIcons-NOTICE.txt` (ship it, T19).
+  `Style TargetType="{x:Type iconPacks:PackIconGameIcons}"` becomes a ControlTheme with `TargetType="iconPacks:PackIconGameIcons"`.
+  WPF `DataTrigger`/`Trigger` setters of `Kind` (DamageMeterControl) become `Classes` plus `Style Selector` setters of `Kind`.
+
 ### Converters and controls (T08)
 
 - Upstream `Common/Converters/*.cs` (`ZeroToDash`, `ValuePerHour`, `ValueAvg`, `ShortNumber`, `Rounding`, `SecondsToTimeFormat`,

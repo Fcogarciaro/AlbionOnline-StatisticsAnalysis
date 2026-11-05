@@ -1,0 +1,23 @@
+Game icons used by the application (PackIconGameIcons control)
+=============================================================
+
+The path data comes from MahApps.Metro.IconPacks.GameIcons 6.2.1 (MIT License, Copyright (c) 2016 - 2025 MahApps.Metro),
+which packages the icons of https://game-icons.net.
+
+The icons are licensed under Creative Commons Attribution 3.0 (https://creativecommons.org/licenses/by/3.0/).
+Authors of the icons used here:
+
+  Awareness        Lorc
+  Broadsword       Lorc
+  BulletImpacts    Delapouite
+  CrossedSwords    Lorc
+  CrystalWand      Lorc
+  GooeyImpact      Lorc
+  Healing          Delapouite
+  Hourglass        Lorc
+  Info             Delapouite
+  ShieldDisabled   Skoll
+  SkullCrack       Lorc
+  SnakeBite        Lorc
+
+Lorc (https://lorcblog.blogspot.com), Delapouite (https://delapouite.com), Skoll.

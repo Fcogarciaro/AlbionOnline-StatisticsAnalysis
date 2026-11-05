@@ -153,6 +153,8 @@ public class FontAwesomeImageTests
         return ((ISolidColorBrush) value!).Color;
     }
 
+    internal static int CountPixelsIn(Window window, Func<global::Avalonia.Media.Color, bool> predicate) => CountPixels(window, predicate);
+
     private static int CountPixels(Window window, Func<global::Avalonia.Media.Color, bool> predicate)
     {
         window.UpdateLayout();
