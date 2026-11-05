@@ -46,7 +46,7 @@ namespace System.ComponentModel
 
 namespace System.Windows.Data
 {
-    public class ListCollectionView : ICollectionView, INotifyPropertyChanged, IDisposable
+    public class ListCollectionView : ICollectionView, IList, INotifyPropertyChanged, IDisposable
     {
         private readonly IEnumerable _source;
         private readonly List<object> _items = [];
@@ -187,6 +187,35 @@ namespace System.Windows.Data
         public bool Contains(object item) => _items.Contains(item);
 
         public IEnumerator GetEnumerator() => _items.ToList().GetEnumerator();
+
+        // Read-only IList surface: Avalonia items controls only accept INotifyCollectionChanged sources that are IList.
+        bool IList.IsReadOnly => true;
+
+        bool IList.IsFixedSize => false;
+
+        bool ICollection.IsSynchronized => false;
+
+        object ICollection.SyncRoot => ((ICollection) _items).SyncRoot;
+
+        object IList.this[int index]
+        {
+            get => _items[index];
+            set => throw new NotSupportedException("A collection view is read-only.");
+        }
+
+        int IList.Add(object value) => throw new NotSupportedException("A collection view is read-only.");
+
+        void IList.Clear() => throw new NotSupportedException("A collection view is read-only.");
+
+        void IList.Insert(int index, object value) => throw new NotSupportedException("A collection view is read-only.");
+
+        void IList.Remove(object value) => throw new NotSupportedException("A collection view is read-only.");
+
+        void IList.RemoveAt(int index) => throw new NotSupportedException("A collection view is read-only.");
+
+        int IList.IndexOf(object value) => _items.IndexOf(value);
+
+        void ICollection.CopyTo(Array array, int index) => ((ICollection) _items).CopyTo(array, index);
 
         public void Refresh()
         {

@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        xmlns:userControls="clr-namespace:StatisticsAnalysisTool.UserControls"
+        x:Class="StatisticsAnalysisTool.Views.DamageMeterWindow"
+        x:DataType="viewModels:DamageMeterWindowViewModel"
+        mc:Ignorable="d"
+        Title="{Binding Translation.Title, FallbackValue=TITLE}"
+        Height="450" Width="650" MinHeight="250" MinWidth="400"
+        WindowStartupLocation="CenterScreen"
+        Theme="{StaticResource WindowChrome}"
+        BorderThickness="1,1,1,1"
+        BorderBrush="{DynamicResource SolidColorBrush.Background.3}"
+        Foreground="{DynamicResource SolidColorBrush.Text.1}">
+  <Grid Background="{DynamicResource SolidColorBrush.Background.1}">
+    <Grid x:Name="Hotbar" ZIndex="1" Height="33" VerticalAlignment="Top" Background="{DynamicResource SolidColorBrush.Background.2}"
+          PointerPressed="Hotbar_PointerPressed">
+      <Label Content="{Binding Translation.Title, FallbackValue=TITLE}" Margin="0,0,91,0" VerticalAlignment="Top" Height="33" FontSize="16"
+             Foreground="{DynamicResource SolidColorBrush.Text.1}" FontWeight="Bold" />
+      <Separator Margin="5,30,5,0" VerticalAlignment="Top" />
+      <Button Theme="{StaticResource WindowButtonStyle}" Content="r" Margin="-2,0,0,0" Click="CloseButton_Click" />
+      <Button x:Name="MaximizedButton" Theme="{StaticResource WindowButtonStyle}" Content="1" Margin="0,0,28,0" Click="MaximizedButton_Click" />
+      <Button Theme="{StaticResource WindowButtonStyle}" Content="0" Margin="0,0,56,0" Click="MinimizeButton_Click" />
+    </Grid>
+
+    <Grid Margin="0,33,-1,0">
+      <!-- TODO(T14): the damage meter list (DamageMeterFragmentTemplate / MobDamageMeterFragmentTemplate, chosen by
+           DamageMeterBindings.DamageMeterSortSelection) comes with DamageMeterControl. -->
+      <userControls:PortingPlaceholderControl ViewName="DamageMeterWindow content (DamageMeterControl lists)" />
+    </Grid>
+    <fa:WindowResizeHandles />
+  </Grid>
+</Window>

@@ -73,6 +73,8 @@ public class CaptureGuidanceTests
     [TestCase("NPCAP_INFO_DIALOG_LINK_TEXT")]
     [TestCase("ERR_NPCAP_DLL_MISSING")]
     [TestCase("MAKE_SURE_YOU_HAVE_INSTALLED_NPCAP")]
+    [TestCase("DESCRIPTION_TRACK_MY_GAME_DETAILS_1")]
+    [TestCase("DESCRIPTION_TRACK_MY_GAME_DETAILS_2")]
     public void Overrides_ReplaceTheNpcapTextsEvenWhenCapable(string key)
     {
         var capable = new CaptureEnvironment(true, "/opt/sat/StatisticsAnalysisTool", "/opt/sat/StatisticsAnalysisTool.dll");

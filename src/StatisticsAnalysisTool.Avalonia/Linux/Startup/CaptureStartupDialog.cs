@@ -8,7 +8,8 @@ internal static class CaptureStartupDialog
 {
     public const string InfoUrl = "https://man7.org/linux/man-pages/man7/capabilities.7.html";
 
-    public static (string Title, string Text) Build(string title, string message, string linkText, CaptureEnvironment environment)
+    /// <summary>Content of the DialogWindow shown on the first start: the link is a separate clickable element.</summary>
+    public static CaptureDialogContent BuildContent(string title, string message, string linkText, CaptureEnvironment environment)
     {
         var permission = environment.IsCapable
             ? null
@@ -16,6 +17,15 @@ internal static class CaptureStartupDialog
         var body = permission == null || message.Contains(permission, System.StringComparison.Ordinal)
             ? message
             : $"{message}\n\n{permission}";
-        return (title, $"{body}\n\n{linkText}: {InfoUrl}");
+        return new CaptureDialogContent(title, body, linkText, InfoUrl);
+    }
+
+    /// <summary>Plain text form (message box): the link is appended to the message.</summary>
+    public static (string Title, string Text) Build(string title, string message, string linkText, CaptureEnvironment environment)
+    {
+        var content = BuildContent(title, message, linkText, environment);
+        return (content.Title, $"{content.Message}\n\n{linkText}: {content.Url}");
     }
 }
+
+internal sealed record CaptureDialogContent(string Title, string Message, string LinkText, string Url);

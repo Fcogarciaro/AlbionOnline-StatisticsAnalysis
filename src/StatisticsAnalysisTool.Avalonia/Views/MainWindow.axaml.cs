@@ -83,16 +83,6 @@ public partial class MainWindow : System.Windows.Window
         }
     }
 
-    private void ResizeHandle_PointerPressed(object sender, PointerPressedEventArgs e)
-    {
-        if (sender is Control { Tag: string edge } && Enum.TryParse<WindowEdge>(edge, out var windowEdge)
-                                                    && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        {
-            BeginResizeDrag(windowEdge, e);
-            e.Handled = true;
-        }
-    }
-
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
         Application.Current?.Shutdown();

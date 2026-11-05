@@ -1,0 +1,34 @@
+<!-- Port of Styles/EventValidationStyles.xaml. The status DataTriggers are classes bound with ObjectConverters.Equal. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:eventValidations="clr-namespace:StatisticsAnalysisTool.EventValidations"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="EventValidations.Icon.Status" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Icon" Value="SolidCircleExclamation" />
+      <Setter Property="Width" Value="20" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      <Style Selector="^.valid">
+        <Setter Property="Icon" Value="SolidCheck" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.4}" />
+      </Style>
+      <Style Selector="^.notvalid">
+        <Setter Property="Icon" Value="SolidXmark" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.4}" />
+      </Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="EventItemStatsTemplate" DataType="eventValidations:EventValidityItem">
+      <StackPanel Orientation="Horizontal" Background="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.4}" Margin="0,0,0,1">
+        <Label Content="{Binding EventName}" Width="300" FontWeight="Bold" />
+        <fa:FontAwesomeImage Theme="{StaticResource EventValidations.Icon.Status}" ToolTip.Tip="{Binding Status}"
+                             Classes.valid="{Binding Status, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static eventValidations:EventValidityStatus.Valid}}"
+                             Classes.notvalid="{Binding Status, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static eventValidations:EventValidityStatus.NotValid}}" />
+      </StackPanel>
+    </DataTemplate>
+
+  </Styles.Resources>
+</Styles>

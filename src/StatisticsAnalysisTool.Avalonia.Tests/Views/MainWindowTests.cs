@@ -4,7 +4,6 @@ using Avalonia.Headless;
 using Avalonia.Headless.NUnit;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Logging;
 using Avalonia.VisualTree;
 using FluentAssertions;
 using NUnit.Framework;
@@ -24,8 +23,7 @@ public class MainWindowTests
 {
     private string _root;
     private IDisposable _xdg;
-    private ILogSink _previousSink;
-    private BindingErrorSink _sink;
+    private BindingErrorLog _sink;
     private AppStartup _startup;
     private MainWindow _window;
 
@@ -40,11 +38,9 @@ public class MainWindowTests
             "XDG_CACHE_HOME" => Path.Combine(_root, "cache"),
             _ => _root
         }));
-        _previousSink = Logger.Sink;
-        _sink = new BindingErrorSink();
-        Logger.Sink = _sink;
+        _sink = new BindingErrorLog();
 
-        _startup = new AppStartup(new ClassicDesktopStyleApplicationLifetime(), (_, _, _, _) => Task.FromResult(true), (_, _) => { }, installProcessHooks: false);
+        _startup = new AppStartup(new ClassicDesktopStyleApplicationLifetime(), (_, _, _, _) => Task.FromResult(true), _ => { }, installProcessHooks: false);
         await _startup.RunAsync();
         _window = (MainWindow) _startup.MainWindow;
         _window.Show();
@@ -55,7 +51,7 @@ public class MainWindowTests
     {
         _startup?.Cleanup();
         _window?.Close();
-        Logger.Sink = _previousSink;
+        _sink?.Dispose();
         _xdg?.Dispose();
         if (_root != null && Directory.Exists(_root))
         {
@@ -191,17 +187,5 @@ public class MainWindowTests
         act.Should().NotThrow();
         header.Should().NotBeNull();
         _window.MouseUp(new global::Avalonia.Point(200, 20), MouseButton.Left);
-    }
-
-    private sealed class BindingErrorSink : ILogSink
-    {
-        public List<string> Errors { get; } = [];
-
-        public bool IsEnabled(LogEventLevel level, string area) => level >= LogEventLevel.Warning && area is "Binding" or "Property" or "Styling" or "Control";
-
-        public void Log(LogEventLevel level, string area, object source, string messageTemplate) => Errors.Add($"{area}: {messageTemplate}");
-
-        public void Log(LogEventLevel level, string area, object source, string messageTemplate, params object[] propertyValues)
-            => Errors.Add($"{area}: {messageTemplate} [{string.Join(", ", propertyValues)}]");
     }
 }

@@ -100,6 +100,15 @@ internal static class CaptureGuidance
                 text = "Make sure libpcap is installed and the tool may capture packets (setcap or root).";
                 return true;
 
+            // Info window steps 1 and 2 (Windows 10 and the Npcap installer); the link after step 2 is the man page.
+            case "DESCRIPTION_TRACK_MY_GAME_DETAILS_1":
+                text = "1. You need Linux with libpcap installed (use your package manager)!";
+                return true;
+
+            case "DESCRIPTION_TRACK_MY_GAME_DETAILS_2":
+                text = "2. Allow the tool to capture packets once (setcap or root), see: ";
+                return true;
+
             default:
                 return false;
         }

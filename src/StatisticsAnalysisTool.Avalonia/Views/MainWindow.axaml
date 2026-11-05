@@ -259,18 +259,6 @@
     </StackPanel>
 
     <!-- Resize handles of the borderless window (WPF ResizeMode=CanResizeWithGrip): edges, corners and the grip. -->
-    <Grid x:Name="ResizeHandles" ZIndex="100" IsHitTestVisible="True" Background="{x:Null}"
-          IsVisible="{Binding $parent[Window].CanResize}">
-      <Border x:Name="ResizeNorth" Height="3" VerticalAlignment="Top" Margin="8,0" Background="Transparent" Cursor="SizeNorthSouth" PointerPressed="ResizeHandle_PointerPressed" Tag="North" />
-      <Border x:Name="ResizeSouth" Height="3" VerticalAlignment="Bottom" Margin="8,0" Background="Transparent" Cursor="SizeNorthSouth" PointerPressed="ResizeHandle_PointerPressed" Tag="South" />
-      <Border x:Name="ResizeWest" Width="3" HorizontalAlignment="Left" Margin="0,8" Background="Transparent" Cursor="SizeWestEast" PointerPressed="ResizeHandle_PointerPressed" Tag="West" />
-      <Border x:Name="ResizeEast" Width="3" HorizontalAlignment="Right" Margin="0,8" Background="Transparent" Cursor="SizeWestEast" PointerPressed="ResizeHandle_PointerPressed" Tag="East" />
-      <Border x:Name="ResizeNorthWest" Width="8" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Cursor="TopLeftCorner" PointerPressed="ResizeHandle_PointerPressed" Tag="NorthWest" />
-      <Border x:Name="ResizeNorthEast" Width="8" Height="8" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Transparent" Cursor="TopRightCorner" PointerPressed="ResizeHandle_PointerPressed" Tag="NorthEast" />
-      <Border x:Name="ResizeSouthWest" Width="8" Height="8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" Cursor="BottomLeftCorner" PointerPressed="ResizeHandle_PointerPressed" Tag="SouthWest" />
-      <Border x:Name="ResizeGrip" Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent" Cursor="BottomRightCorner" PointerPressed="ResizeHandle_PointerPressed" Tag="SouthEast">
-        <Path Data="M12,2 L2,12 M12,6 L6,12 M12,10 L10,12" Stroke="{DynamicResource SolidColorBrush.Text.5}" StrokeThickness="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
-      </Border>
-    </Grid>
+    <fa:WindowResizeHandles x:Name="ResizeHandles" />
   </Grid>
 </Window>

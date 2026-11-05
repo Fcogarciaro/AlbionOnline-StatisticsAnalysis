@@ -153,6 +153,43 @@ public class ListCollectionViewTests
         view.CanFilter.Should().BeTrue();
     }
 
+    [AvaloniaTest]
+    public void View_IsAReadOnlyIListSoAvaloniaItemsControlsCanBindIt()
+    {
+        var source = new ObservableCollection<int> { 3, 1, 2 };
+        var view = new ListCollectionView(source);
+        view.SortDescriptions.Add(new SortDescription(string.Empty, ListSortDirection.Ascending));
+        var list = (System.Collections.IList) view;
+
+        list.Count.Should().Be(3);
+        list.IsReadOnly.Should().BeTrue();
+        list.IsFixedSize.Should().BeFalse();
+        list[0].Should().NotBeNull();
+        list.Contains(list[1]).Should().BeTrue();
+        list.IndexOf(list[2]).Should().Be(2);
+        var copy = new object[3];
+        list.CopyTo(copy, 0);
+        copy.Should().Equal(list.Cast<object>());
+        ((Action) (() => list.Add(1))).Should().Throw<NotSupportedException>();
+        ((Action) (() => list.Remove(1))).Should().Throw<NotSupportedException>();
+        ((Action) (() => list[0] = 1)).Should().Throw<NotSupportedException>();
+    }
+
+    [AvaloniaTest]
+    public void View_CanBeTheItemsSourceOfAnItemsControl()
+    {
+        var source = new ObservableCollection<string> { "a", "b" };
+        var control = new global::Avalonia.Controls.ItemsControl { ItemsSource = new ListCollectionView(source) };
+        var window = new global::Avalonia.Controls.Window { Content = control };
+        window.Show();
+
+        control.ItemCount.Should().Be(2);
+        source.Add("c");
+        AvaloniaDispatcher.UIThread.RunJobs();
+        control.ItemCount.Should().Be(3);
+        window.Close();
+    }
+
     private sealed class Observable : INotifyPropertyChanged
     {
         private int _value;

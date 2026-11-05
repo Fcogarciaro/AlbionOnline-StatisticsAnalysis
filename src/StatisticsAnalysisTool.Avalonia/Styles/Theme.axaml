@@ -17,4 +17,5 @@
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/MainWindowStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/TabControlStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/TrackingStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/EventValidationStyles.axaml" />
 </Styles>

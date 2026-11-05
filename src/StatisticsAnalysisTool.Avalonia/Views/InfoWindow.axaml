@@ -1,0 +1,79 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        xmlns:userControls="clr-namespace:StatisticsAnalysisTool.UserControls"
+        x:Class="StatisticsAnalysisTool.Views.InfoWindow"
+        x:DataType="viewModels:InfoWindowViewModel"
+        mc:Ignorable="d"
+        Title="{Binding Translation.Title, FallbackValue=TITLE}"
+        Height="450"
+        Width="550"
+        WindowStartupLocation="CenterScreen"
+        Theme="{StaticResource WindowChrome}"
+        Background="{DynamicResource SolidColorBrush.Background.1}"
+        FontSize="{DynamicResource BaseFontSize}"
+        Focusable="False">
+  <Grid>
+    <Border BorderThickness="1,0,0,0" BorderBrush="{DynamicResource SolidColorBrush.Background.3}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SolidColorBrush.Background.3}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource SolidColorBrush.Background.3}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource SolidColorBrush.Background.3}" IsHitTestVisible="False" />
+    <Grid x:Name="Hotbar" ZIndex="1" Height="33" VerticalAlignment="Top" Background="{DynamicResource SolidColorBrush.Background.3}"
+          PointerPressed="Hotbar_PointerPressed">
+      <Grid Margin="10,5,0,0" Width="26" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <fa:FontAwesomeImage Icon="RegularNewspaper" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      </Grid>
+      <Label Content="{Binding Translation.Title, FallbackValue=TITLE}" Margin="41,0,61,0" VerticalAlignment="Top" Height="33" FontSize="16"
+             Foreground="{DynamicResource SolidColorBrush.Text.1}" FontWeight="Bold" />
+
+      <Button x:Name="CloseButton" Theme="{StaticResource WindowButtonStyle}" Content="r" Margin="-2,0,0,0" Click="CloseButton_Click" />
+      <Button x:Name="MinimizeButton" Theme="{StaticResource WindowButtonStyle}" Content="0" Margin="0,0,28,0" Click="MinimizeButton_Click" />
+    </Grid>
+    <Grid Margin="10,33,0,33">
+      <ScrollViewer>
+        <Grid>
+          <StackPanel>
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Title}" Text="{Binding Translation.DescriptionTrackMyGame, FallbackValue=DESCRIPTION__TRACK__MY__GAME}" />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails1, FallbackValue=DESCRIPTION_STEP_1}" />
+            <WrapPanel Orientation="Horizontal">
+              <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails2, FallbackValue=DESCRIPTION_STEP_2}" />
+              <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Tag="https://man7.org/linux/man-pages/man7/capabilities.7.html" Cursor="Hand"
+                         Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontWeight="Bold" TextDecorations="Underline"
+                         Text="https://man7.org/linux/man-pages/man7/capabilities.7.html" PointerPressed="Hyperlink_PointerPressed" />
+            </WrapPanel>
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails3, FallbackValue=DESCRIPTION_STEP_3}" />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails4, FallbackValue=DESCRIPTION_STEP_4}" />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails5, FallbackValue=DESCRIPTION_STEP_5}" />
+            <TextBlock />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails6, FallbackValue=DESCRIPTION_STEP_6}" />
+            <TextBlock />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails7, FallbackValue=DESCRIPTION_STEP_7}" />
+            <TextBlock />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescriptionTrackMyGameDetails8, FallbackValue=DESCRIPTION_STEP_8}" />
+            <TextBlock />
+            <TextBlock />
+
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Title}" Text="{Binding Translation.DescUpdateMarketPricesTitle, FallbackValue=DESC_UPDATE_MARKET_PRICES_TITLE}" />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Text="{Binding Translation.DescUpdateMarketPrices1, FallbackValue=DESC_UPDATE_MARKET_PRICES_1}" />
+            <TextBlock Theme="{StaticResource InfoWindow.TextBlock.Text}" Tag="https://www.albion-online-data.com/" Cursor="Hand"
+                       Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontWeight="Bold" TextDecorations="Underline"
+                       Text="https://www.albion-online-data.com/" PointerPressed="Hyperlink_PointerPressed" />
+            <TextBlock />
+            <TextBlock />
+          </StackPanel>
+        </Grid>
+      </ScrollViewer>
+    </Grid>
+    <Border Background="{DynamicResource SolidColorBrush.Background.3}" Height="4" Margin="0,0,0,31" VerticalAlignment="Bottom" />
+    <Grid Height="33" VerticalAlignment="Bottom">
+      <CheckBox Content="{Binding Translation.ShowNotAgainContent, FallbackValue=SHOW__NOT__AGAIN}"
+                IsChecked="{Binding ShowNotAgainChecked, FallbackValue=false}"
+                Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="10,0,0,5" VerticalAlignment="Bottom" Width="NaN" />
+    </Grid>
+  </Grid>
+</Window>

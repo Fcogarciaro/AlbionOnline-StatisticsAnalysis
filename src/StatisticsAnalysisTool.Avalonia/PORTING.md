@@ -80,10 +80,8 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   The same guidance is also logged as a warning on every start. Shown once, like upstream (`IsNpcapInfoDialogShownOnStart`).
 - `SatNotificationManager` is created without a dispatcher argument; `MainWindow` is the real view since T09.
 - `AppStartup.ApplicationUptime` replaces `App.ApplicationUptime` for the T09 footer.
-- Placeholders still standing for T10: `FirstStartGuideWindow` (completes at once, does not persist the flag),
-  `GameDataPreparationWindow` (so a first run without a game folder ends in an early shutdown), `LanguageSelectionWindow`
-  (needed when a completed guide left no culture), `DialogWindow` (the info dialog uses `MessageBox`), `ItemAlertWindow`,
-  `EventValidationWindow`.
+- The capture info dialog is the real `DialogWindow` (as upstream) with the capabilities(7) link as its clickable link
+  (`CaptureStartupDialog.BuildContent`). `FirstStartGuideWindow` is still a placeholder until its T10 commit.
 - The theme (T08, `Styles/`) provides the `Color.*` / `SolidColorBrush.*` keys that view models read (for example
   `Color.Accent.Blue.2`, `Color.Text.1`); the startup test no longer defines workarounds.
 
@@ -214,11 +212,27 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   StorageHistoryControl, MapHistoryControl, PlayerInformationControl, DonationControl, ThanksControl and SettingsControl
   (until the settings commit of T10). Each is replaced where it is ported (T11-T15).
 
+## Secondary windows (T10)
+
+All derive from the `System.Windows.Window` shim, use theme `WindowChrome`, and drag through `HotbarDragHandler` (`BeginMoveDrag`,
+pointer-delta fallback; double click toggles maximize where upstream did). Resizable ones (`EventValidation`, `DamageMeter`,
+`Dashboard`) use `WindowChromeController` and `fa:WindowResizeHandles` (hidden when maximized).
+- `DialogWindow`, `InfoWindow`, `ItemAlertWindow`, `LanguageSelectionWindow`, `LootComparatorSaveNameWindow`: 1:1. `Hyperlink`s are
+  clickable text (`ExternalLink`, http(s) only). InfoWindow step 2 links the capabilities(7) man page, and
+  `DESCRIPTION_TRACK_MY_GAME_DETAILS_1/2` are overridden by `CaptureGuidance` (English only). `ItemAlertWindow`'s city gradient is built in
+  code (gradient stops cannot bind). `DashboardWindow` title: upstream binds the non-existent `DashboardBindings.TranslationTitle`
+  (always the fallback); the port binds `Translation.Dashboard`.
+- `GameDataPreparationWindow`: same layout, plus a Linux block "Found on this computer" fed by `GameFolderLocator` (Steam homes and
+  libraries from `libraryfolders.vdf`, Flatpak Steam, `WINEPREFIX`, `~/.wine`, `~/Games/*`, Bottles); the first valid hit is
+  preselected (Confirm stays manual), and the picker opens at the best-guess folder. Validation is `Extractor.IsValidMainGameFolder`.
+- `EventValidationWindow` uses `Styles/EventValidationStyles.axaml` and a `ListBox` for the WpfToolkit `VirtualizingItemsControl`.
+  `DamageMeterWindow` and `DashboardWindow` host `PortingPlaceholderControl` until T14/T13.
+- `ListCollectionView` (shim) is now a read-only `IList`: Avalonia refuses INotifyCollectionChanged sources that are not.
+- Avalonia binding errors are logged, not thrown: view tests collect them with `BindingErrorLog`.
+
 ## View placeholders
 
-`Linux/Views/Placeholders.cs` declares `DialogWindow`, `ItemAlertWindow`, `GameDataPreparationWindow`,
-`LanguageSelectionWindow` and `EventValidationWindow` so linked code compiles. Each is deleted when the real view
-with the same name lands (T09/T10).
+`Linux/Views/Placeholders.cs` still declares `FirstStartGuideWindow` (T10) so linked code compiles; it is deleted when the real view lands.
 
 ## Data migration
 

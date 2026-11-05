@@ -34,7 +34,7 @@ public sealed class AppStartup
 
     private readonly IClassicDesktopStyleApplicationLifetime _desktop;
     private readonly Func<ServerType, Action<double, string>, double, double, Task<bool>> _initializeGameData;
-    private readonly Action<string, string> _showInfoDialog;
+    private readonly Action<CaptureDialogContent> _showInfoDialog;
     private readonly bool _installProcessHooks;
     private MainWindowViewModel _mainWindowViewModel;
     private TrackingController _trackingController;
@@ -43,18 +43,18 @@ public sealed class AppStartup
     private bool _isCleanedUp;
 
     /// <param name="initializeGameData">Defaults to <see cref="GameData.InitializeMainGameDataFilesAsync"/>; tests inject a fake.</param>
-    /// <param name="showInfoDialog">Defaults to a modal message box; tests inject a recorder.</param>
+    /// <param name="showInfoDialog">Defaults to a modal DialogWindow with the clickable link (as upstream); tests inject a recorder.</param>
     /// <param name="installProcessHooks">False in tests: the exception hooks and logger are process wide.</param>
     internal AppStartup(
         IClassicDesktopStyleApplicationLifetime desktop,
         Func<ServerType, Action<double, string>, double, double, Task<bool>> initializeGameData = null,
-        Action<string, string> showInfoDialog = null,
+        Action<CaptureDialogContent> showInfoDialog = null,
         bool installProcessHooks = true)
     {
         _desktop = desktop;
         _initializeGameData = initializeGameData ?? GameData.InitializeMainGameDataFilesAsync;
-        _showInfoDialog = showInfoDialog ?? ((title, text) =>
-            System.Windows.MessageBox.Show(text, title, System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information));
+        _showInfoDialog = showInfoDialog ?? (content =>
+            new DialogWindow(content.Title, content.Message, DialogType.Ok, content.Url, content.LinkText, 300d).ShowDialog());
         _installProcessHooks = installProcessHooks;
     }
 
@@ -216,12 +216,12 @@ public sealed class AppStartup
             return;
         }
 
-        var (title, text) = CaptureStartupDialog.Build(
+        var content = CaptureStartupDialog.BuildContent(
             LocalizationController.Translation("NPCAP_INFO_DIALOG_TITLE"),
             LocalizationController.Translation("NPCAP_INFO_DIALOG_MESSAGE"),
             LocalizationController.Translation("NPCAP_INFO_DIALOG_LINK_TEXT"),
             environment);
-        _showInfoDialog(title, text);
+        _showInfoDialog(content);
 
         SettingsController.CurrentSettings.IsNpcapInfoDialogShownOnStart = false;
     }
