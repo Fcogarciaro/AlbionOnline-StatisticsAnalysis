@@ -104,7 +104,9 @@ Each task records its route and trigger.
 - [x] T19 Packaging (PKGBUILD/AppImage), README-linux, CI. Commits 0fa54d7f, 1908539b; test hygiene in 4f88da54 and cbf38bac.
   - Evidence: tests 665/665 across 5 runs (writer) and 1 run (parent); the tarball builds and its sha256 verifies.
   - Open: the CI run is unverified; the icons are upscaled.
-- [ ] T20 Parity pass versus the original screens.
+- [x] T19c Verifier correction: install.sh rejects a dangerous INSTALL_DIR (/, $HOME, a relative path, sed metacharacters, a path inside the tarball, a non-empty foreign directory). Verified with a sandbox HOME run. Other findings are residual: actions pinned to @v4, PKGBUILD sha SKIP until the first tag, unguarded async void handlers that mirror upstream.
+- CI: run 42058043189 succeeded (build + tests on GitHub Actions).
+- [ ] T20 Parity pass versus the original screens. Needs the live user test on Hyprland (publish/linux-x64).
 
 ## Acceptance Criteria
 - `dotnet build` and `dotnet test` succeed on Linux.

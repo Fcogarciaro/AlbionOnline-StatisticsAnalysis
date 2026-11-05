@@ -17,6 +17,34 @@ bin_dir="$HOME/.local/bin"
 binary="$install_dir/StatisticsAnalysisTool"
 caps="cap_net_raw,cap_net_admin=eip"
 
+# INSTALL_DIR is removed and replaced as a unit, so refuse anything that is not clearly a dedicated directory.
+validate_install_dir() {
+  local resolved
+  resolved="$(realpath -m -- "$install_dir")"
+  case "$install_dir" in
+    *'|'*|*'&'*|*'\'*) echo "error: INSTALL_DIR must not contain '|', '&' or '\\'" >&2; exit 2 ;;
+  esac
+  if [[ "$install_dir" != /* ]]; then
+    echo "error: INSTALL_DIR must be an absolute path" >&2; exit 2
+  fi
+  if [[ "$resolved" == "/" || "$resolved" == "$(realpath -m -- "$HOME")" ]]; then
+    echo "error: refusing to use $resolved as INSTALL_DIR" >&2; exit 2
+  fi
+  if [[ "$resolved/" == "$here/"* ]]; then
+    echo "error: INSTALL_DIR must not be inside the extracted tarball" >&2; exit 2
+  fi
+  local entry_count=0
+  if [[ -d "$resolved" ]]; then
+    entry_count="$(shopt -s nullglob dotglob; entries=("$resolved"/*); echo "${#entries[@]}")"
+  fi
+  if [[ -e "$resolved" && ! -e "$resolved/StatisticsAnalysisTool" && "$entry_count" -gt 0 ]]; then
+    echo "error: $resolved exists, is not empty and does not contain a previous install" >&2; exit 2
+  fi
+  install_dir="$resolved"
+  binary="$install_dir/StatisticsAnalysisTool"
+}
+validate_install_dir
+
 do_setcap=0
 uninstall=0
 for arg in "$@"; do
