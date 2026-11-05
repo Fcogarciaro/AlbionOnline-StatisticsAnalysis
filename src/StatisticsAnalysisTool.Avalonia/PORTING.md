@@ -509,3 +509,23 @@ is a no-op there; if they exist it migrates into the XDG targets above.
   warning only appears when no device is listed (listing works unprivileged), so the view should also show
   `CaptureGuidance.PermissionMessage` when `ApplicationCore.IsAppStartedAsAdministrator()` is false. The settings window
   still labels the providers `Sockets (...)` / `Npcap`.
+
+## Packaging (T19)
+
+- `packaging/linux/build-tarball.sh [VERSION]` publishes self-contained `linux-x64` (Release, no pdb) and writes
+  `artifacts/StatisticsAnalysisTool-linux-x64.tar.gz` plus `.sha256` (`artifacts/` is gitignored). VERSION is compiled in as the
+  assembly version; the update check compares it with the newest `linux-v*` release. The tarball holds `StatisticsAnalysisTool/` with the
+  app, `install.sh`, `share/` (desktop entry, hicolor icons 256/128/64), `LICENSE`, `licenses/` and `README-linux.md`.
+- Licence files are `Content` items of the project, so they land in build and publish output: `LICENSE` (GPL-3.0),
+  `licenses/FontAwesome-LICENSE.txt`, `licenses/GameIcons-NOTICE.txt`.
+- `install.sh` installs to `~/.local/opt/StatisticsAnalysisTool` (user scope, no root), links `~/.local/bin/statisticsanalysistool`, pins the
+  desktop entry `Exec`/`Path` to the install, and prints (or with `--setcap` runs) `sudo setcap cap_net_raw,cap_net_admin=eip <binary>`.
+  setcap must be reapplied after each update, because replacing the file drops the capability.
+- `packaging/arch/PKGBUILD` builds from the `linux-v$pkgver` source tag with `dotnet-sdk`, installs to `/opt/statisticsanalysistool`
+  (`/usr/bin/statisticsanalysistool` symlink), depends on `libpcap`, and `statisticsanalysistool.install` runs setcap in
+  `post_install`/`post_upgrade`. `sha256sums` is `SKIP` until the first tag exists (`updpkgsums`). Not run through `namcap` (not installed).
+- The icons are scaled from the upstream 80 px `sat-icon.png`; replace them with a vector or larger source when one exists.
+- CI: `.github/workflows/linux.yml` (build + headless tests on pushes and PRs to `feat/avalonia-linux-port` and `main`; on tag
+  `linux-v*` it builds the tarball and uploads both assets). Upstream workflows are unchanged: `pr-build-and-unit-tests.yml` still
+  runs on pushes to `main` (it builds the Windows solution on ubuntu, so expect it to fail or be useless there) and the upstream release
+  workflow only fires on `v*` tags.

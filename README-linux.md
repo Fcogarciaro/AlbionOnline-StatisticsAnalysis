@@ -1,0 +1,124 @@
+# Statistics Analysis Tool for Linux
+
+A native Linux (Avalonia) port of the **Albion Online Statistics Analysis Tool** by [Triky313](https://github.com/Triky313/AlbionOnline-StatisticsAnalysis).
+This fork keeps the original logic and screens and replaces the Windows-only parts (Npcap, registry, tray, dialogs, updater) with Linux ones.
+Licensed under **GPL-3.0**, like the original. All credit for the tool itself goes to Triky313 and the upstream contributors.
+
+The tool reads Albion Online network traffic (like a packet sniffer, no game files are modified) to show the damage meter, loot, market data,
+dungeons, trading and more.
+
+## Requirements
+
+- Linux x86_64 with a desktop session (X11 or Wayland through XWayland).
+- `libpcap` (Arch: `libpcap`, Debian/Ubuntu: `libpcap0.8`, Fedora: `libpcap`).
+- Runtime libraries Avalonia needs: `fontconfig`, `libX11`, `libICE`, `libSM`.
+- The release tarball is self-contained: **no .NET installation is needed**.
+- Optional: `pw-play` (pipewire) or `paplay`/`aplay` for alert sounds, `notify-send` (libnotify) for desktop notifications, `xdg-utils`,
+  `wmctrl` (X11 attention request).
+
+## Install
+
+### Tarball (any distribution)
+
+```sh
+tar xf StatisticsAnalysisTool-linux-x64.tar.gz
+cd StatisticsAnalysisTool
+./install.sh --setcap      # --setcap runs "sudo setcap" for packet capture, see below
+```
+
+`install.sh` copies the tool to `~/.local/opt/StatisticsAnalysisTool`, links `~/.local/bin/statisticsanalysistool`, and installs the desktop entry
+and icons under `~/.local/share`. `./install.sh --uninstall` removes them (your settings and data stay).
+Verify the download with the `.sha256` file from the release: `sha256sum -c StatisticsAnalysisTool-linux-x64.tar.gz.sha256`.
+
+### Arch Linux (PKGBUILD)
+
+```sh
+cd packaging/arch
+makepkg -si
+```
+
+It builds from source (needs `dotnet-sdk` and network access for NuGet), installs to `/opt/statisticsanalysistool`, and the `.install` hook runs
+`setcap` after every install and upgrade.
+
+## Capture permissions (setcap)
+
+Reading raw network traffic needs the `CAP_NET_RAW` capability. Grant it once to the binary instead of running the whole tool as root:
+
+```sh
+sudo setcap cap_net_raw,cap_net_admin=eip ~/.local/opt/StatisticsAnalysisTool/StatisticsAnalysisTool
+```
+
+- **Why not root?** A root process would be a large graphical .NET application with full privileges, and it would write root-owned files into
+  your settings folders. File capabilities limit the extra power to packet capture. (`CAP_NET_ADMIN` is optional; it is granted too, as Wireshark does.)
+- **Reapply after every update.** Replacing the file removes its capabilities. `install.sh --setcap` and the Arch package do this for you.
+- With capabilities the process runs in "secure execution" mode: `LD_LIBRARY_PATH` is ignored for it.
+- File capabilities need a filesystem that supports them and no `nosuid` mount on the install directory.
+- The tool shows the exact command for your installation when it cannot capture.
+
+## Wayland / Hyprland
+
+- **Tray icon:** needs a StatusNotifierItem host. Waybar: enable the `tray` module. GNOME needs the AppIndicator extension. Without a tray host,
+  do not enable "Hide in the system tray when minimized".
+- **Window rules:** the overlay windows (damage meter, dashboard, item alerts) are normal top-level windows whose titles are localized,
+  so read the real class and title with `hyprctl clients` and match those. Example (replace the placeholders):
+
+  ```
+  windowrule = float, class:^(<class from hyprctl>)$, title:^(<damage meter title>)$
+  windowrule = pin, class:^(<class from hyprctl>)$, title:^(<damage meter title>)$
+  ```
+
+  The exact rule syntax depends on your Hyprland version; see the Hyprland wiki for window rules.
+- **Attention requests** (`FlashWindow` on alerts) work through `wmctrl` on X11 only; on Wayland use the desktop notification.
+- **Clipboard** works while one of the tool's windows exists.
+
+## Steam / Proton game folder
+
+The first start guide and the game-data window look for the game and propose the first valid folder: Steam libraries
+(`~/.local/share/Steam`, Flatpak Steam, `libraryfolders.vdf`), `WINEPREFIX`, `~/.wine`, `~/Games/*` and Bottles. The Steam default is
+`~/.local/share/Steam/steamapps/common/Albion Online`. The game process is detected under Wine/Proton (`Albion-Online.exe`).
+
+## Data locations (XDG)
+
+| What | Where |
+|---|---|
+| `Settings.json` | `$XDG_CONFIG_HOME/StatisticsAnalysisTool` (default `~/.config/StatisticsAnalysisTool`) |
+| Backups, user data, logs, game files | `$XDG_DATA_HOME/StatisticsAnalysisTool` (default `~/.local/share/StatisticsAnalysisTool`) |
+| Image cache, temp | `$XDG_CACHE_HOME/StatisticsAnalysisTool` (default `~/.cache/StatisticsAnalysisTool`, safe to delete) |
+| Autostart entry | `$XDG_CONFIG_HOME/autostart/StatisticsAnalysisTool.desktop` |
+
+## Known differences from the Windows version
+
+See [`src/StatisticsAnalysisTool.Avalonia/PORTING.md`](src/StatisticsAnalysisTool.Avalonia/PORTING.md) for the complete list. In short:
+libpcap replaces Npcap and raw sockets, the updater only notifies (it opens the release page), sounds and notifications use external helpers,
+and some texts are English only.
+
+## Updates
+
+The tool checks the releases of this fork (tags `linux-v*`) and shows a badge and the release notes. Update by installing the new tarball
+(`install.sh`) or rebuilding the package; remember `setcap` (done by `install.sh --setcap` and the Arch package).
+
+## Building from source
+
+```sh
+dotnet build src/StatisticsAnalysisTool.Linux.sln
+dotnet test src/StatisticsAnalysisTool.Avalonia.Tests        # headless, no display needed
+dotnet run --project src/StatisticsAnalysisTool.Avalonia
+packaging/linux/build-tarball.sh [VERSION]                   # writes artifacts/StatisticsAnalysisTool-linux-x64.tar.gz(+.sha256)
+```
+
+Needs the .NET 10 SDK. The Avalonia project compiles the non-view sources of `src/StatisticsAnalysisTool` in place, so upstream files are not edited.
+
+## Syncing with upstream
+
+```sh
+git remote add upstream https://github.com/Triky313/AlbionOnline-StatisticsAnalysis.git   # once
+git fetch upstream
+git merge upstream/main
+```
+
+New upstream source files are linked automatically (the project globs them). Check the build for new Windows-only APIs and update
+`PORTING.md` when a file needs a Linux replacement. Upstream Windows workflows stay untouched; `.github/workflows/linux.yml` is the Linux CI.
+
+## Releases
+
+Push a tag `linux-vX.Y.Z`. CI builds `StatisticsAnalysisTool-linux-x64.tar.gz` and its `.sha256` and attaches them to the release.
