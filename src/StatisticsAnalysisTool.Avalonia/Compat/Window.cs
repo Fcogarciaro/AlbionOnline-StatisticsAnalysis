@@ -1,6 +1,8 @@
 // Compatibility shim: System.Windows.Window on top of Avalonia's Window. Ported views derive from this type so
 // linked ViewModels/controllers can use the WPF surface they were written against (Dispatcher, Left/Top,
 // DialogResult, synchronous ShowDialog()).
+using System.Runtime.ExceptionServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Avalonia;
@@ -58,9 +60,18 @@ public class Window : AvaloniaWindow
         var frame = new DispatcherFrame();
         Closed += (_, _) => frame.Continue = false;
 
+        Exception failure = null;
         if (owner != null)
         {
-            _ = ShowDialog<bool?>(owner);
+            ShowDialog<bool?>(owner).ContinueWith(
+                t =>
+                {
+                    failure = t.Exception?.GetBaseException();
+                    frame.Continue = false;
+                },
+                CancellationToken.None,
+                TaskContinuationOptions.OnlyOnFaulted,
+                TaskScheduler.FromCurrentSynchronizationContext());
         }
         else
         {
@@ -68,6 +79,12 @@ public class Window : AvaloniaWindow
         }
 
         AvaloniaDispatcher.UIThread.PushFrame(frame);
-        return _resultAssigned ? _dialogResult : false;
+        if (failure != null)
+        {
+            ExceptionDispatchInfo.Capture(failure).Throw();
+        }
+
+        // Like WPF, a dialog closed without assigning DialogResult yields null.
+        return _resultAssigned ? _dialogResult : null;
     }
 }

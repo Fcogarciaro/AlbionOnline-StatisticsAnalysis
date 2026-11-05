@@ -193,4 +193,27 @@ public class BitmapImageTests
             BitmapImage.Downloader = previous;
         }
     }
+
+    [AvaloniaTest]
+    public async Task HttpSource_LoadTask_CompletesOnlyAfterTheBitmapIsPublished()
+    {
+        var previous = BitmapImage.Downloader;
+        BitmapImage.Downloader = _ => Task.FromResult(Png);
+        try
+        {
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.UriSource = new Uri("https://render.albiononline.com/v1/item/T4_BAG");
+            image.EndInit();
+
+            await image.LoadTask;
+
+            image.AvaloniaBitmap.Should().NotBeNull();
+            image.IsDownloading.Should().BeFalse();
+        }
+        finally
+        {
+            BitmapImage.Downloader = previous;
+        }
+    }
 }

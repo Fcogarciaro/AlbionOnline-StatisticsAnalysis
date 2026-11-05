@@ -106,4 +106,19 @@ public class DispatcherTimerTests
 
         ticks.Should().Be(0);
     }
+
+    [AvaloniaTest]
+    public async Task Start_FromBackgroundThread_DoesNotThrowAndTicks()
+    {
+        var ticks = 0;
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10) };
+        timer.Tick += (_, _) => ticks++;
+
+        await Task.Run(() => timer.Start());
+        await PumpFor(TimeSpan.FromMilliseconds(150));
+        await Task.Run(() => timer.Stop());
+
+        timer.IsEnabled.Should().BeFalse();
+        ticks.Should().BeGreaterThan(0);
+    }
 }

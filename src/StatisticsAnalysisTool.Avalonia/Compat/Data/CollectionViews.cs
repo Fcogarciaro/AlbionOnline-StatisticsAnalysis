@@ -46,7 +46,7 @@ namespace System.ComponentModel
 
 namespace System.Windows.Data
 {
-    public class ListCollectionView : ICollectionView, INotifyPropertyChanged
+    public class ListCollectionView : ICollectionView, INotifyPropertyChanged, IDisposable
     {
         private readonly IEnumerable _source;
         private readonly List<object> _items = [];
@@ -79,6 +79,22 @@ namespace System.Windows.Data
             Rebuild();
             _currentPosition = _items.Count > 0 ? 0 : -1;
             _currentItem = _currentPosition == 0 ? _items[0] : null;
+        }
+
+        /// <summary>Detaches the view from the source collection and from observed items.</summary>
+        public void Dispose()
+        {
+            if (_source is INotifyCollectionChanged notifying)
+            {
+                notifying.CollectionChanged -= OnSourceCollectionChanged;
+            }
+
+            foreach (var item in _observedItems)
+            {
+                item.PropertyChanged -= OnItemPropertyChanged;
+            }
+
+            _observedItems.Clear();
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -214,26 +230,61 @@ namespace System.Windows.Data
                 return;
             }
 
-            // Fast path: unsorted append at the end of the source keeps order without a full rebuild.
-            if (e.Action == NotifyCollectionChangedAction.Add && SortDescriptions.Count == 0 && _customSort == null && e.NewItems != null
-                && e.NewStartingIndex >= 0 && e.NewStartingIndex + e.NewItems.Count == CountSource())
+            if (!IsShaped && TryApplyIncremental(e))
             {
-                var added = e.NewItems.Cast<object>().Where(PassesFilter).ToList();
-                if (added.Count == 0)
-                {
-                    return;
-                }
-
-                _items.AddRange(added);
-                SyncObservedItems();
-                RaiseReset();
                 return;
             }
 
             Refresh();
         }
 
-        private int CountSource() => _source is ICollection collection ? collection.Count : _source.Cast<object>().Count();
+        private bool IsShaped => _filter != null || _customSort != null || SortDescriptions.Count > 0
+                                 || _isLiveSorting == true || _isLiveFiltering == true;
+
+        /// <summary>Mirrors a source change 1:1 (the view equals the source when nothing shapes it); false means fall back to a rebuild.</summary>
+        private bool TryApplyIncremental(NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add
+                    when e.NewItems is { Count: > 0 } && e.NewStartingIndex >= 0 && e.NewStartingIndex <= _items.Count:
+                    _items.InsertRange(e.NewStartingIndex, e.NewItems.Cast<object>());
+                    break;
+                case NotifyCollectionChangedAction.Remove
+                    when e.OldItems is { Count: > 0 } && e.OldStartingIndex >= 0 && e.OldStartingIndex + e.OldItems.Count <= _items.Count:
+                    _items.RemoveRange(e.OldStartingIndex, e.OldItems.Count);
+                    break;
+                case NotifyCollectionChangedAction.Replace
+                    when e.NewItems is { Count: > 0 } && e.OldItems?.Count == e.NewItems.Count && e.NewStartingIndex >= 0
+                         && e.NewStartingIndex + e.NewItems.Count <= _items.Count:
+                    for (var i = 0; i < e.NewItems.Count; i++)
+                    {
+                        _items[e.NewStartingIndex + i] = e.NewItems[i];
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Move
+                    when e.OldItems is { Count: > 0 } && e.OldStartingIndex >= 0 && e.NewStartingIndex >= 0
+                         && e.OldStartingIndex + e.OldItems.Count <= _items.Count:
+                    var moved = _items.GetRange(e.OldStartingIndex, e.OldItems.Count);
+                    _items.RemoveRange(e.OldStartingIndex, moved.Count);
+                    if (e.NewStartingIndex > _items.Count)
+                    {
+                        _items.InsertRange(e.OldStartingIndex, moved);
+                        return false;
+                    }
+
+                    _items.InsertRange(e.NewStartingIndex, moved);
+                    break;
+                default:
+                    return false;
+            }
+
+            RestoreCurrency();
+            CollectionChanged?.Invoke(this, e);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
+            return true;
+        }
 
         private bool PassesFilter(object item) => _filter == null || _filter(item);
 

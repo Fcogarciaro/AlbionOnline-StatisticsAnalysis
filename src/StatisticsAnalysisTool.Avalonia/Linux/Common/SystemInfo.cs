@@ -53,7 +53,7 @@ public class SystemInfo
         return string.IsNullOrEmpty(value) ? "Unknown" : value;
     }
 
-    private static bool IsRoot() => Environment.UserName == "root";
+    private static bool IsRoot() => Environment.IsPrivilegedProcess;
 
     private static string GetProcessorName()
     {

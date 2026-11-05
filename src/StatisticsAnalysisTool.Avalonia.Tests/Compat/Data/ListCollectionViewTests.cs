@@ -262,4 +262,82 @@ public class ListCollectionViewTests
         ((Row) view.CurrentItem).Name.Should().Be("c");
         changed.Should().Be(1);
     }
+
+    private static List<NotifyCollectionChangedEventArgs> Capture(ListCollectionView view)
+    {
+        var events = new List<NotifyCollectionChangedEventArgs>();
+        ((INotifyCollectionChanged) view).CollectionChanged += (_, e) => events.Add(e);
+        return events;
+    }
+
+    [Test]
+    public void Unshaped_InsertInMiddle_RaisesIncrementalAddWithIndex()
+    {
+        var source = Source();
+        var view = new ListCollectionView(source);
+        var events = Capture(view);
+
+        source.Insert(1, new Row("n", 9));
+
+        events.Should().ContainSingle();
+        events[0].Action.Should().Be(NotifyCollectionChangedAction.Add);
+        events[0].NewStartingIndex.Should().Be(1);
+        view.Cast<Row>().Select(r => r.Name).Should().Equal("c", "n", "a", "b");
+    }
+
+    [Test]
+    public void Unshaped_Remove_RaisesIncrementalRemoveWithIndex()
+    {
+        var source = Source();
+        var view = new ListCollectionView(source);
+        var events = Capture(view);
+
+        source.RemoveAt(1);
+
+        events.Should().ContainSingle();
+        events[0].Action.Should().Be(NotifyCollectionChangedAction.Remove);
+        events[0].OldStartingIndex.Should().Be(1);
+        view.Cast<Row>().Select(r => r.Name).Should().Equal("c", "b");
+    }
+
+    [Test]
+    public void Unshaped_ReplaceAndMove_RaiseIncrementalEvents()
+    {
+        var source = Source();
+        var view = new ListCollectionView(source);
+        var events = Capture(view);
+
+        source[0] = new Row("z", 0);
+        source.Move(0, 2);
+
+        events.Select(e => e.Action).Should().Equal(NotifyCollectionChangedAction.Replace, NotifyCollectionChangedAction.Move);
+        events[1].OldStartingIndex.Should().Be(0);
+        events[1].NewStartingIndex.Should().Be(2);
+        view.Cast<Row>().Select(r => r.Name).Should().Equal("a", "b", "z");
+    }
+
+    [Test]
+    public void ActiveFilter_KeepsResetSemantics()
+    {
+        var source = Source();
+        var view = new ListCollectionView(source) { Filter = o => ((Row) o).Value > 0 };
+        var events = Capture(view);
+
+        source.Insert(1, new Row("n", 9));
+
+        events.Should().OnlyContain(e => e.Action == NotifyCollectionChangedAction.Reset);
+    }
+
+    [Test]
+    public void Dispose_DetachesFromTheSource()
+    {
+        var source = Source();
+        var view = new ListCollectionView(source);
+        var events = Capture(view);
+
+        view.Dispose();
+        source.Add(new Row("q", 4));
+
+        events.Should().BeEmpty();
+    }
 }

@@ -69,6 +69,12 @@ public class DispatcherTimer
 
     public void Start()
     {
+        if (!Avalonia.Threading.Dispatcher.UIThread.CheckAccess())
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(Start);
+            return;
+        }
+
         if (_timer != null)
         {
             return;
@@ -81,6 +87,12 @@ public class DispatcherTimer
 
     public void Stop()
     {
+        if (!Avalonia.Threading.Dispatcher.UIThread.CheckAccess())
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Invoke(Stop);
+            return;
+        }
+
         var timer = _timer;
         _timer = null;
         timer?.Stop();

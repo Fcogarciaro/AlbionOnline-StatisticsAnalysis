@@ -33,8 +33,8 @@ namespace System.Windows.Media.Imaging
         private int _decodePixelHeight;
         private bool _initializing;
         private bool _initialized;
-        private bool _downloading;
-        private Bitmap _bitmap;
+        private volatile bool _downloading;
+        private volatile Bitmap _bitmap;
 
         public BitmapImage()
         {
@@ -194,32 +194,43 @@ namespace System.Windows.Media.Imaging
                 var bytes = await Downloader(uri).ConfigureAwait(false);
                 using var memory = new IO.MemoryStream(bytes);
                 var bitmap = Decode(memory);
-                Complete(bitmap, null);
+                await Complete(bitmap, null).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Complete(null, ex);
+                await Complete(null, ex).ConfigureAwait(false);
             }
         }
 
-        private void Complete(Bitmap bitmap, Exception error)
+        // The returned task completes only after Finish ran on the UI thread, so LoadTask implies a published bitmap.
+        private Task Complete(Bitmap bitmap, Exception error)
         {
+            var done = new TaskCompletionSource();
+
             void Finish()
             {
-                _bitmap = bitmap;
-                _downloading = false;
-                if (error == null)
+                try
                 {
-                    RaiseDownloadCompleted();
+                    _bitmap = bitmap;
+                    _downloading = false;
+                    if (error == null)
+                    {
+                        RaiseDownloadCompleted();
+                    }
+                    else
+                    {
+                        RaiseDownloadFailed(error);
+                    }
                 }
-                else
+                finally
                 {
-                    RaiseDownloadFailed(error);
+                    done.TrySetResult();
                 }
             }
 
             // WPF raises download events asynchronously on the UI dispatcher, never inline from EndInit.
             Dispatcher.UIThread.Post(Finish);
+            return done.Task;
         }
 
         private void GuardSet()

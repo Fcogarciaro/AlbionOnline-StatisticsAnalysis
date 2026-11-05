@@ -29,14 +29,38 @@ public class WindowShimTests
     }
 
     [AvaloniaTest]
-    public void ShowDialogBlocking_ClosedWithoutResult_ReturnsFalse()
+    public void ShowDialogBlocking_ClosedWithoutResult_ReturnsNull()
     {
         var owner = new global::Avalonia.Controls.Window();
         owner.Show();
         var dialog = new Window();
         dialog.Opened += (_, _) => dialog.Close();
 
-        dialog.ShowDialogBlocking(owner).Should().BeFalse();
+        dialog.ShowDialogBlocking(owner).Should().BeNull();
+    }
+
+    private sealed class ThrowingOnOpen : Window
+    {
+        protected override void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
+            Close();
+        }
+    }
+
+    [AvaloniaTest]
+    public void ShowDialogBlocking_WhenShowDialogTaskFaults_RethrowsInsteadOfHanging()
+    {
+        var owner = new global::Avalonia.Controls.Window();
+        owner.Show();
+        var dialog = new ThrowingOnOpen();
+        // Showing a window that was already closed makes the ShowDialog task fault.
+        dialog.Show();
+        dialog.Close();
+
+        var act = () => dialog.ShowDialogBlocking(owner);
+
+        act.Should().Throw<Exception>();
     }
 
     [AvaloniaTest]
