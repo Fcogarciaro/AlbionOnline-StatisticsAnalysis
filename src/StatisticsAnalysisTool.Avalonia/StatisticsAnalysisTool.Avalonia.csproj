@@ -78,6 +78,7 @@
       ..\StatisticsAnalysisTool\Properties\Resources.Designer.cs;
       ..\StatisticsAnalysisTool\Updater\AutoUpdateController.cs;
       ..\StatisticsAnalysisTool\Updater\UpdateDownloadSession.cs;
+      ..\StatisticsAnalysisTool\Common\AlbionGameProcessMonitor.cs;
       ..\StatisticsAnalysisTool\Common\SoundController.cs;
       ..\StatisticsAnalysisTool\Common\SystemInfo.cs;
       ..\StatisticsAnalysisTool\Common\Utilities.cs;
