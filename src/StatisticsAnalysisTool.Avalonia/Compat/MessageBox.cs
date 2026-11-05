@@ -47,13 +47,14 @@ namespace System.Windows
     {
         public static IStorageProvider GetStorageProvider()
         {
-            var owner = BlockingUi.FindOwner();
-            if (owner?.StorageProvider == null)
+            // The window list is UI-thread state: look the owner up there, whatever thread the caller is on.
+            var provider = BlockingUi.Run(() => System.Threading.Tasks.Task.FromResult(BlockingUi.FindOwner()?.StorageProvider));
+            if (provider == null)
             {
                 Log.Warning("No visible window available to host a file dialog");
             }
 
-            return owner?.StorageProvider;
+            return provider;
         }
 
         public static IStorageFolder StartLocation(IStorageProvider provider, string directory)

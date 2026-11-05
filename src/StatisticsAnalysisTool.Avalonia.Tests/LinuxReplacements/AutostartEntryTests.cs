@@ -1,3 +1,4 @@
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using StatisticsAnalysisTool.Linux.Platform;
@@ -34,7 +35,31 @@ public class AutostartEntryTests
     [Test]
     public void QuoteExecArgument_EscapesSpecialCharacters()
     {
-        AutostartEntry.QuoteExecArgument("/a b/c\"d$e`f\\g%h").Should().Be("\"/a b/c\\\"d\\$e\\`f\\\\g%%h\"");
+        AutostartEntry.QuoteExecArgument("/a b/c\"d$e`f\\g%h").Should().Be("\"/a b/c\\\\\"d\\\\$e\\\\`f\\\\\\\\g%%h\"");
+    }
+
+    [Test]
+    public void BuildContent_AddsTheWorkingDirectory_EscapingBackslashes()
+    {
+        AutostartEntry.BuildContent("\"/x\"", "/opt/sat").Should().Contain("Path=/opt/sat\n");
+        AutostartEntry.BuildContent("\"/x\"", "/a\\b").Should().Contain("Path=/a\\\\b\n");
+        AutostartEntry.BuildContent("\"/x\"").Should().NotContain("Path=");
+    }
+
+    [Test]
+    public void TrySet_LeavesNoTemporaryFilesBehind()
+    {
+        var root = Directory.CreateTempSubdirectory("sat-autostart").FullName;
+        try
+        {
+            AutostartEntry.TrySet(true, root, "\"/x\"", "/opt/sat").Should().BeTrue();
+            Directory.GetFiles(root).Select(Path.GetFileName).Should().Equal(AutostartEntry.FileName);
+            File.ReadAllText(Path.Combine(root, AutostartEntry.FileName)).Should().Contain("Path=/opt/sat\n");
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
     }
 
     [Test]

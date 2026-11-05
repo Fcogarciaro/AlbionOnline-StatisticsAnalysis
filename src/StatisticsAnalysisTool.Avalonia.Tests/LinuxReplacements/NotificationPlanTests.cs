@@ -45,4 +45,12 @@ public class NotificationPlanTests
         NotificationPlan.NotifySendArguments(NotificationKind.Success, "t", "m")
             .Should().Contain("--urgency=normal");
     }
+
+    [Test]
+    public void NotifySendArguments_EscapesMarkupInTheBody_ButNotTheTitle()
+    {
+        var args = NotificationPlan.NotifySendArguments(NotificationKind.Success, "A & B", "<b>x</b> & y");
+        args[^2].Should().Be("A & B");
+        args[^1].Should().Be("&lt;b&gt;x&lt;/b&gt; &amp; y");
+    }
 }

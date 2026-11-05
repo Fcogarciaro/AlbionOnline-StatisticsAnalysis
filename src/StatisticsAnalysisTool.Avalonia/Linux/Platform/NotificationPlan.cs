@@ -45,6 +45,9 @@ internal static class NotificationPlan
         $"--expire-time={(int) Duration.TotalMilliseconds}",
         "--",
         title ?? string.Empty,
-        message ?? string.Empty
+        EscapeMarkup(message ?? string.Empty)
     ];
+
+    // Notification servers may interpret the body as markup (<b>, <a href>); show it literally.
+    public static string EscapeMarkup(string text) => text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 }

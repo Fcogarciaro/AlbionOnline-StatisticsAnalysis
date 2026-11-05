@@ -19,6 +19,9 @@ public static class WindowsStartupService
         }
 
         var exec = isEnabled ? AutostartEntry.BuildExec(processPath, Assembly.GetEntryAssembly()?.Location) : string.Empty;
-        return AutostartEntry.TrySet(isEnabled, directory, exec);
+        var entryPath = Assembly.GetEntryAssembly()?.Location;
+        var isDotnetHost = string.Equals(System.IO.Path.GetFileNameWithoutExtension(processPath), "dotnet", StringComparison.Ordinal);
+        var workingDirectory = System.IO.Path.GetDirectoryName(isDotnetHost && !string.IsNullOrEmpty(entryPath) ? entryPath : processPath);
+        return AutostartEntry.TrySet(isEnabled, directory, exec, workingDirectory);
     }
 }

@@ -36,9 +36,16 @@ internal static class AutostartEntry
         var builder = new StringBuilder("\"");
         foreach (var c in argument)
         {
-            if (c is '"' or '$' or '`' or '\\')
+            if (c == '\\')
             {
-                builder.Append('\\');
+                // Two unescape passes (string value, then Exec quoting): one backslash is written as four.
+                builder.Append("\\\\\\\\");
+                continue;
+            }
+
+            if (c is '"' or '$' or '`')
+            {
+                builder.Append("\\\\");
             }
             else if (c == '%')
             {
@@ -51,16 +58,21 @@ internal static class AutostartEntry
         return builder.Append('"').ToString();
     }
 
-    public static string BuildContent(string exec) =>
+    /// <summary>Escapes a string value per the Desktop Entry spec (backslash and control characters).</summary>
+    public static string EscapeValue(string value) =>
+        value.Replace("\\", "\\\\").Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
+
+    public static string BuildContent(string exec, string workingDirectory = null) =>
         "[Desktop Entry]\n"
         + "Type=Application\n"
         + "Name=Statistics Analysis Tool\n"
         + "Comment=Albion Online Statistics Analysis Tool\n"
         + $"Exec={exec}\n"
+        + (string.IsNullOrEmpty(workingDirectory) ? string.Empty : $"Path={EscapeValue(workingDirectory)}\n")
         + "Terminal=false\n"
         + "X-GNOME-Autostart-enabled=true\n";
 
-    public static bool TrySet(bool isEnabled, string directory, string exec)
+    public static bool TrySet(bool isEnabled, string directory, string exec, string workingDirectory = null)
     {
         try
         {
@@ -68,7 +80,9 @@ internal static class AutostartEntry
             if (isEnabled)
             {
                 Directory.CreateDirectory(directory);
-                File.WriteAllText(path, BuildContent(exec));
+                var temporaryPath = path + ".tmp";
+                File.WriteAllText(temporaryPath, BuildContent(exec, workingDirectory));
+                File.Move(temporaryPath, path, true);
             }
             else if (File.Exists(path))
             {

@@ -86,9 +86,7 @@ public static class SoundController
             var startInfo = new ProcessStartInfo(command.FileName)
             {
                 UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
+                CreateNoWindow = true
             };
             foreach (var argument in command.Arguments)
             {
@@ -97,11 +95,8 @@ public static class SoundController
 
             var process = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
             process.Exited += (_, _) => process.Dispose();
-            process.OutputDataReceived += (_, _) => { };
-            process.ErrorDataReceived += (_, _) => { };
+            // Output is not redirected: nothing reads it, and a failed Start() must not leave a half-started process.
             process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
             return true;
         }
         catch (Exception e) when (e is Win32Exception or InvalidOperationException)
