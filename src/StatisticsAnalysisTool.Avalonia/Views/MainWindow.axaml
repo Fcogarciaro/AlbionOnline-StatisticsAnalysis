@@ -198,7 +198,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding GatheringTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Gathering, FallbackValue=GATHERING}" Tag="pack://application:,,,/Assets/Navigation/pickaxe.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="GatheringControl" />
+          <userControls:GatheringControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding CraftingTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Crafting, FallbackValue=CRAFTING}" Tag="pack://application:,,,/Assets/Navigation/anvil.png">

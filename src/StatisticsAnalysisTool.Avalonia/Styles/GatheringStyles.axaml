@@ -1,0 +1,570 @@
+<!-- Port of Styles/GatheringStyles.xaml (conventions: PORTING.md, "Style mapping"). The resource tab lists are a ScrollViewer around an ItemsControl with a
+     VirtualizingStackPanel (WpfToolkit VirtualizingItemsControl). -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:gathering="clr-namespace:StatisticsAnalysisTool.Gathering"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <conv:ValuePerHourConverter x:Key="ValuePerHourConverter" />
+    <conv:ShortNumberConverter x:Key="ShortNumberConverter" />
+
+    
+    <ControlTheme x:Key="Style.Image.Resource" TargetType="Image">
+        <Setter Property="Width" Value="50" />
+        <Setter Property="Height" Value="50" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.Image.Item.Icon" TargetType="Image">
+        <Setter Property="Width" Value="50" />
+        <Setter Property="Height" Value="50" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.Image.Pickaxe" TargetType="Image">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/pickaxe.png" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.Image.Pickaxe.Repeat" TargetType="Image">
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/pickaxe_repeat.png" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.Image.Pickaxe.Bonus" TargetType="Image">
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/pickaxe_bonus.png" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.Image.Pickaxe.Premium" TargetType="Image">
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/pickaxe_premium.png" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.Image.Pickaxe.Box" TargetType="Image">
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/pickaxe_box.png" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.Image.FishingLure.Box" TargetType="Image">
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/fishing_lure_box.png" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.TextBlock.CollectionFragment.Numbers" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Margin" Value="5,0,5,5" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+    </ControlTheme>
+
+    <ControlTheme TargetType="TextBlock" x:Key="Gathering.Stats.TitleText">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="0,5,0,0"/>
+    </ControlTheme>
+
+
+    <ControlTheme x:Key="Gathering.SummaryCard" TargetType="Border" BasedOn="{StaticResource Dashboard.SummaryCard}">
+        <Setter Property="MinWidth" Value="190" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.SummaryIcon" TargetType="Image" BasedOn="{StaticResource Dashboard.SummaryImage}">
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.SummaryName" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.ResourceTabContent" TargetType="ContentControl">
+        <Setter Property="Margin" Value="0,8,0,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.DetailCard" TargetType="Border" BasedOn="{StaticResource Dashboard.Section}">
+        <Setter Property="MinHeight" Value="230" />
+        <Setter Property="Padding" Value="12,10" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.ChartCard" TargetType="Border" BasedOn="{StaticResource Dashboard.Section}">
+        <Setter Property="MinHeight" Value="330" />
+        <Setter Property="Padding" Value="12,10" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.ListCard" TargetType="Border" BasedOn="{StaticResource Dashboard.Section}">
+        <Setter Property="MinHeight" Value="285" />
+        <Setter Property="Padding" Value="0,10,0,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.CardTitle" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,0,0,9" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.DetailRow" TargetType="Border">
+        <Setter Property="MinHeight" Value="31" />
+        <Setter Property="Padding" Value="2,4" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.DetailLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.DetailValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.TableHeader" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.3}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.TableText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11.5" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Gathering.TableValue" TargetType="TextBlock" BasedOn="{StaticResource Gathering.TableText}">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </ControlTheme>
+    <DataTemplate x:Key="GatheredItemTemplate" DataType="gathering:Gathered">
+        <Grid Height="50">
+            <Border Theme="{StaticResource Container.Border}">
+                <DockPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+                    <StackPanel Orientation="Vertical" Margin="0,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Image Source="{Binding Item?.Icon}" Theme="{StaticResource Gathering.Image.Item.Icon}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0" MinWidth="600">
+                                <TextBlock Text="{Binding Item?.TierLevelString, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                <TextBlock Text="{Binding Item?.LocalizedName, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                                <TextBlock Text="{Binding TranslationIn, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                <TextBlock Text="{Binding ClusterUniqueName, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding TimestampDateTimeUtc, StringFormat='{}{0}'}" TextAlignment="Right" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel>
+                            <StackPanel Orientation="Horizontal" IsVisible="{Binding HasBeenFished, Converter={x:Static BoolConverters.Not}}">
+                                <StackPanel Orientation="Horizontal" Width="90">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Box}" ToolTip.Tip="{Binding TranslationTotal, FallbackValue='TOTAL'}" />
+                                    <TextBlock Text="{Binding GainedTotalAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="90">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe}" ToolTip.Tip="{Binding TranslationStandard, FallbackValue='STANDARD'}" />
+                                    <TextBlock Text="{Binding GainedStandardAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="100">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Bonus}" ToolTip.Tip="{Binding TranslationBonus, FallbackValue='BONUS'}" />
+                                    <TextBlock Text="{Binding GainedBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="100">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Premium}" ToolTip.Tip="{Binding TranslationPremium, FallbackValue='PREMIUM'}" />
+                                    <TextBlock Text="{Binding GainedPremiumBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="100">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Repeat}" ToolTip.Tip="{Binding TranslationAmountOfMiningProcesses, FallbackValue='AMOUNT__OF__MINING__PROCESSES'}" />
+                                    <TextBlock Text="{Binding MiningProcesses, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="130">
+                                    <Image Theme="{StaticResource Icon.Silver}" ToolTip.Tip="{Binding TranslationTotalMarketValue, FallbackValue='TOTAL__MARKET__VALUE'}" />
+                                    <TextBlock Text="{Binding TotalMarketValueWithCulture, Mode=OneWay, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                               Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" IsVisible="{Binding HasBeenFished}">
+                                <StackPanel Orientation="Horizontal" Width="90">
+                                    <Image Theme="{StaticResource Gathering.Image.FishingLure.Box}" ToolTip.Tip="{Binding TranslationTotal, FallbackValue='TOTAL'}" />
+                                    <TextBlock Text="{Binding GainedTotalAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="130">
+                                    <Image Theme="{StaticResource Icon.Silver}" ToolTip.Tip="{Binding TranslationTotalMarketValue, FallbackValue='TOTAL__MARKET__VALUE'}" />
+                                    <TextBlock Text="{Binding TotalMarketValueWithCulture, Mode=OneWay, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                               Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="GatheredItemStatsTemplate" DataType="gathering:Gathered">
+        <Grid Height="50">
+            <Border Theme="{StaticResource Container.Border}">
+                <DockPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+                    <StackPanel Orientation="Vertical" Margin="0,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Image Source="{Binding Item?.Icon, Mode=OneWay}" Theme="{StaticResource Gathering.Image.Item.Icon}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0" MinWidth="600">
+                                <TextBlock Text="{Binding Item?.TierLevelString, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                <TextBlock Text="{Binding Item?.LocalizedName, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel>
+                            <StackPanel Orientation="Horizontal" IsVisible="{Binding HasBeenFished, Converter={x:Static BoolConverters.Not}}">
+                                <StackPanel Orientation="Horizontal" Width="90">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Box}" ToolTip.Tip="{Binding TranslationTotal, FallbackValue='TOTAL'}" />
+                                    <TextBlock Text="{Binding GainedTotalAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="90">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe}" ToolTip.Tip="{Binding TranslationStandard, FallbackValue='STANDARD'}" />
+                                    <TextBlock Text="{Binding GainedStandardAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="100">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Bonus}" ToolTip.Tip="{Binding TranslationBonus, FallbackValue='BONUS'}" />
+                                    <TextBlock Text="{Binding GainedBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="100">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Premium}" ToolTip.Tip="{Binding TranslationPremium, FallbackValue='PREMIUM'}" />
+                                    <TextBlock Text="{Binding GainedPremiumBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="100">
+                                    <Image Theme="{StaticResource Gathering.Image.Pickaxe.Repeat}" ToolTip.Tip="{Binding TranslationAmountOfMiningProcesses, FallbackValue='AMOUNT__OF__MINING__PROCESSES'}" />
+                                    <TextBlock Text="{Binding MiningProcesses, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="130">
+                                    <Image Theme="{StaticResource Icon.Silver}" ToolTip.Tip="{Binding TranslationTotalMarketValue, FallbackValue='TOTAL__MARKET__VALUE'}" />
+                                    <TextBlock Text="{Binding TotalMarketValueWithCulture, Mode=OneWay, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                               Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" IsVisible="{Binding HasBeenFished}">
+                                <StackPanel Orientation="Horizontal" Width="90">
+                                    <Image Theme="{StaticResource Gathering.Image.FishingLure.Box}" ToolTip.Tip="{Binding TranslationTotal, FallbackValue='TOTAL'}" />
+                                    <TextBlock Text="{Binding GainedTotalAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Width="130">
+                                    <Image Theme="{StaticResource Icon.Silver}" ToolTip.Tip="{Binding TranslationTotalMarketValue, FallbackValue='TOTAL__MARKET__VALUE'}" />
+                                    <TextBlock Text="{Binding TotalMarketValueWithCulture, Mode=OneWay, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                               Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MostGatheredResourceTemplate" DataType="gathering:Gathered">
+        <Grid Height="50">
+            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+                <StackPanel Orientation="Vertical" Margin="0,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <Image Source="{Binding Item?.Icon, Mode=OneWay}" Theme="{StaticResource Gathering.Image.Item.Icon}" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" MinWidth="600">
+                            <TextBlock Text="{Binding Item?.TierLevelString, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                            <TextBlock Text="{Binding Item?.LocalizedName, FallbackValue=0}" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Width="90">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Box}" ToolTip.Tip="{Binding TranslationTotal, FallbackValue='TOTAL'}" />
+                                <TextBlock Text="{Binding GainedTotalAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="90">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe}" ToolTip.Tip="{Binding TranslationStandard, FallbackValue='STANDARD'}" />
+                                <TextBlock Text="{Binding GainedStandardAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="100">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Bonus}" ToolTip.Tip="{Binding TranslationBonus, FallbackValue='BONUS'}" />
+                                <TextBlock Text="{Binding GainedBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="100">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Premium}" ToolTip.Tip="{Binding TranslationPremium, FallbackValue='PREMIUM'}" />
+                                <TextBlock Text="{Binding GainedPremiumBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="100">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Repeat}" ToolTip.Tip="{Binding TranslationAmountOfMiningProcesses, FallbackValue='AMOUNT__OF__MINING__PROCESSES'}" />
+                                <TextBlock Text="{Binding MiningProcesses, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </DockPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MostGatheredClusterTemplate" DataType="gathering:Gathered">
+        <Grid Height="50">
+            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+                <StackPanel Orientation="Vertical">
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" MinWidth="600">
+                            <TextBlock Text="{Binding ClusterUniqueName, FallbackValue=0}" FontSize="16" FontWeight="Bold" Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Width="90">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Box}" ToolTip.Tip="{Binding TranslationTotal, FallbackValue='TOTAL'}" />
+                                <TextBlock Text="{Binding GainedTotalAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="90">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe}" ToolTip.Tip="{Binding TranslationStandard, FallbackValue='STANDARD'}" />
+                                <TextBlock Text="{Binding GainedStandardAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="100">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Bonus}" ToolTip.Tip="{Binding TranslationBonus, FallbackValue='BONUS'}" />
+                                <TextBlock Text="{Binding GainedBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="100">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Premium}" ToolTip.Tip="{Binding TranslationPremium, FallbackValue='PREMIUM'}" />
+                                <TextBlock Text="{Binding GainedPremiumBonusAmount, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="100">
+                                <Image Theme="{StaticResource Gathering.Image.Pickaxe.Repeat}" ToolTip.Tip="{Binding TranslationAmountOfMiningProcesses, FallbackValue='AMOUNT__OF__MINING__PROCESSES'}" />
+                                <TextBlock Text="{Binding MiningProcesses, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </DockPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="GenerallyTemplate" DataType="gathering:GatheringStats">
+        <Grid>
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" Width="200">
+                        <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationResourceValue}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                            <TextBlock Text="{Binding TotalGainedSilverString, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                       Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationPerHour}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                            <TextBlock Text="{Binding TotalGainedSilverPerHour, Converter={StaticResource ValuePerHourConverter}}" 
+                                       Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock IsVisible="{Binding MostGatheredResourceVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationMostGatheredResource}" />
+                <ContentControl IsVisible="{Binding MostGatheredResourceVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Content="{Binding MostGatheredResource}" ContentTemplate="{StaticResource MostGatheredResourceTemplate}" />
+
+                <TextBlock IsVisible="{Binding MostGatheredClusterVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationMostGatheredOnMap}" />
+                <ContentControl IsVisible="{Binding MostGatheredClusterVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Content="{Binding MostGatheredCluster}" ContentTemplate="{StaticResource MostGatheredClusterTemplate}" />
+
+                <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationTotalResources}" />
+                <TextBlock Text="{Binding TotalResources, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+
+                <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationTotalMiningProcesses}" />
+                <TextBlock Text="{Binding TotalMiningProcesses, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="HideTemplate" DataType="gathering:GatheringStats">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Width="200">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationResourceValue}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverByHide, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationPerHour}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverPerHourByHide, Converter={StaticResource ValuePerHourConverter}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <!-- WpfToolkit VirtualizingItemsControl -> ScrollViewer around an ItemsControl with a VirtualizingStackPanel. -->
+<ScrollViewer Margin="0,8,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+<ItemsControl ItemsSource="{Binding GatheredHide, Mode=OneWay}" ItemTemplate="{StaticResource GatheredItemStatsTemplate}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+</ScrollViewer>
+        </DockPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="OreTemplate" DataType="gathering:GatheringStats">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Width="200">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationResourceValue}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverByOre, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationPerHour}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverPerHourByOre, Converter={StaticResource ValuePerHourConverter}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <!-- WpfToolkit VirtualizingItemsControl -> ScrollViewer around an ItemsControl with a VirtualizingStackPanel. -->
+<ScrollViewer Margin="0,8,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+<ItemsControl ItemsSource="{Binding GatheredOre, Mode=OneWay}" ItemTemplate="{StaticResource GatheredItemStatsTemplate}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+</ScrollViewer>
+        </DockPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RockTemplate" DataType="gathering:GatheringStats">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Width="200">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationResourceValue}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverByRock, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationPerHour}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverPerHourByRock, Converter={StaticResource ValuePerHourConverter}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <!-- WpfToolkit VirtualizingItemsControl -> ScrollViewer around an ItemsControl with a VirtualizingStackPanel. -->
+<ScrollViewer Margin="0,8,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+<ItemsControl ItemsSource="{Binding GatheredRock, Mode=OneWay}" ItemTemplate="{StaticResource GatheredItemStatsTemplate}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+</ScrollViewer>
+        </DockPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="FiberTemplate" DataType="gathering:GatheringStats">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Width="200">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationResourceValue}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverByFiber, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationPerHour}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverPerHourByFiber, Converter={StaticResource ValuePerHourConverter}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <!-- WpfToolkit VirtualizingItemsControl -> ScrollViewer around an ItemsControl with a VirtualizingStackPanel. -->
+<ScrollViewer Margin="0,8,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+<ItemsControl ItemsSource="{Binding GatheredFiber, Mode=OneWay}" ItemTemplate="{StaticResource GatheredItemStatsTemplate}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+</ScrollViewer>
+        </DockPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="WoodTemplate" DataType="gathering:GatheringStats">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Width="200">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationResourceValue}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverByWood, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationPerHour}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverPerHourByWood, Converter={StaticResource ValuePerHourConverter}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <!-- WpfToolkit VirtualizingItemsControl -> ScrollViewer around an ItemsControl with a VirtualizingStackPanel. -->
+<ScrollViewer Margin="0,8,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+<ItemsControl ItemsSource="{Binding GatheredWood, Mode=OneWay}" ItemTemplate="{StaticResource GatheredItemStatsTemplate}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+</ScrollViewer>
+        </DockPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="FishingTemplate" DataType="gathering:GatheringStats">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Width="200">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationResourceValue}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverByFish, StringFormat=N0, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Theme="{StaticResource Gathering.Stats.TitleText}" Text="{Binding TranslationPerHour}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Theme="{StaticResource Icon.Silver}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding GainedSilverPerHourByFish, Converter={StaticResource ValuePerHourConverter}}" 
+                                   Theme="{StaticResource Gathering.TextBlock.CollectionFragment.Numbers}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <!-- WpfToolkit VirtualizingItemsControl -> ScrollViewer around an ItemsControl with a VirtualizingStackPanel. -->
+<ScrollViewer Margin="0,8,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+<ItemsControl ItemsSource="{Binding GatheredFish, Mode=OneWay}" ItemTemplate="{StaticResource GatheredItemStatsTemplate}"><ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel></ItemsControl>
+</ScrollViewer>
+        </DockPanel>
+    </DataTemplate>
+
+
+  </Styles.Resources>
+</Styles>

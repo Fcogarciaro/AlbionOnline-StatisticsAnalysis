@@ -208,7 +208,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
 - **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, DungeonControl,
-  DamageMeterControl, TradeMonitoringControl, GatheringControl and CraftingControl (SettingsControl is real since T10; ItemSearch,
+  DamageMeterControl, TradeMonitoringControl and CraftingControl (SettingsControl is real since T10; ItemSearch,
   Party, Guild, StorageHistory, MapHistory, PlayerInformation, Donation and Thanks since T11). Each is replaced where it is ported
   (T12-T15). `ItemSearchControl` hosts a placeholder named ItemDetailsControl in its details slot until the item details view lands.
 
@@ -337,6 +337,25 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
   clipboard goes through the `System.Windows.Clipboard` shim (main window clipboard). The export icons and the info icon use
   `PointerReleased`. `TextBox` scroll bars are the `ScrollViewer.*ScrollBarVisibility` attached properties.
 - `EventValidationWindow` was already complete (T10).
+
+### Dashboard styles and GatheringControl (T13)
+
+- `Styles/DashboardStyles.axaml` ports `DashboardStyles.xaml` (it now owns `Dashboard.Section` and `Dashboard.SectionTitle`; `Theme.axaml` includes it
+  before `SettingsStyles`). Patterns used: `DataTrigger` on `IsIncrease`/`IsDecrease` is `Classes.increase|decrease` on every
+  `Dashboard.SummaryDeltaText` use; tier and mob type tags are classes (`t1`..`t8`, one per `MobTypeCategory`); `Visibility` triggers on enums or
+  booleans are `IsVisible` with `ObjectConverters.Equal|NotEqual` or `BoolConverters.Not`; the two custom `Expander` templates
+  (`Dashboard.CombatEventExpander`, `Dashboard.MobExpander`) are an `Expander` theme whose header is a `ToggleButton` theme (`...Toggle`) with the
+  chevron switched by `:checked`; the ranking bar keeps `PART_Track`/`PART_Indicator` of the Avalonia `ProgressBar`.
+  `Dashboard.SessionDeleteButton` loses the Visibility setter (the local `IsVisible` binding of every use overrode it in WPF too).
+- Items whose view-model type is the shim `Brush` (`Brush` of chart filters, ranking items, type summaries) bind through `CompatBrushConverter`.
+- `Styles/GatheringStyles.axaml` ports `GatheringStyles.xaml`: the resource tab lists (`WpfToolkit VirtualizingItemsControl`) are a `ScrollViewer`
+  around an `ItemsControl` with a `VirtualizingStackPanel`. `TrackingStyles.axaml` also gained the `Icon.*` image themes (chests, dungeon, fame, silver, re-spec).
+- `UserControls/GatheringControl.axaml(.cs)`: 1:1; charts are `lvc:PieChart`/`lvc:CartesianChart` (`LiveChartsCore.SkiaSharpView.Avalonia`, same
+  `Series`, `XAxes`, `LegendPosition`, `LegendTextPaint`, ... as the WPF `wpf:` charts). `ItemsSource` properties of nullable members use `?.`
+  (`BestResource?.Item?.Icon`). WPF `IsVisibleChanged` becomes `Loaded`, `Unloaded` and a change of `IsVisible` (a TabControl detaches unselected
+  content), reporting `IsLoaded && IsEffectivelyVisible` to `GatheringBindings.SetViewVisibility`. Tests draw a pie and a line chart through Skia
+  headless and check their pixels. Note that `GatheringBindings` replaces `GatheringStats` series collections itself on its refresh, so tests set the
+  series before showing the control.
 
 ## View placeholders
 

@@ -1,23 +1,9 @@
 <!-- Port of Styles/SettingsStyles.xaml. Settings.Card is based on Dashboard.Section and Settings.CardTitle on Dashboard.SectionTitle
-     (DashboardStyles.xaml, ported with the dashboard in T13): the two themes are defined here until then. -->
+     (DashboardStyles.axaml, which Theme.axaml includes before this file). -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:CompileBindings="False">
   <Styles.Resources>
-
-    <ControlTheme x:Key="Dashboard.Section" TargetType="Border">
-      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.T.2}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="CornerRadius" Value="4" />
-    </ControlTheme>
-
-    <ControlTheme x:Key="Dashboard.SectionTitle" TargetType="TextBlock">
-      <Setter Property="FontSize" Value="17" />
-      <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
-      <Setter Property="VerticalAlignment" Value="Center" />
-    </ControlTheme>
 
     <ControlTheme x:Key="Settings.Card" TargetType="Border" BasedOn="{StaticResource Dashboard.Section}">
       <Setter Property="Margin" Value="0,0,0,8" />

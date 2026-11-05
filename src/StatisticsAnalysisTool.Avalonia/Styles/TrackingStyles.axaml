@@ -194,6 +194,72 @@
     </DataTemplate>
 
 
+    <!-- Chest, dungeon, fame, silver and re-spec icons -->
+    <ControlTheme x:Key="Icon.Chest.Standard.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_standard.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Standard.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_standard.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Uncommon.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_uncommon.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Uncommon.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_uncommon.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Rare.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_rare.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Rare.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_rare.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Legendary.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_legendary.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Legendary.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_legendary.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Dungeon" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/dungeon.png"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="30"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Fame" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/fame.png"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Width" Value="16"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Silver" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/silver.png"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Width" Value="16"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.ReSpec" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/respec.png"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Width" Value="16"/>
+    </ControlTheme>
+
+
     <!-- ===== Logging (LoggingControl) ===== -->
     <ControlTheme x:Key="LineFragmentImageStyle" TargetType="Image">
       <Setter Property="Width" Value="16" />
