@@ -66,6 +66,29 @@ CommandManager, Clipboard, XmlLanguage, DataTemplate, DataTemplateSelector.
 `Application.Resources` returns Avalonia colors and solid brushes as the WPF-shaped `Color` / `SolidColorBrush`,
 so linked code casts them unchanged. The Avalonia theme must define the `Color.*` and `SolidColorBrush.*` keys (T08).
 
+## Startup flow (`Linux/Startup/AppStartup.cs`)
+
+`LinuxApp.OnFrameworkInitializationCompleted` starts `AppStartup.RunAsync()` (the async-void `OnStartup` of
+`App.xaml.cs`, same steps in the same order, same fatal-error path). Differences:
+
+- `ShutdownMode.OnExplicitShutdown` until the main window exists, then `OnMainWindowClose`, through
+  `IClassicDesktopStyleApplicationLifetime`. `OnExit` is the lifetime `Exit` event and `SessionEnding` is
+  `ShutdownRequested`; both run the same cleanup (notifications off, updater disposed, `PrepareForShutdown`,
+  `CriticalData.Save`, backup), which runs once.
+- The Npcap dialog is a message box (`CaptureStartupDialog`): the link is the capabilities(7) man page, and when the
+  process lacks `CAP_NET_RAW`/`CAP_NET_ADMIN` the exact setcap command is part of the text even if libpcap lists devices.
+  The same guidance is also logged as a warning on every start. Shown once, like upstream (`IsNpcapInfoDialogShownOnStart`).
+- `SatNotificationManager` is created without a dispatcher argument; `MainWindow` is the T09 placeholder
+  (`Views/MainWindow.cs`: geometry, tray service, Albion process monitor, close persistence, start-in-tray). The WPF
+  chrome buttons, uptime label and stats drop-down are not ported.
+- `AppStartup.ApplicationUptime` replaces `App.ApplicationUptime` for the T09 footer.
+- Placeholders still standing for T10: `FirstStartGuideWindow` (completes at once, does not persist the flag),
+  `GameDataPreparationWindow` (so a first run without a game folder ends in an early shutdown), `LanguageSelectionWindow`
+  (needed when a completed guide left no culture), `DialogWindow` (the info dialog uses `MessageBox`), `ItemAlertWindow`,
+  `EventValidationWindow`.
+- The Avalonia theme (T08) must provide the `Color.*` keys that view models read (for example `Color.Accent.Blue.2`,
+  `Color.Text.1`); until then `TrackingController.InitTrackingAsync` throws without them (the startup test defines them).
+
 ## Ported views
 
 - `Views/ToolLoadingWindow.axaml` (T07): 600x36 borderless progress bar with the status text, draggable. Colors
