@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>StatisticsAnalysisTool</AssemblyName>
+    <RootNamespace>StatisticsAnalysisTool</RootNamespace>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <!-- Set to true to link the non-view sources of the WPF project (compile spike). -->
+    <LinkWpfSources Condition="'$(LinkWpfSources)' == ''">false</LinkWpfSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.22" Condition="'$(Configuration)' == 'Debug'" />
+
+    <PackageReference Include="BinaryFormat.EthernetFrame" Version="0.1.5" />
+    <PackageReference Include="BinaryFormat.IPv4" Version="0.1.5" />
+    <PackageReference Include="BinaryFormat.Udp" Version="0.1.5" />
+    <PackageReference Include="Libpcap" Version="0.1.5" />
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="SkiaSharp" Version="4.151.1" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="4.151.1" />
+    <PackageReference Include="System.Linq.Async" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StatisticAnalysisTool.Extractor\StatisticAnalysisTool.Extractor.csproj" />
+    <ProjectReference Include="..\StatisticsAnalysisTool.Network\StatisticsAnalysisTool.Network.csproj" />
+  </ItemGroup>
+
+  <!-- Compile spike: link the non-view, non-Windows-only sources of the WPF project. -->
+  <ItemGroup Condition="'$(LinkWpfSources)' == 'true'">
+    <Compile Include="..\StatisticsAnalysisTool\**\*.cs" LinkBase="Wpf" Exclude="
+      ..\StatisticsAnalysisTool\bin\**;
+      ..\StatisticsAnalysisTool\Models\StatPricesTotal.cs;
+      ..\StatisticsAnalysisTool\Network\Handler\JoinHandler.cs;
+      ..\StatisticsAnalysisTool\Network\SilverCountUpTimer.cs;
+      ..\StatisticsAnalysisTool\obj\**;
+      ..\StatisticsAnalysisTool\Views\**;
+      ..\StatisticsAnalysisTool\UserControls\**;
+      ..\StatisticsAnalysisTool\**\*.xaml.cs;
+      ..\StatisticsAnalysisTool\App.xaml.cs;
+      ..\StatisticsAnalysisTool\Properties\**;
+      ..\StatisticsAnalysisTool\Shortcut\**;
+      ..\StatisticsAnalysisTool\**\SystemTrayService.cs;
+      ..\StatisticsAnalysisTool\**\SystemTrayMenuRenderer.cs;
+      ..\StatisticsAnalysisTool\**\WindowChromeController.cs;
+      ..\StatisticsAnalysisTool\**\AuthenticodeSignatureVerifier.cs;
+      ..\StatisticsAnalysisTool\**\WindowsStartupService.cs" />
+  </ItemGroup>
+
+</Project>
