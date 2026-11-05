@@ -84,6 +84,8 @@
       ..\StatisticsAnalysisTool\Updater\AutoUpdateController.cs;
       ..\StatisticsAnalysisTool\Updater\UpdateDownloadSession.cs;
       ..\StatisticsAnalysisTool\Common\AppDataPaths.cs;
+      ..\StatisticsAnalysisTool\Core\ApplicationCore.cs;
+      ..\StatisticsAnalysisTool\Localization\LocalizationController.cs;
       ..\StatisticsAnalysisTool\Network\PacketProviders\LibpcapPacketProvider.cs;
       ..\StatisticsAnalysisTool\Network\PacketProviders\SocketsPacketProvider.cs;
       ..\StatisticsAnalysisTool\Common\AlbionGameProcessMonitor.cs;

@@ -1,6 +1,7 @@
 #nullable enable
 // Linux copy of Network/PacketProviders/LibpcapPacketProvider.cs (keep in sync with upstream). Differences:
 //  - TryReadNetworkLayer decodes Ethernet (+VLAN), Linux cooked SLL/SLL2 and raw IP through LinkLayerDecoder.
+//  - Start() logs the setcap guidance when the process lacks the capture capabilities.
 //  - The "any" pseudo device is only opened when no concrete interface could be opened (it would deliver every
 //    packet a second time) and is not listed as a selectable device.
 
@@ -98,6 +99,13 @@ public class LibpcapPacketProvider : PacketProvider
 
         _cts?.Dispose();
         _cts = new CancellationTokenSource();
+
+        if (!CapturePrivilege.IsCurrentProcessCapable())
+        {
+            var environment = CaptureEnvironment.Current;
+            Log.Warning("Capture permission missing, opening devices will most likely fail. {Guidance}",
+                CaptureGuidance.PermissionMessage(environment.ProcessPath, environment.EntryAssemblyPath));
+        }
 
         var dispatcher = CreateDispatcher();
         int opened;
