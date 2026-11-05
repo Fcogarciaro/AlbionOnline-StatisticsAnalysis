@@ -65,7 +65,7 @@ Each task records its route and trigger.
   - Capture: libpcap resolved via `ResolvingUnmanagedDll`; Ethernet, VLAN, SLL, SLL2 and raw IP decoding; a CapEff capability check with setcap guidance.
   - Evidence: tests 243/243 (re-run by the parent). Live capture is untested, because there is no sudo here.
   - Open for T07/T10: the Npcap link in App startup, the provider labels in Settings, and a `CaptureGuidance.PermissionMessage` call in the first-start view.
-- [ ] T06c Verifier correction, no blocking defects. Route: delegated (writer, after T07).
+- [x] T06c Verifier correction, no blocking defects. Commit 25668e70. Route: delegated (writer, after T07).
   - The capability gate requires only CAP_NET_RAW, so a user with only cap_net_raw is no longer blocked. NET_ADMIN is optional; the setcap text keeps both, as Wireshark's dumpcap does.
   - `JsonSettingsProvider.SetPropertyValues` catches and logs I/O errors.
   - `GameFile` resolves case ambiguity deterministically.
@@ -73,7 +73,9 @@ Each task records its route and trigger.
   - Evidence: tests 257/257 (re-run by the parent). A headless RunAsync smoke test reaches the real MainWindowViewModel and TrackingController. There is no display in the agent shell, so the live run is pending with the user.
   - Deviations: a single-instance lock file is added (upstream has none); the Npcap dialog is replaced by a capture-guidance MessageBox.
   - Open: T08 must define the `Color.*` resources (TrackingController NREs without them); the T10 placeholders are FirstStartGuide, GameDataPreparation, LanguageSelection, Dialog, ItemAlert and EventValidation.
-- [ ] T08 Theme: Colors, MainStyles, shared styles; DataTriggers → classes; converters; custom controls.
+- [x] T08 Theme: Colors, MainStyles, shared styles; DataTriggers → classes; converters; custom controls. Commits 2f25d09c, 3f97bb9a, e0d66226.
+  - Convention (see PORTING.md): keyed Style → ControlTheme with `Theme={StaticResource}`; triggers → pseudoclasses; DataTriggers → `Classes.x` with ObjectConverters.Equal; Visibility → VisibilityToBoolConverter.
+  - Feature dictionaries are ported with their views.
 - [ ] T09 MainWindow + navigation, footer, bars, tray, window chrome.
 - [ ] T10 Secondary windows: Settings, FirstStartGuide, Language, GameDataPreparation, Dialog, Update.
 - [ ] T11 Simple tabs: Guild, Party, StorageHistory, MapHistory, ItemSearch, Donation, Thanks, PlayerInformation.
@@ -81,7 +83,9 @@ Each task records its route and trigger.
 - [ ] T13 Dashboard, DashboardLoot, Gathering, Crafting (LiveCharts Avalonia).
 - [ ] T14 DamageMeter (+ window), Dungeon, LossExplorer.
 - [ ] T15 TradeMonitoring (+ Skia heatmap), ItemDetails.
-- [ ] T16 Icon packs (FontAwesome, GameIcons).
+- [x] T16 Icon packs (FontAwesome, GameIcons). Commits e3b67184, 30485bf0.
+  - Evidence: tests 398/398 (re-run by the parent); upstream diff is empty.
+  - Licence files must ship in T19.
 - [ ] T17 Notifications, sounds, alert windows, clipboard.
 - [ ] T18 Linux integration: autostart .desktop, Proton/Wine process detection, attention request.
 - [ ] T19 Packaging (PKGBUILD/AppImage), README-linux, CI.
