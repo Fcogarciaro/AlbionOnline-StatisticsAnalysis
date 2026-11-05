@@ -47,6 +47,11 @@
     <ProjectReference Include="..\StatisticsAnalysisTool.Network\StatisticsAnalysisTool.Network.csproj" />
   </ItemGroup>
 
+  <!-- Alert sounds from the WPF project, discovered at runtime under <app dir>/Sounds. -->
+  <ItemGroup>
+    <Content Include="..\StatisticsAnalysisTool\Sounds\*.wav" Link="Sounds\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <!-- Linux replacements for excluded Windows-only files (see PORTING.md). -->
   <ItemGroup Condition="'$(LinkWpfSources)' != 'true'">
     <Compile Remove="Linux\**" />
