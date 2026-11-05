@@ -23,7 +23,7 @@ internal static class DesktopShortcut
         + (string.IsNullOrEmpty(workingDirectory) ? string.Empty : $"Path={AutostartEntry.EscapeValue(workingDirectory)}\n")
         + $"Icon={(string.IsNullOrEmpty(iconPath) ? ThemedIconName : AutostartEntry.EscapeValue(iconPath))}\n"
         + "Terminal=false\n"
-        + "Categories=Game;Utility;\n";
+        + "Categories=Game;\n";
 
     public static string ResolveApplicationsDirectory(Func<string, string> getEnvironmentVariable)
     {

@@ -56,7 +56,7 @@ public class SettingsSupportTests
             .And.Contain("Exec=\"/opt/sat/StatisticsAnalysisTool\"\n")
             .And.Contain("Path=/opt/sat\n")
             .And.Contain("Icon=/opt/sat/sat-icon.png\n")
-            .And.Contain("Categories=Game;Utility;\n");
+            .And.Contain("Categories=Game;\n");
         content.Should().NotContain("Autostart");
     }
 

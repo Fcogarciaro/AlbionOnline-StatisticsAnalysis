@@ -66,6 +66,13 @@
     <Content Include="..\StatisticsAnalysisTool\Localization\localization.json" Link="Localization\localization.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- Licence texts ship next to the binary (build and publish output): GPL-3.0 for the tool, SIL OFL for Font Awesome, CC BY 3.0 notice for game-icons.net. -->
+  <ItemGroup>
+    <Content Include="..\..\LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\FontAwesome-LICENSE.txt" Link="licenses\FontAwesome-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\GameIcons-NOTICE.txt" Link="licenses\GameIcons-NOTICE.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <!-- Alert sounds from the WPF project, discovered at runtime under <app dir>/Sounds. -->
   <ItemGroup>
     <Content Include="..\StatisticsAnalysisTool\Sounds\*.wav" Link="Sounds\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
