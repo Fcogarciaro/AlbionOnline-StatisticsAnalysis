@@ -137,10 +137,14 @@ public class LoggingControlTests
         var inner = control.GetVisualDescendants().OfType<TabControl>().Last(t => t.Items.Count == 2);
         inner.SelectedIndex = 1;
         Dispatcher.UIThread.RunJobs();
-        System.Threading.Thread.Sleep(400);
-        Dispatcher.UIThread.RunJobs();
+        List<string> Texts() => control.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text ?? string.Empty).ToList();
+        for (var i = 0; i < 300 && !(Texts().Contains("Alice") && Texts().Contains("Bob")); i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            System.Threading.Thread.Sleep(10);
+        }
 
-        var texts = control.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text ?? string.Empty).ToList();
+        var texts = Texts();
         texts.Should().Contain("Alice", "the most kills entry");
         texts.Should().Contain("Bob", "the most deaths entry");
         harness.Log.Errors.Should().BeEmpty();

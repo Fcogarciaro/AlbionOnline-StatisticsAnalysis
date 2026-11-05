@@ -2,7 +2,6 @@
 // Avalonia drives the same linear interpolation with a 60 Hz DispatcherTimer. A new SmoothValue restarts the
 // animation from the current value (HandoffBehavior.SnapshotAndReplace).
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,6 +13,9 @@ public class ProgressBarSmoother
 {
     private static readonly TimeSpan Duration = TimeSpan.FromMilliseconds(250);
     private static readonly ConditionalWeakTable<ProgressBar, Animation> Animations = new();
+
+    /// <summary>Animation clock; tests replace it so intermediate values do not depend on how long the machine stalls.</summary>
+    internal static TimeProvider Clock { get; set; } = TimeProvider.System;
 
     public static readonly AttachedProperty<double> SmoothValueProperty =
         AvaloniaProperty.RegisterAttached<ProgressBarSmoother, ProgressBar, double>("SmoothValue");
@@ -57,7 +59,8 @@ public class ProgressBarSmoother
         private readonly ProgressBar _progressBar;
         private readonly double _from;
         private readonly double _to;
-        private readonly Stopwatch _clock = new();
+        private readonly TimeProvider _clock = Clock;
+        private long _startTimestamp;
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(16) };
 
         public Animation(ProgressBar progressBar, double from, double to)
@@ -71,7 +74,7 @@ public class ProgressBarSmoother
         public void Start()
         {
             _progressBar.Value = _from;
-            _clock.Start();
+            _startTimestamp = _clock.GetTimestamp();
             _timer.Start();
         }
 
@@ -83,8 +86,9 @@ public class ProgressBarSmoother
 
         private void OnTick(object sender, EventArgs e)
         {
-            _progressBar.Value = ValueAt(_from, _to, _clock.Elapsed);
-            if (_clock.Elapsed >= Duration)
+            var elapsed = _clock.GetElapsedTime(_startTimestamp);
+            _progressBar.Value = ValueAt(_from, _to, elapsed);
+            if (elapsed >= Duration)
             {
                 Stop();
             }

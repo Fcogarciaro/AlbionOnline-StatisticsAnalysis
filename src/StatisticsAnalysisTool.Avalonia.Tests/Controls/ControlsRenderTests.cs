@@ -122,22 +122,58 @@ public class ControlsRenderTests
         window.Close();
     }
 
+    // The animation clock is injected: asserting an intermediate value against the wall clock made this test fail whenever
+    // the machine stalled for more than the 250 ms animation (full runs while other work was loading the CPU).
+    private sealed class ManualClock : TimeProvider
+    {
+        private long _ticks;
+
+        public override long TimestampFrequency => TimeSpan.TicksPerSecond;
+
+        public override long GetTimestamp() => Interlocked.Read(ref _ticks);
+
+        public void Set(TimeSpan elapsed) => Interlocked.Exchange(ref _ticks, elapsed.Ticks);
+    }
+
+    private static async Task<bool> WaitUntil(Func<bool> condition)
+    {
+        for (var i = 0; i < 300 && !condition(); i++)
+        {
+            global::Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            await Task.Delay(10);
+        }
+
+        return condition();
+    }
+
     [AvaloniaTest]
     public async Task ProgressBarSmoother_AnimatesTheValueTowardsTheTarget()
     {
-        var window = Show("<ProgressBar x:Name='bar' Minimum='0' Maximum='100' Height='10'/>");
-        var bar = window.FindControl<ProgressBar>("bar")!;
+        var clock = new ManualClock();
+        ProgressBarSmoother.Clock = clock;
+        try
+        {
+            var window = Show("<ProgressBar x:Name='bar' Minimum='0' Maximum='100' Height='10'/>");
+            var bar = window.FindControl<ProgressBar>("bar")!;
 
-        ProgressBarSmoother.SetSmoothValue(bar, 80);
-        await Task.Delay(120);
-        bar.Value.Should().BeGreaterThan(0).And.BeLessThan(80, "the value is interpolated, not set at once");
-        await Task.Delay(400);
-        bar.Value.Should().Be(80);
+            ProgressBarSmoother.SetSmoothValue(bar, 80);
+            clock.Set(TimeSpan.FromMilliseconds(125));
+            (await WaitUntil(() => bar.Value > 0)).Should().BeTrue();
+            bar.Value.Should().BeApproximately(40, 0.001, "half of the 250 ms animation has elapsed, the value is interpolated");
 
-        ProgressBarSmoother.SetSmoothValue(bar, 500);
-        await Task.Delay(500);
-        bar.Value.Should().Be(100, "targets are clamped to the range");
-        window.Close();
+            clock.Set(TimeSpan.FromMilliseconds(400));
+            (await WaitUntil(() => bar.Value == 80)).Should().BeTrue();
+
+            clock.Set(TimeSpan.Zero);
+            ProgressBarSmoother.SetSmoothValue(bar, 500);
+            clock.Set(TimeSpan.FromMilliseconds(500));
+            (await WaitUntil(() => bar.Value == 100)).Should().BeTrue("targets are clamped to the range");
+            window.Close();
+        }
+        finally
+        {
+            ProgressBarSmoother.Clock = TimeProvider.System;
+        }
     }
 
     [AvaloniaTest]

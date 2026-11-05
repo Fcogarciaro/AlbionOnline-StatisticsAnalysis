@@ -89,7 +89,13 @@ public class FontAwesomeImageTests
         var window = SharedStylesTests.Load("""<fa:FontAwesomeImage x:Name='icon' Icon="SolidRotateRight" Width="32" Height="32" Spin="True" SpinDuration="1"/>""", Namespaces);
         var icon = window.FindControl<FontAwesomeImage>("icon")!;
 
-        await Task.Delay(250);
+        // Poll instead of one fixed sleep: the rotation only has to start, how long that takes depends on the machine.
+        for (var i = 0; i < 300 && icon.CurrentAngle <= 0; i++)
+        {
+            global::Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            await Task.Delay(10);
+        }
+
         icon.CurrentAngle.Should().BeGreaterThan(0).And.BeLessThan(360);
         icon.Spin = false;
         icon.CurrentAngle.Should().Be(0);
