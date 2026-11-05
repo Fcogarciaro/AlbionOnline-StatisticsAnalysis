@@ -664,7 +664,7 @@
         </TabItem>
         <TabItem Header="{x:Static crafting:LossExplorerBindings.TranslationLossExplorer}"
                  IsVisible="{Binding CraftingBindings.LossExplorerTabVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
-            <userControls:PortingPlaceholderControl ViewName="LossExplorerControl" />
+            <userControls:LossExplorerControl />
         </TabItem>
         <TabItem Header="{x:Static crafting:CraftingBindings.TranslationBlackMarket}"
                  IsVisible="{Binding CraftingBindings.BlackMarketTabVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">

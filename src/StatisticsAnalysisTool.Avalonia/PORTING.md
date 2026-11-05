@@ -380,7 +380,7 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
   (`Classes` `price-input`, `resource-price`). `LostKeyboardFocus` handlers read the focused element after the focus moved (Avalonia gives no `NewFocus`); the popup lists are separate top
   levels and never take focus from the text box.
 - `Journal` and `Calculation` are null until a crafting exists: bindings use `?.` and the journal popup flags use `TargetNullValue=False`.
-- **`LossExplorerControl` is not ported yet**: its tab hosts a `PortingPlaceholderControl` (it was not part of T12/T13).
+- `LossExplorerControl` is ported in T14 (see below).
 - Not verified on a real desktop: popup placement and light dismiss with the price text boxes, and the `DataGrid` row look.
 
 ## DamageMeter, Dungeon, LossExplorer, TradeMonitoring, ItemDetails (T14, T15)
@@ -410,6 +410,25 @@ element). Visibility triggers become `IsVisible` with `Name=True|*=False`.
   the window keeps `x:DataType` (without it the Avalonia compiler demands a parameterless constructor).
 - The Spell tooltip is the content of `ToolTip.Tip`; the `Spell.ToolTip` theme chrome (Border, padding, max width) is not applied to the tip itself,
   so the default Avalonia tooltip frame surrounds the spell text.
+
+### DungeonControl, DungeonStyles, LossExplorerControl (T14)
+
+- `DungeonStyles.axaml` (3.5k lines) and `DungeonControl.axaml` are the converted upstream files. Triggers: value maps (`ValueMapConverter`) for every
+  group of DataTriggers; `ImageBrush` setters of the faction/mode backgrounds are hoisted into named brush resources (`DungeonFragment.Faction.Background.*`)
+  that the map returns (`@Key`); trigger tooltips whose value was a `Translation*` binding use the `$KEY` form (the localized text of the key, read at
+  convert time); `Dungeon.DeltaText` uses `Classes.positive|negative` (set by every use, bound to `IsPositiveChange|IsNegativeChange`); the loot badge border is
+  `Dungeon.RarityBadge` + `Classes.other`; the cluster icon is two stacked images (the Abyssal Depths mode overrides the cluster type); the fastest run time is two
+  stacked text blocks (the dash replaces the value without a run).
+- `Translation*` properties that upstream declares `static` on `DungeonBaseFragment` are bound through `{x:Static ...}` (an instance path to a static member does
+  not resolve in Avalonia).
+- Every dotted binding path is null-safe (`A?.B?.C`): WPF is silent about null mid-path values, Avalonia logs them.
+- `VirtualizingItemsControl` + `DungeonDataTemplateSelector` is a `ScrollViewer` around an `ItemsControl` with a `VirtualizingStackPanel`; the selector maps all nine
+  fragment types to `Dungeon.ModernRunEntry.Template`, so the template is used directly (the compat `DataTemplateSelector` holds shim templates that XAML cannot fill).
+- `ContentPresenter` outside control templates is a `ContentControl` (a presenter in a data template does not take its own data context for the `Content` binding).
+- `LossExplorerControl`: the cards use `ItemsRepeater` + `WrapLayout` from the new package `Avalonia.Controls.ItemsRepeater` 11.1.5 (virtualized wrap panel,
+  replaces `VirtualizingWrapPanel`; use it for the other `VirtualizingWrapPanel` views too). The load on `IsVisibleChanged` runs on `Loaded` and when `IsVisible` turns true.
+- Fidelity gaps: not compared pixel by pixel on a real desktop (card look, image-brush banners, tooltips); the stats templates are exercised through their view model
+  in tests, the run entries with two fragment types.
 
 ## View placeholders
 

@@ -183,7 +183,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding DungeonsTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Dungeons, FallbackValue=DUNGEONS}" Tag="pack://application:,,,/Assets/Navigation/dark.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="DungeonControl" />
+          <userControls:DungeonControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding DamageMeterTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.DamageMeter, FallbackValue=DAMAGE__METER}" Tag="pack://application:,,,/Assets/Navigation/bar-chart-rotated.png">

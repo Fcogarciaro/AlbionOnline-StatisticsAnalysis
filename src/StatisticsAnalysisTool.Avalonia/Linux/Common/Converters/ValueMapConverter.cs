@@ -3,7 +3,7 @@
 //   Foreground="{Binding ShopSubCategory, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='sword=@SolidColorBrush.Weapon.Sword|*=@SolidColorBrush.Weapon.Unknown'}"
 // The value is compared by its invariant text (enum members by name), ordinal and case sensitive like the WPF DataTrigger string
 // comparison. A result that starts with @ is a resource key of the application (the Color.* / SolidColorBrush.* keys of the theme),
-// anything else is parsed as the target type (string, bool, numbers, Thickness, FontWeight, brushes, enums). Without a matching entry
+// $KEY is the localized text of a translation key (LocalizationController), anything else is parsed as the target type (string, bool, numbers, Thickness, FontWeight, brushes, enums). Without a matching entry
 // and without a default the property keeps its value.
 using Avalonia;
 using Avalonia.Data;
@@ -11,6 +11,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using StatisticsAnalysisTool.Localization;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -67,6 +68,11 @@ public sealed class ValueMapConverter : IValueConverter
 
     private static object ToTarget(string result, Type targetType, CultureInfo culture)
     {
+        if (result.StartsWith('$'))
+        {
+            return LocalizationController.Translation(result[1..]);
+        }
+
         if (result.StartsWith('@'))
         {
             var key = result[1..];
