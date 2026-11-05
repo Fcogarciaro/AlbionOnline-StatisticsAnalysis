@@ -1,0 +1,94 @@
+<!-- Port of Styles/PlayerInformationStyles.xaml. The PlayerMode.Label.* / PlayerMode.Title* styles are not ported: nothing in the
+     upstream XAML uses them. HeaderTabs is a TabControl that shows only its tab strip (the WPF template was a bare TabPanel). -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="PlayerInformation.HeaderTab" TargetType="TabItem" BasedOn="{StaticResource App.TabItem}">
+      <Setter Property="MinWidth" Value="135" />
+      <Setter Property="Padding" Value="18,8" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.HeaderTabs" TargetType="TabControl" BasedOn="{StaticResource App.TabControl}">
+      <Setter Property="ItemContainerTheme" Value="{StaticResource PlayerInformation.HeaderTab}" />
+      <Setter Property="Template">
+        <ControlTemplate TargetType="TabControl">
+          <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}" />
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.SearchTextBox" TargetType="TextBox" BasedOn="{StaticResource ItemSearchTextBoxStyle}">
+      <Setter Property="MinWidth" Value="240" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Margin" Value="0,0,5,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.ServerComboBox" TargetType="ComboBox" BasedOn="{StaticResource ItemSearch.FilterComboBox}">
+      <Setter Property="Width" Value="170" />
+      <Setter Property="Height" Value="32" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.Card" TargetType="Border" BasedOn="{StaticResource App.FilterCard}">
+      <Setter Property="Margin" Value="4" />
+      <Setter Property="Padding" Value="14,12" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.HeroCard" TargetType="Border" BasedOn="{StaticResource PlayerInformation.Card}">
+      <Setter Property="Padding" Value="18" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.MetricCard" TargetType="Border" BasedOn="{StaticResource PlayerInformation.Card}">
+      <Setter Property="MinHeight" Value="82" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.SectionTitle" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,0,0,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.MetricTitle" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      <Setter Property="FontSize" Value="12" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.MetricValue" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="21" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,3,0,0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.MetricImage" TargetType="Image">
+      <Setter Property="Width" Value="22" />
+      <Setter Property="Height" Value="22" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Stretch" Value="Uniform" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.DetailLabel" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      <Setter Property="Margin" Value="0,3" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.DetailValue" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="Margin" Value="8,3,0,3" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="PlayerInformation.ApiBadge" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.5}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="9,5" />
+    </ControlTheme>
+
+  </Styles.Resources>
+</Styles>

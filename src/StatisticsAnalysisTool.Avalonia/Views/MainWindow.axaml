@@ -228,7 +228,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding PlayerInformationTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.PlayerInformation, FallbackValue=PLAYER__INFORMATION}" Tag="pack://application:,,,/Assets/Navigation/baseball-player.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="PlayerInformationControl" />
+          <userControls:PlayerInformationControl />
         </Grid>
       </TabItem>
       <TabItem Theme="{StaticResource ItemContainerDonationStyle}" Header="{Binding Translation.Donations, FallbackValue=DONATIONS}" Tag="pack://application:,,,/Assets/Navigation/money.png">
