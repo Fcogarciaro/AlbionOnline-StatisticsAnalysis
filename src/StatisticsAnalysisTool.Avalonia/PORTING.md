@@ -207,7 +207,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   Avalonia) with `ImagePathToBitmapConverter` turning the upstream `pack://application:,,,/Assets/...` tags into bitmaps.
   The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
-- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, LoggingControl, DungeonControl,
+- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, DungeonControl,
   DamageMeterControl, TradeMonitoringControl, GatheringControl and CraftingControl (SettingsControl is real since T10; ItemSearch,
   Party, Guild, StorageHistory, MapHistory, PlayerInformation, Donation and Thanks since T11). Each is replaced where it is ported
   (T12-T15). `ItemSearchControl` hosts a placeholder named ItemDetailsControl in its details slot until the item details view lands.
@@ -314,6 +314,29 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
   only the item strip (needs a live check on the real desktop).
 - Not verified on a real desktop in this session: the look of the `DataGrid` (template part names `BackgroundRectangle`,
   `VerticalSeparator` come from the Fluent DataGrid theme) and of the shimmer.
+
+## Logging and dashboards (T12, T13)
+
+### LoggingControl (T12)
+
+- `UserControls/LoggingControl.axaml(.cs)` is 1:1 (filter card, notifications and stats tabs, loot comparator with its three cards,
+  guild drop-down, info panel). Its templates come with the partial `TrackingStyles.axaml` (`NotificationTemplate`,
+  `LootedItemTemplate`, `LootingPlayersTemplate`, `LoggingFilterObject`, `TopLooterObjectTemplate` and their themes). `x:DataType` is
+  `MainWindowViewModel`; the three stats templates inside the control use `x:CompileBindings="False"` because they read the view model
+  through `RelativeSource AncestorType=UserControl`.
+- **Virtualization**: the notification list is a `ListBox` with a `VirtualizingStackPanel` (a test adds 5000 events and checks that fewer than
+  200 rows are realized); the looting players list is a `ScrollViewer` around an `ItemsControl` with a `VirtualizingStackPanel`
+  (WpfToolkit `VirtualizingItemsControl`). `IsAsync` bindings are plain bindings (the lists are filled on the UI thread).
+- **Implicit fragment templates**: the WPF `DataTemplate DataType=...` entries for the notification fragments cannot live in a resource
+  dictionary, so they are the `ContentControl.DataTemplates` of `NotificationTemplate` (the only place a fragment is shown).
+- DataTriggers: the activation toggle icon is `Logging.ToggleIcon` + `Classes.on`; the `+`/`-` operator text is `OperatorTextBlockStyle` +
+  `Classes.minus`; fame text color is `Tracker.Fragment.FameText` + `pve`/`pvp`; faction coin/flag/city colors are classes; the looted
+  item overlay is `LootedItem.StatusOverlay` (fades on `:pointerover`); the chest log placeholder is `StringConverters.IsNullOrEmpty`.
+  `Visibility.Hidden` bonus factor and affiliation texts are collapsed instead (the WPF styles also set `Width=0`).
+- The guild drop-down is a `Popup` with `IsLightDismissEnabled` and `OverlayInputPassThroughElement` (so the toggle closes it). Copy to
+  clipboard goes through the `System.Windows.Clipboard` shim (main window clipboard). The export icons and the info icon use
+  `PointerReleased`. `TextBox` scroll bars are the `ScrollViewer.*ScrollBarVisibility` attached properties.
+- `EventValidationWindow` was already complete (T10).
 
 ## View placeholders
 

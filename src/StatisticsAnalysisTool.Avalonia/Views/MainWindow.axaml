@@ -178,7 +178,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding LoggingTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Logging, FallbackValue=LOGGING}" Tag="pack://application:,,,/Assets/Navigation/log.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="LoggingControl" />
+          <userControls:LoggingControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding DungeonsTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Dungeons, FallbackValue=DUNGEONS}" Tag="pack://application:,,,/Assets/Navigation/dark.png">
