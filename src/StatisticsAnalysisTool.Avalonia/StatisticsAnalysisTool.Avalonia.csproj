@@ -15,6 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="StatisticsAnalysisTool.Avalonia.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.22" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
@@ -29,8 +33,10 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="SkiaSharp" Version="4.151.1" />
-    <PackageReference Include="SkiaSharp.HarfBuzz" Version="4.151.1" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.11" />
     <PackageReference Include="System.Linq.Async" Version="7.0.1" />
   </ItemGroup>
 
@@ -51,7 +57,15 @@
       ..\StatisticsAnalysisTool\UserControls\**;
       ..\StatisticsAnalysisTool\**\*.xaml.cs;
       ..\StatisticsAnalysisTool\App.xaml.cs;
-      ..\StatisticsAnalysisTool\Properties\**;
+      ..\StatisticsAnalysisTool\Properties\AssemblyInfo.cs;
+      ..\StatisticsAnalysisTool\Properties\Resources.Designer.cs;
+      ..\StatisticsAnalysisTool\Common\Controls\**;
+      ..\StatisticsAnalysisTool\Common\TextBoxHelper.cs;
+      ..\StatisticsAnalysisTool\Common\ScrollViewerExtensions.cs;
+      ..\StatisticsAnalysisTool\Common\ProgressBarSmoother.cs;
+      ..\StatisticsAnalysisTool\Common\CultureAwareBinding.cs;
+      ..\StatisticsAnalysisTool\Common\Validation\**;
+      ..\StatisticsAnalysisTool\Common\Converters\ValidationErrorConverter.cs;
       ..\StatisticsAnalysisTool\Shortcut\**;
       ..\StatisticsAnalysisTool\**\SystemTrayService.cs;
       ..\StatisticsAnalysisTool\**\SystemTrayMenuRenderer.cs;

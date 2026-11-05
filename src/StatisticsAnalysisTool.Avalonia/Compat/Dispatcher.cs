@@ -27,7 +27,7 @@ public sealed class Dispatcher
 {
     public static Dispatcher CurrentDispatcher { get; } = new();
 
-    private static AvaloniaPriority Map(DispatcherPriority priority) => priority switch
+    internal static AvaloniaPriority MapPriority(DispatcherPriority priority) => priority switch
     {
         DispatcherPriority.Inactive or DispatcherPriority.SystemIdle => AvaloniaPriority.SystemIdle,
         DispatcherPriority.ApplicationIdle => AvaloniaPriority.ApplicationIdle,
@@ -55,14 +55,14 @@ public sealed class Dispatcher
             return;
         }
 
-        AvaloniaDispatcher.UIThread.Invoke(callback, Map(priority));
+        AvaloniaDispatcher.UIThread.Invoke(callback, MapPriority(priority));
     }
 
     public T Invoke<T>(Func<T> callback) => Invoke(callback, DispatcherPriority.Send);
 
     public T Invoke<T>(Func<T> callback, DispatcherPriority priority)
     {
-        return CheckAccess() ? callback() : AvaloniaDispatcher.UIThread.Invoke(callback, Map(priority));
+        return CheckAccess() ? callback() : AvaloniaDispatcher.UIThread.Invoke(callback, MapPriority(priority));
     }
 
     public DispatcherOperation InvokeAsync(Action callback) => InvokeAsync(callback, DispatcherPriority.Normal);
@@ -71,7 +71,7 @@ public sealed class Dispatcher
         InvokeAsync(callback, priority, CancellationToken.None);
 
     public DispatcherOperation InvokeAsync(Action callback, DispatcherPriority priority, CancellationToken cancellationToken) =>
-        new(AvaloniaDispatcher.UIThread.InvokeAsync(callback, Map(priority), cancellationToken));
+        new(AvaloniaDispatcher.UIThread.InvokeAsync(callback, MapPriority(priority), cancellationToken));
 
     public DispatcherOperation<T> InvokeAsync<T>(Func<T> callback) => InvokeAsync(callback, DispatcherPriority.Normal);
 
@@ -79,7 +79,7 @@ public sealed class Dispatcher
         InvokeAsync(callback, priority, CancellationToken.None);
 
     public DispatcherOperation<T> InvokeAsync<T>(Func<T> callback, DispatcherPriority priority, CancellationToken cancellationToken) =>
-        new(AvaloniaDispatcher.UIThread.InvokeAsync(callback, Map(priority), cancellationToken));
+        new(AvaloniaDispatcher.UIThread.InvokeAsync(callback, MapPriority(priority), cancellationToken));
 
     public DispatcherOperation BeginInvoke(Delegate method, params object[] args) =>
         BeginInvoke(DispatcherPriority.Normal, method, args);
