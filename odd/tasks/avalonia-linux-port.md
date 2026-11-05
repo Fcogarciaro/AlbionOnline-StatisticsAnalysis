@@ -76,8 +76,13 @@ Each task records its route and trigger.
 - [x] T08 Theme: Colors, MainStyles, shared styles; DataTriggers → classes; converters; custom controls. Commits 2f25d09c, 3f97bb9a, e0d66226.
   - Convention (see PORTING.md): keyed Style → ControlTheme with `Theme={StaticResource}`; triggers → pseudoclasses; DataTriggers → `Classes.x` with ObjectConverters.Equal; Visibility → VisibilityToBoolConverter.
   - Feature dictionaries are ported with their views.
-- [ ] T09 MainWindow + navigation, footer, bars, tray, window chrome.
-- [ ] T10 Secondary windows: Settings, FirstStartGuide, Language, GameDataPreparation, Dialog, Update.
+- [x] T09 MainWindow + navigation, footer, bars, tray, window chrome. Commit 3a2a5c07.
+- [x] T10 Secondary windows: Settings, FirstStartGuide, Language, GameDataPreparation, Dialog, Update. Commits 6b04180d, 92f63d85, 20421c20, a04c99c3.
+  - Evidence: tests 497/497 (re-run by the parent); upstream diff is empty. Gaps are listed in PORTING.md.
+  - Open:
+    - live Wayland/Hyprland chrome test (user);
+    - Settings still uses Windows wording ("Start with Windows");
+    - one flaky "Dispatcher shut down" test cascade was observed once.
 - [ ] T11 Simple tabs: Guild, Party, StorageHistory, MapHistory, ItemSearch, Donation, Thanks, PlayerInformation.
 - [ ] T12 Logging + EventValidation (virtualized lists).
 - [ ] T13 Dashboard, DashboardLoot, Gathering, Crafting (LiveCharts Avalonia).
