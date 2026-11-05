@@ -22,23 +22,29 @@ public class VistaOpenFileDialog
     public bool? ShowDialog()
     {
         FileNames = [];
-        var provider = System.Windows.PickerHost.GetStorageProvider();
-        if (provider == null)
+        var filters = Microsoft.Win32.FilePickerFilter.Parse(Filter);
+        var request = new StatisticsAnalysisTool.Linux.Platform.PickerRequest
         {
-            return false;
-        }
-
-        var options = new FilePickerOpenOptions
-        {
-            Title = string.IsNullOrWhiteSpace(Title) ? null : Title,
-            AllowMultiple = Multiselect,
-            FileTypeFilter = Microsoft.Win32.FilePickerFilter.Parse(Filter)
-                .Select(e => new FilePickerFileType(e.Name) { Patterns = e.Patterns.ToList() }).ToList(),
-            SuggestedStartLocation = System.Windows.PickerHost.StartLocation(provider, InitialDirectory)
+            Kind = StatisticsAnalysisTool.Linux.Platform.PickerKind.OpenFile,
+            Title = Title,
+            InitialPath = InitialDirectory,
+            Multiple = Multiselect,
+            Filters = filters
         };
 
-        var files = System.Windows.BlockingUi.Run(() => provider.OpenFilePickerAsync(options));
-        FileNames = files.Select(f => f.TryGetLocalPath()).Where(p => p != null).ToArray();
+        FileNames = System.Windows.PickerHost.Pick(request, async provider =>
+        {
+            var options = new FilePickerOpenOptions
+            {
+                Title = string.IsNullOrWhiteSpace(Title) ? null : Title,
+                AllowMultiple = Multiselect,
+                FileTypeFilter = filters.Select(e => new FilePickerFileType(e.Name) { Patterns = e.Patterns.ToList() }).ToList(),
+                SuggestedStartLocation = System.Windows.PickerHost.StartLocation(provider, InitialDirectory)
+            };
+
+            var files = await provider.OpenFilePickerAsync(options);
+            return files.Select(f => f.TryGetLocalPath()).Where(p => p != null).ToList();
+        }).ToArray();
         return FileNames.Length > 0;
     }
 }

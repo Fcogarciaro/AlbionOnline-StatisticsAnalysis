@@ -71,6 +71,9 @@ sudo setcap cap_net_raw,cap_net_admin=eip ~/.local/opt/StatisticsAnalysisTool/St
 - **Attention requests** (`FlashWindow` on alerts) work through `wmctrl` on X11 only; on Wayland use the desktop notification.
 - **Clipboard** works while one of the tool's windows exists.
 
+- **File and folder pickers** run through `zenity` (or `kdialog`) because the portal rejects processes with `setcap` capabilities. Install
+  one of them (e.g. `sudo pacman -S zenity`) if the dialogs do not open.
+
 ## Steam / Proton game folder
 
 The first start guide and the game-data window look for the game and propose the first valid folder: Steam libraries

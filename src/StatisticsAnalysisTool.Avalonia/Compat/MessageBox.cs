@@ -6,6 +6,8 @@ using System.Windows;
 using Serilog;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using StatisticsAnalysisTool.Linux.Platform;
 
 namespace System.Windows
 {
@@ -57,6 +59,31 @@ namespace System.Windows
             return provider;
         }
 
+        private static readonly ExternalFilePicker ExternalPicker = ExternalFilePicker.CreateDefault();
+
+        /// <summary>
+        /// Runs a picker through the platform provider, or the external zenity/kdialog picker when the process is
+        /// non-dumpable (setcap) or the provider throws. Returns the picked paths, empty when cancelled.
+        /// </summary>
+        public static IReadOnlyList<string> Pick(
+            PickerRequest request, Func<IStorageProvider, Task<IReadOnlyList<string>>> viaProvider)
+        {
+            var provider = GetStorageProvider();
+            if (provider == null)
+            {
+                return [];
+            }
+
+            var outcome = BlockingUi.Run(() => PickerRouter.PickAsync(
+                request, () => viaProvider(provider), ExternalPicker, ProcessDumpability.IsCurrentProcessNonDumpable()));
+            if (outcome.ToolMissing)
+            {
+                MessageBox.Show(PickerRouter.MissingToolMessage, string.Empty, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+            return outcome.Paths;
+        }
+
         public static IStorageFolder StartLocation(IStorageProvider provider, string directory)
         {
             if (string.IsNullOrWhiteSpace(directory) || !System.IO.Directory.Exists(directory))
@@ -86,25 +113,34 @@ namespace Microsoft.Win32
         /// <summary>True when the user picked a file (FileName holds the full path); false when cancelled or no window exists.</summary>
         public bool? ShowDialog()
         {
-            var provider = PickerHost.GetStorageProvider();
-            if (provider == null)
-            {
-                return false;
-            }
-
             var entries = FilePickerFilter.Parse(Filter);
-            var options = new FilePickerSaveOptions
+            var request = new PickerRequest
             {
-                Title = string.IsNullOrWhiteSpace(Title) ? null : Title,
-                SuggestedFileName = System.IO.Path.GetFileName(FileName),
-                DefaultExtension = DefaultExt?.TrimStart('.'),
-                ShowOverwritePrompt = true,
-                FileTypeChoices = entries.Select(e => new FilePickerFileType(e.Name) { Patterns = e.Patterns.ToList() }).ToList(),
-                SuggestedStartLocation = PickerHost.StartLocation(provider, InitialDirectory)
+                Kind = PickerKind.SaveFile,
+                Title = Title,
+                InitialPath = InitialDirectory,
+                SuggestedName = System.IO.Path.GetFileName(FileName),
+                Filters = entries
             };
 
-            var file = BlockingUi.Run(() => provider.SaveFilePickerAsync(options));
-            var path = file?.TryGetLocalPath();
+            var paths = PickerHost.Pick(request, async provider =>
+            {
+                var options = new FilePickerSaveOptions
+                {
+                    Title = string.IsNullOrWhiteSpace(Title) ? null : Title,
+                    SuggestedFileName = System.IO.Path.GetFileName(FileName),
+                    DefaultExtension = DefaultExt?.TrimStart('.'),
+                    ShowOverwritePrompt = true,
+                    FileTypeChoices = entries.Select(e => new FilePickerFileType(e.Name) { Patterns = e.Patterns.ToList() }).ToList(),
+                    SuggestedStartLocation = PickerHost.StartLocation(provider, InitialDirectory)
+                };
+
+                var file = await provider.SaveFilePickerAsync(options);
+                var local = file?.TryGetLocalPath();
+                return local == null ? [] : new[] { local };
+            });
+
+            var path = paths.FirstOrDefault();
             if (path == null)
             {
                 return false;
@@ -135,23 +171,30 @@ namespace Ookii.Dialogs.Wpf
         /// <summary>True when a folder was picked (SelectedPath holds it); false when cancelled or no window exists.</summary>
         public bool? ShowDialog()
         {
-            var provider = PickerHost.GetStorageProvider();
-            if (provider == null)
+            var request = new PickerRequest
             {
-                return false;
-            }
-
-            var start = PickerHost.StartLocation(provider, SelectedPath)
-                        ?? PickerHost.StartLocation(provider, System.Environment.GetFolderPath(RootFolder));
-            var options = new FolderPickerOpenOptions
-            {
-                Title = UseDescriptionForTitle && !string.IsNullOrWhiteSpace(Description) ? Description : null,
-                AllowMultiple = Multiselect,
-                SuggestedStartLocation = start
+                Kind = PickerKind.Folder,
+                Title = UseDescriptionForTitle ? Description : null,
+                InitialPath = System.IO.Directory.Exists(SelectedPath) ? SelectedPath : System.Environment.GetFolderPath(RootFolder),
+                Multiple = Multiselect
             };
 
-            var folders = BlockingUi.Run(() => provider.OpenFolderPickerAsync(options));
-            var path = folders.Select(f => f.TryGetLocalPath()).FirstOrDefault(p => p != null);
+            var paths = PickerHost.Pick(request, async provider =>
+            {
+                var start = PickerHost.StartLocation(provider, SelectedPath)
+                            ?? PickerHost.StartLocation(provider, System.Environment.GetFolderPath(RootFolder));
+                var options = new FolderPickerOpenOptions
+                {
+                    Title = UseDescriptionForTitle && !string.IsNullOrWhiteSpace(Description) ? Description : null,
+                    AllowMultiple = Multiselect,
+                    SuggestedStartLocation = start
+                };
+
+                var folders = await provider.OpenFolderPickerAsync(options);
+                return folders.Select(f => f.TryGetLocalPath()).Where(p => p != null).ToList();
+            });
+
+            var path = paths.FirstOrDefault();
             if (path == null)
             {
                 return false;

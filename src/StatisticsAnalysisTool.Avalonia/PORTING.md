@@ -63,6 +63,20 @@ IValueConverter (inherits the Avalonia contract), IMultiValueConverter (`AsAvalo
 BindingOperations, ListCollectionView (filter, sort, CustomSort, live shaping, currency), CollectionViewSource,
 CommandManager, Clipboard, XmlLanguage, DataTemplate, DataTemplateSelector.
 
+### File pickers under setcap (`Linux/Platform/ExternalFilePicker.cs`, `PickerRouter.cs`)
+
+A binary with file capabilities (`setcap cap_net_raw,cap_net_admin=eip`) is non-dumpable, so xdg-desktop-portal cannot open
+`/proc/<pid>/root` and rejects every portal picker call (`AccessDenied`). All pickers (`SaveFileDialog`,
+`VistaFolderBrowserDialog`, `VistaOpenFileDialog`) go through `PickerHost.Pick`, which routes through `PickerRouter`:
+
+1. Non-dumpable process (`prctl(PR_GET_DUMPABLE) != 1`; fallback: non-zero `CapEff`): try the external picker first.
+2. Otherwise, or when no tool exists, call the Avalonia `IStorageProvider`. Any exception from it (notably `DBusException`)
+   is logged and falls back to the external picker.
+3. The external picker runs `zenity` (preferred) or `kdialog` as a child process via `ArgumentList` (no shell); file
+   capabilities are not inherited across exec. Exit code 1 or empty output means cancelled; multi-select output is
+   newline separated. Probing and process running are injectable (`Func<string,bool>`, `IProcessRunner`).
+4. With no tool the call never throws: it returns "cancelled", logs, and shows a message asking the user to install zenity.
+
 `Application.Resources` returns Avalonia colors and solid brushes as the WPF-shaped `Color` / `SolidColorBrush`,
 so linked code casts them unchanged. The Avalonia theme must define the `Color.*` and `SolidColorBrush.*` keys (T08).
 
