@@ -10,6 +10,8 @@ internal static class Program
     {
         // Bind the compat Dispatcher to the UI thread before any worker thread can touch it.
         _ = global::Avalonia.Threading.Dispatcher.UIThread;
+        // Resolve libpcap.so.1 / libpcap.so.0.8 when no libpcap.so development symlink exists.
+        StatisticsAnalysisTool.Linux.Capture.LibpcapLibrary.Install();
         return BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 

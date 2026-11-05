@@ -13,6 +13,7 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Updater/AuthenticodeSignatureVerifier.cs` | Windows Authenticode | none (only used by the excluded controller) | n/a |
 | generated `AutoUpdateSecurityBuildSettings.g.cs` | MSBuild-generated in the WPF project | `Linux/Updater/AutoUpdateSecurityBuildSettings.cs` | All flags off. |
 | `Common/AppDataPaths.cs` | `LocalApplicationData` is the only root; everything (incl. `Settings.json`) sits in it | `Linux/Common/AppDataPaths.cs` (copy, keep in sync) | Same members and `Instances/<id>/...` sub-structure. `Settings.json` goes to `$XDG_CONFIG_HOME/StatisticsAnalysisTool` (default `~/.config`); `Backups`, `UserData-*`, `logs`, `GameFiles` to `$XDG_DATA_HOME/StatisticsAnalysisTool` (default `~/.local/share`, where .NET already pointed `LocalApplicationData`); `temp`, `ImageResources`, `SpellImageResources` to `$XDG_CACHE_HOME/StatisticsAnalysisTool` (default `~/.cache`, safe to delete). Relative XDG values are ignored per spec. Copy the folders between machines by recreating the same `Instances/<id>` layout. Upstream has no portable mode, so none is offered. Extra member `UserSettingsFile`. |
+| `Network/PacketProviders/SocketsPacketProvider.cs` | Raw sockets with Windows `SIO_RCVALL` | `Linux/Network/SocketsPacketProvider.cs` (subclass of the libpcap provider) | The `Sockets` choice (enum value 1, may come from a Windows settings file) runs libpcap. The default `PacketProvider` is already `Npcap` = libpcap. The settings UI still lists both options (`Sockets (must be run as admin)` / `Npcap`); T10 should relabel them. |
 | `Common/AlbionGameProcessMonitor.cs` | `Process.GetProcessesByName` misses the game under Wine/Proton (15-char `comm` such as `Albion-Online.e`, wine loader as the exe) | `Linux/Common/AlbionGameProcessMonitor.cs` | Same class, events and 2 s poll; detection scans `/proc/<pid>/comm` and `argv[0]` for `Albion-Online` / `Albion-Online.exe` (`AlbionProcessMatcher`). Processes of other users are matched too (comm and cmdline are world-readable) |
 | `Common/SoundController.cs` | `System.Windows.Media.MediaPlayer` | `Linux/Common/SoundController.cs` | Sound discovery identical (`Sounds/*.wav` are copied to the output from the WPF project). Playback runs the first available of `pw-play`, `paplay`, `aplay` as a detached process. Volume is applied by `pw-play` and `paplay`; `aplay` cannot scale volume. Volume 0 plays nothing (as in WPF). With no player installed a single warning is logged. |
 | `Common/SystemInfo.cs` | WMI (System.Management), `WindowsPrincipal` | `Linux/Common/SystemInfo.cs` | CPU from `/proc/cpuinfo`, admin means root, GPU unknown. TODO(T03). |
@@ -78,3 +79,12 @@ is a no-op there; if they exist it migrates into the XDG targets above.
   by a case-insensitive scan of all file name literals was the pair above.
 - The game folder is chosen by the user (no registry or `C:\Program Files` default); `StreamingAssets/GameData` is
   looked up under `<folder>/game` with the exact casing used by the Steam and launcher installs.
+
+## Network capture (libpcap)
+
+- The `Libpcap` 0.1.5 package P/Invokes the native library name `pcap` (its resolver adds `wpcap` only on Windows).
+  .NET probes `libpcap.so`, `pcap.so`, `libpcap`, `pcap`, so a machine with only the runtime package
+  (`libpcap.so.1`, or `libpcap.so.0.8` on Debian) would fail. `Linux/Capture/LibpcapLibrary.cs` hooks
+  `AssemblyLoadContext.ResolvingUnmanagedDll` (the package already registers a `DllImportResolver`, and a second one throws)
+  to load `libpcap.so.1`, `libpcap.so`, `libpcap.so.0.8` in that order; `Program.Main` installs it.
+- Listing devices works without privileges; opening one needs root or `CAP_NET_RAW` + `CAP_NET_ADMIN`.
