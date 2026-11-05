@@ -5,8 +5,8 @@
      Colors are DynamicResource because this file is loaded after (and separately from) Colors.axaml.
      Dropped because Avalonia has no equivalent: FocusVisualStyle (Fluent focus adorner is used), GridView ListView styles
      (use DataGrid/ListBox), SystemColors key overrides. Left to the views that own them: WindowButtonStyle (Webdings glyphs, T09),
-     ValidationErrorConverter (WPF ValidationError, T10), the FontAwesome based styles (T16, see FontAwesomeStyles.axaml),
-     DigitsTextBox style (see ControlStyles.axaml). -->
+     ValidationErrorConverter (WPF ValidationError, T10), the FontAwesome based styles (T16, FontAwesomeStyles.axaml).
+     DigitsTextBox needs no style of its own: it reuses the TextBox theme. -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:CompileBindings="False">

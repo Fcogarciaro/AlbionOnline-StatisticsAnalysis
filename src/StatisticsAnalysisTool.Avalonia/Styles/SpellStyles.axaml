@@ -1,0 +1,108 @@
+<!-- Port of Styles/SpellStyles.xaml (spell tooltip). Patterns used here, to copy in ported views:
+       Visibility bindings   -> IsVisible + VisibilityToBoolConverter
+       DataTrigger on a key  -> Classes.name="{Binding Key, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=name}"
+                                plus a nested <Style Selector="TextBlock.name"> in the template
+     ToolTip Placement/HorizontalOffset/VerticalOffset are attached properties of the target control in Avalonia, so
+     the view sets ToolTip.Placement="Pointer" ToolTip.HorizontalOffset="12" ToolTip.VerticalOffset="12". -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:itemDetailsModels="clr-namespace:StatisticsAnalysisTool.Models.ItemDetailsModel"
+        x:CompileBindings="False">
+  <Styles.Resources>
+    <SolidColorBrush x:Key="Spell.Type.Damage" Color="#FFFF2E2E" />
+    <SolidColorBrush x:Key="Spell.Type.Heal" Color="#FF6ACC04" />
+    <SolidColorBrush x:Key="Spell.Type.CrowdControl" Color="#FFFFB418" />
+    <SolidColorBrush x:Key="Spell.Type.Debuff" Color="#FFC27AF0" />
+    <SolidColorBrush x:Key="Spell.Type.Buff" Color="#FF20C7FF" />
+    <SolidColorBrush x:Key="Spell.Type.Mobility" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="Spell.Type.Other" Color="#FFDDCDC3" />
+    <SolidColorBrush x:Key="Spell.Text" Color="#FFDDCDC3" />
+
+    <ControlTheme x:Key="Spell.ToolTip" TargetType="ToolTip" BasedOn="{StaticResource {x:Type ToolTip}}">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Padding" Value="16,13" />
+      <Setter Property="MaxWidth" Value="430" />
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Padding="{TemplateBinding Padding}"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="5">
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              TextElement.Foreground="{TemplateBinding Foreground}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+
+    <DataTemplate x:Key="Spell.TypeTemplate" DataType="itemDetailsModels:ItemSpellType">
+      <Border Margin="0,0,5,0" Padding="6,2" CornerRadius="3" Background="{DynamicResource SolidColorBrush.Background.4}">
+        <TextBlock Text="{Binding Name}" FontSize="11" FontWeight="SemiBold"
+                   Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                   Classes.heal="{Binding Key, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=heal}"
+                   Classes.damage="{Binding Key, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=damage}"
+                   Classes.buff="{Binding Key, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=buff}"
+                   Classes.debuff="{Binding Key, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=debuff}"
+                   Classes.crowdcontrol="{Binding Key, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=crowdcontrol}"
+                   Classes.movement="{Binding Key, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=movement}">
+          <TextBlock.Styles>
+            <Style Selector="TextBlock.heal"><Setter Property="Foreground" Value="{DynamicResource Spell.Type.Heal}" /></Style>
+            <Style Selector="TextBlock.damage"><Setter Property="Foreground" Value="{DynamicResource Spell.Type.Damage}" /></Style>
+            <Style Selector="TextBlock.buff"><Setter Property="Foreground" Value="{DynamicResource Spell.Type.Buff}" /></Style>
+            <Style Selector="TextBlock.debuff"><Setter Property="Foreground" Value="{DynamicResource Spell.Type.Debuff}" /></Style>
+            <Style Selector="TextBlock.crowdcontrol"><Setter Property="Foreground" Value="{DynamicResource Spell.Type.CrowdControl}" /></Style>
+            <Style Selector="TextBlock.movement"><Setter Property="Foreground" Value="{DynamicResource Spell.Type.Mobility}" /></Style>
+          </TextBlock.Styles>
+        </TextBlock>
+      </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Spell.StatTemplate" DataType="itemDetailsModels:ItemSpellStat">
+      <Grid Margin="0,2" ColumnDefinitions="*,Auto">
+        <TextBlock Text="{Binding Name}" Foreground="{DynamicResource SolidColorBrush.Text.3}" />
+        <TextBlock Grid.Column="1" Margin="20,0,0,0" Text="{Binding Value}"
+                   Foreground="{DynamicResource SolidColorBrush.Text.1}" FontWeight="SemiBold" />
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Spell.ToolTipContentTemplate" DataType="itemDetailsModels:ItemSpellInformation">
+      <StackPanel Width="300">
+        <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold"
+                   Foreground="{DynamicResource SolidColorBrush.Text.1}" TextWrapping="Wrap" />
+
+        <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding Types}" ItemTemplate="{StaticResource Spell.TypeTemplate}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <Border Margin="0,11,0,0" Padding="0,11,0,0" BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                IsVisible="{Binding DescriptionVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <controls:SpellDescriptionTextBlock Segments="{Binding DescriptionSegments, Mode=OneWay}"
+                                              Foreground="{DynamicResource Spell.Text}"
+                                              FontSize="12"
+                                              LineHeight="18"
+                                              TextWrapping="Wrap" />
+        </Border>
+
+        <Border Margin="5,12,5,0" Padding="5,10,5,0" BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                IsVisible="{Binding StatsVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <ItemsControl ItemsSource="{Binding Stats}" ItemTemplate="{StaticResource Spell.StatTemplate}" />
+        </Border>
+      </StackPanel>
+    </DataTemplate>
+  </Styles.Resources>
+</Styles>

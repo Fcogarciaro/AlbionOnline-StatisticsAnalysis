@@ -26,8 +26,8 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Common/WindowsStartupService.cs` | HKCU Run registry key | `Linux/Common/WindowsStartupService.cs` | Writes (atomically, temp file + move) or removes `$XDG_CONFIG_HOME/autostart/StatisticsAnalysisTool.desktop`, with `Path=` set to the executable's directory (default `~/.config/autostart`, relative XDG values ignored per spec). One fixed file name, whereas Windows used one registry value per install path (`InstanceId`); two installs share the entry. `Exec` is the process path, or `dotnet <dll>` when launched through the dotnet host. |
 | `SystemTrayService.cs`, `SystemTrayMenuRenderer.cs` | WinForms `NotifyIcon` | `Linux/Common/SystemTrayService.cs` (renderer dropped) | Same menu (Open, Activate/Deactivate tracking, Exit) and minimize-to-tray logic on an Avalonia `TrayIcon` (needs a StatusNotifierItem host; GNOME needs an extension). Takes `Avalonia.Controls.Window`. Single click restores (no double-click event). The first-hide hint is a `notify-send` notification (no balloon-tip click). Native menus are not themed. The service needs `MainWindowViewModel`, so it is constructed by the real `MainWindow` (T09), not by `LinuxApp`. Icon: `sat-icon.ico` as Avalonia resource |
 | `Shortcut/**`, `WindowChromeController.cs` | Windows shell | none yet | Chrome belongs to T09. |
-| `Common/Controls/**`, `TextBoxHelper.cs`, `ScrollViewerExtensions.cs`, `ProgressBarSmoother.cs` | WPF controls and attached properties | none yet | Re-created as Avalonia controls/behaviors in T08. |
-| `Common/CultureAwareBinding.cs`, `Common/Validation/**`, `Converters/ValidationErrorConverter.cs` | WPF binding and validation classes | none yet | T08/T10. |
+| `Common/Controls/**` (except `FontAwesomeImage`, T16), `TextBoxHelper.cs`, `ScrollViewerExtensions.cs`, `ProgressBarSmoother.cs`, `CultureAwareBinding.cs` | WPF controls and attached properties | `Linux/Controls/{DigitsTextBox,ResponsiveUniformGrid,SpellDescriptionTextBlock}.cs`, `Linux/Common/{TextBoxHelper,NumericInputRules,ScrollViewerExtensions,ProgressBarSmoother,CultureAwareBinding}.cs` (same names and namespaces) | See "Controls and helpers" below. |
+| `Common/Validation/**`, `Converters/ValidationErrorConverter.cs` | WPF validation classes (`ValidationError`, `IDataErrorInfo` templates) | none yet | T10 (settings window) re-creates validation with Avalonia `DataValidationErrors`. |
 | `Views/**`, `UserControls/**`, `*.xaml.cs`, `App.xaml.cs`, `Properties/AssemblyInfo.cs`, `Properties/Resources.Designer.cs` | Views, application shell, resx image resources | ported views (T07-T15) | See view placeholders below. |
 | `Models/StatPricesTotal.cs`, `Network/Handler/JoinHandler.cs`, `Network/SilverCountUpTimer.cs` | Excluded since T01 | n/a | n/a |
 
@@ -96,7 +96,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   key used by the linked code). Edit `Colors.xaml` upstream first, then re-sync this file.
 - `Styles/Theme.axaml` is the single entry point (`App.axaml` includes it after `FluentTheme`; the headless `TestApp`
   does the same). Each dictionary is merged there. Rendering is verified by headless tests (`Theme/SharedStylesTests.cs`).
-- Ported so far (shared, non-feature): `Colors`, `MainStyles`, `HintBarStyles`, `InfoWindowStyles`. Each feature
+- Ported so far (shared, non-feature): `Colors`, `MainStyles`, `HintBarStyles`, `InfoWindowStyles`, `SpellStyles`. Each feature
   dictionary is ported together with the views that use it: `Dungeon`, `Trade`, `Dashboard`, `DamageMeter`, `Gathering`,
   `ItemDetails`, `Tracking`, `Guild`, `Party`, `StorageHistory`, `Donation`, `Thanks`, `ItemSearch`, `PlayerInformation`,
   `Settings`, `EventValidation`. `MainWindowStyles` and `TabControlStyles` (navigation, header, FontAwesome icons) belong
@@ -120,6 +120,31 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
 | Glyph fonts (`Webdings`, `Segoe MDL2 Assets`) | not on Linux: draw a `Path` or use the FontAwesome icon (T16). |
 | `{x:Type controls:X}` / `xmlns:controls="clr-namespace:StatisticsAnalysisTool.Common.Controls"` | unchanged (the Avalonia controls keep names and namespaces). |
 | `x:CompileBindings` | style dictionaries set `x:CompileBindings="False"` (the project compiles bindings by default and style templates have no `x:DataType`); views declare `x:DataType` per view. |
+
+### Converters and controls (T08)
+
+- Upstream `Common/Converters/*.cs` (`ZeroToDash`, `ValuePerHour`, `ValueAvg`, `ShortNumber`, `Rounding`, `SecondsToTimeFormat`,
+  `IntToStringOrQuestionMark`, `EnumToIntOrQuestionMark`, `DurationSecondsToCompactString`) are linked unchanged: they implement
+  the compat `IValueConverter`, which inherits the Avalonia contract, so `Converter={StaticResource ...}` works (tested through real
+  bindings). Declare them in the view as in WPF (`<conv:ZeroToDashConverter x:Key="..."/>`).
+- **Visibility**: Avalonia's `IsVisible` is a `bool`. For view-model properties of the shim type `Visibility` bind
+  `IsVisible="{Binding X, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"` (`.Inverted` flips it;
+  booleans pass through, so it also replaces `BooleanToVisibilityConverter`). `Hidden` and `Collapsed` both map to hidden.
+  `Visibility="Collapsed"` literals become `IsVisible="False"`.
+- **`CultureAwareBinding`**: a markup extension returning a `Binding` with `ConverterCulture = CurrentCulture`:
+  `{common:CultureAwareBinding Path, StringFormat='{}{0:N0}', FallbackValue=0}`. `IsAsync` does not exist in Avalonia: drop it.
+- **`TextBoxHelper`** (`OnlyNumeric` = `Double|Int|Uint|Natural`, `DefaultValue`, `EvenOddConstraint`): same XAML. Typed text is
+  filtered on `TextInput`; paste is intercepted (`PastingFromClipboard`) and re-applied only if the resulting text is valid. The
+  pending-decimal rule is unchanged (`1.5.` is accepted, as upstream). `DefaultValue` is applied from `TextChanged` (a posted job).
+- **`DigitsTextBox`** keeps its name and namespace and reuses the `TextBox` theme (`StyleKeyOverride`), so there is no separate style.
+  `ResponsiveUniformGrid` and `SpellDescriptionTextBlock` use `StyleKeyOverride` the same way.
+- **`ProgressBarSmoother.SmoothValue`**: 250 ms linear interpolation by a 60 Hz `DispatcherTimer`, restarting from the current value.
+- **`ScrollViewerExtensions.AlwaysScrollToEnd`**: deliberate difference. The WPF condition `Math.Abs(...) < 0` can never hold, so it
+  scrolled to the end once; the port follows new content while the view was at the end and stops when the user scrolls away.
+- **`VirtualizingWrapPanel`** (WpfToolkit, 10 views) has no Avalonia package: ported views use `ItemsRepeater` with a `WrapLayout`
+  (or `UniformGridLayout`) inside a `ScrollViewer`, or a `ListBox` with `ItemsPanel = WrapPanel` for short lists. The
+  `VirtualizingPanel.*` attached properties are dropped. Decide per view (T11/T12/T14).
+- Tests for views can load snippets with `AvaloniaRuntimeXamlLoader` (see `Theme/SharedStylesTests.cs`, `Controls/ControlsRenderTests.cs`).
 
 ## Ported views
 
