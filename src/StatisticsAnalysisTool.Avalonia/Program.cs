@@ -8,8 +8,8 @@ internal static class Program
     [STAThread]
     public static int Main(string[] args)
     {
-        // Bind the compat Dispatcher to the UI thread before any worker thread can touch it.
-        _ = global::Avalonia.Threading.Dispatcher.UIThread;
+        // Do not touch Dispatcher.UIThread here: Avalonia creates it on first access and, before the windowing platform
+        // is registered, binds it to a dispatcher without a main loop (MainLoop then throws PlatformNotSupportedException).
         // Resolve libpcap.so.1 / libpcap.so.0.8 when no libpcap.so development symlink exists.
         StatisticsAnalysisTool.Linux.Capture.LibpcapLibrary.Install();
 
