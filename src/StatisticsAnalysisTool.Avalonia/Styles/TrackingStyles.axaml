@@ -8,6 +8,8 @@
         xmlns:enumerations="clr-namespace:StatisticsAnalysisTool.Enumerations"
         xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
         xmlns:networkModel="clr-namespace:StatisticsAnalysisTool.Models.NetworkModel"
+        xmlns:cluster="clr-namespace:StatisticsAnalysisTool.Cluster"
+        xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
         xmlns:globalization="clr-namespace:System.Globalization;assembly=System.Runtime"
         x:CompileBindings="False">
   <Styles.Resources>
@@ -125,6 +127,70 @@
       </Grid>
     </DataTemplate>
 
+    <!-- MapMarkerType DataTriggers: the image, and the margin that lifts the icons whose artwork has empty space. -->
+    <DataTemplate x:Key="MapMarkerIconTemplate" DataType="enumerations:MapMarkerType">
+      <Image Height="36" Width="36" Classes="map-marker"
+               Classes.elite="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.DungeonElite}}"
+               Classes.group="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.DungeonGroup}}"
+               Classes.solo="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.DungeonSolo}}"
+               Classes.roadraid="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.RoadsOfAvalonRaidPve}}"
+               Classes.roadgroup="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.RoadsOfAvalonGroupPve}}"
+               Classes.roadsolo="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.RoadsOfAvalonSoloPve}}"
+               Classes.stone="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Stone}}"
+               Classes.fiber="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Fiber}}"
+               Classes.wood="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Wood}}"
+               Classes.hide="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Hide}}"
+               Classes.ore="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Ore}}" />
+    </DataTemplate>
+
+    <!-- ClusterInfo rows of the map history. Background gradient by ClusterMode, border while selected, click toggles the selection. -->
+    <DataTemplate x:Key="ClusterInfoTemplate" DataType="cluster:ClusterInfo">
+      <Border Margin="0,0,0,1" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.3}" Classes="cluster-row-border"
+              Classes.selected="{Binding IsSelectedInMapHistory}">
+        <Grid Classes="cluster-row"
+                      Classes.safearea="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.SafeArea}}"
+                      Classes.island="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Island}}"
+                      Classes.yellow="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Yellow}}"
+                      Classes.red="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Red}}"
+                      Classes.black="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Black}}"
+                      Classes.avalon="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.AvalonTunnel}}"
+                      Classes.mists="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Mists}}"
+                      Classes.unknown="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Unknown}}">
+          <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+              <StackPanel Orientation="Horizontal" Background="Transparent" common:MouseCommands.LeftClick="{Binding ToggleMapHistorySelectionCommand}">
+                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ClusterModeIcon.Template}" Width="24" />
+                <Label Width="140" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}">
+                  <TextBlock Text="{Binding Entered, StringFormat='{}{0}', ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}, FallbackValue='00.00.0000 00:00:00'}" />
+                </Label>
+                <Label Content="{Binding TierRomanString}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="35" />
+                <StackPanel Orientation="Horizontal" Width="149">
+                  <Label Content="{Binding ClusterHistoryString1}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                  <Image Height="18" Width="16" ToolTip.Tip="{Binding RandomDungeonTierLevelToolTip}" Classes="dungeon-level"
+                         IsVisible="{Binding HasRandomDungeonLevelIcon}"
+                         Classes.l0="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=0}"
+                         Classes.l1="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                         Classes.l2="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                         Classes.l3="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}"
+                         Classes.l4="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=4}" />
+                </StackPanel>
+                <Label Content="{Binding ClusterHistoryString2}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="149" />
+                <Label Content="{Binding ClusterHistoryString3}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="149" />
+              </StackPanel>
+              <TextBox Text="{Binding MapHistoryNote}" Width="149" Background="{DynamicResource SolidColorBrush.Value.Silver.Transparent}" BorderThickness="0" />
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding MapMarkers}" ItemTemplate="{StaticResource MapMarkerIconTemplate}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
+          </StackPanel>
+        </Grid>
+      </Border>
+    </DataTemplate>
+
   </Styles.Resources>
 
   <!-- Style-selector rules for the classes above (selectors outrank the theme setters, which is wanted here). -->
@@ -142,4 +208,92 @@
   <Style Selector="Label.cluster-tier.avalon"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Avalon}" /></Style>
   <Style Selector="Label.cluster-tier.mists"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Mists}" /></Style>
   <Style Selector="Label.cluster-tier.unknown"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Black}" /></Style>
+  <!-- Map history rows. -->
+  <Style Selector="Border.cluster-row-border"><Setter Property="BorderThickness" Value="0" /></Style>
+  <Style Selector="Border.cluster-row-border.selected"><Setter Property="BorderThickness" Value="1" /></Style>
+  <Style Selector="Grid.cluster-row.safearea">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.SafeArea}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.island">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Island}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.yellow">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Yellow}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.red">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Red}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.black">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Black}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.avalon">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Avalon}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.mists">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Mists}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.unknown">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Black}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Image.dungeon-level.l0"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_common.png" /></Style>
+  <Style Selector="Image.dungeon-level.l1"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_uncommon.png" /></Style>
+  <Style Selector="Image.dungeon-level.l2"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_rare.png" /></Style>
+  <Style Selector="Image.dungeon-level.l3"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_epic.png" /></Style>
+  <Style Selector="Image.dungeon-level.l4"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_legendary.png" /></Style>
+
+  <Style Selector="Image.map-marker">
+    <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/empty_icon.png" />
+    <Setter Property="Margin" Value="0,-10,0,0" />
+  </Style>
+  <Style Selector="Image.map-marker.elite"><Setter Property="Margin" Value="0,0,0,0" /><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/raid_dungeon.png" /></Style>
+  <Style Selector="Image.map-marker.group"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/group_dungeon.png" /></Style>
+  <Style Selector="Image.map-marker.solo"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/solo_dungeon.png" /></Style>
+  <Style Selector="Image.map-marker.roadraid"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/road_chest_raid.png" /><Setter Property="Margin" Value="0,-18,0,0" /></Style>
+  <Style Selector="Image.map-marker.roadgroup"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/road_chest_group.png" /><Setter Property="Margin" Value="0,-18,0,0" /></Style>
+  <Style Selector="Image.map-marker.roadsolo"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/road_chest_solo.png" /><Setter Property="Margin" Value="0,-18,0,0" /></Style>
+  <Style Selector="Image.map-marker.stone"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_stone.png" /></Style>
+  <Style Selector="Image.map-marker.fiber"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_fiber.png" /></Style>
+  <Style Selector="Image.map-marker.wood"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_wood.png" /></Style>
+  <Style Selector="Image.map-marker.hide"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_hide.png" /></Style>
+  <Style Selector="Image.map-marker.ore"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_ore.png" /></Style>
 </Styles>

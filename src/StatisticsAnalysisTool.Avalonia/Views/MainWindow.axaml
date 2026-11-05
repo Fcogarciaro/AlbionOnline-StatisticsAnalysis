@@ -223,7 +223,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding MapHistoryTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.MapHistory, FallbackValue=MAP__HISTORY}" Tag="pack://application:,,,/Assets/Navigation/location.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="MapHistoryControl" />
+          <userControls:MapHistoryControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding PlayerInformationTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.PlayerInformation, FallbackValue=PLAYER__INFORMATION}" Tag="pack://application:,,,/Assets/Navigation/baseball-player.png">
