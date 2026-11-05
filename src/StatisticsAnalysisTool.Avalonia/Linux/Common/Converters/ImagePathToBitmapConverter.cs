@@ -1,4 +1,4 @@
-// Converts the resource path strings the upstream XAML keeps in Tag/bindings ("pack://application:,,,/Assets/x.png" or
+// Converts the resource paths the upstream XAML keeps in Tag/bindings (a string or Uri: "pack://application:,,,/Assets/x.png", "/Assets/x.png" or
 // an avares URI) into a bitmap, because Avalonia does not convert strings to image sources inside bindings.
 using Avalonia;
 using Avalonia.Data.Converters;
@@ -20,14 +20,20 @@ public sealed class ImagePathToBitmapConverter : IValueConverter
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is not string path || string.IsNullOrWhiteSpace(path))
+        var path = value switch
+        {
+            Uri uri => uri.OriginalString,
+            string text => text,
+            _ => null
+        };
+        if (string.IsNullOrWhiteSpace(path))
         {
             return null;
         }
 
         var uriText = path.StartsWith(PackPrefix, StringComparison.OrdinalIgnoreCase)
             ? "avares://StatisticsAnalysisTool" + path[PackPrefix.Length..]
-            : path;
+            : path.StartsWith('/') ? "avares://StatisticsAnalysisTool" + path : path;
 
         if (Cache.TryGetValue(uriText, out var cached))
         {

@@ -7,7 +7,7 @@ using AvaloniaWindowState = Avalonia.Controls.WindowState;
 
 namespace StatisticsAnalysisTool.Views;
 
-/// <summary>Port of Views/DashboardWindow.xaml(.cs); hosts the placeholder until DashboardControl is ported (T13).</summary>
+/// <summary>Port of Views/DashboardWindow.xaml(.cs): the dashboard control without its "open window" button.</summary>
 public partial class DashboardWindow : System.Windows.Window
 {
     private readonly WindowChromeController _windowChromeController;

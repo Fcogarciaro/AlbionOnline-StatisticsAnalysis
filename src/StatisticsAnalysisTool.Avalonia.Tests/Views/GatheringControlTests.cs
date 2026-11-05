@@ -49,7 +49,7 @@ public class GatheringControlTests
         pie.Series.Should().BeSameAs(stats.ResourceValueByTypeSeries);
         // The chart paints on the render timer; give it a few frames.
         var magenta = 0;
-        for (var i = 0; i < 30 && magenta == 0; i++)
+        for (var i = 0; i < 40 && magenta <= 100; i++)
         {
             AvaloniaHeadlessPlatform.ForceRenderTimerTick(5);
             Dispatcher.UIThread.RunJobs();

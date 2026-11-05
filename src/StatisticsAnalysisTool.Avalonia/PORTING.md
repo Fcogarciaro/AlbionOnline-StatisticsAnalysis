@@ -207,7 +207,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   Avalonia) with `ImagePathToBitmapConverter` turning the upstream `pack://application:,,,/Assets/...` tags into bitmaps.
   The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
-- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, DungeonControl,
+- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DungeonControl,
   DamageMeterControl, TradeMonitoringControl and CraftingControl (SettingsControl is real since T10; ItemSearch,
   Party, Guild, StorageHistory, MapHistory, PlayerInformation, Donation and Thanks since T11). Each is replaced where it is ported
   (T12-T15). `ItemSearchControl` hosts a placeholder named ItemDetailsControl in its details slot until the item details view lands.
@@ -346,7 +346,8 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
   booleans are `IsVisible` with `ObjectConverters.Equal|NotEqual` or `BoolConverters.Not`; the two custom `Expander` templates
   (`Dashboard.CombatEventExpander`, `Dashboard.MobExpander`) are an `Expander` theme whose header is a `ToggleButton` theme (`...Toggle`) with the
   chevron switched by `:checked`; the ranking bar keeps `PART_Track`/`PART_Indicator` of the Avalonia `ProgressBar`.
-  `Dashboard.SessionDeleteButton` loses the Visibility setter (the local `IsVisible` binding of every use overrode it in WPF too).
+  `Dashboard.SessionDeleteButton` is hidden by default and shown by `ComboBoxItem Button.session-delete.can-delete` (the MultiDataTrigger); the dashboard sets
+  `Classes.can-delete`, the gathering view overrides it with a local `IsVisible` binding as upstream.
 - Items whose view-model type is the shim `Brush` (`Brush` of chart filters, ranking items, type summaries) bind through `CompatBrushConverter`.
 - `Styles/GatheringStyles.axaml` ports `GatheringStyles.xaml`: the resource tab lists (`WpfToolkit VirtualizingItemsControl`) are a `ScrollViewer`
   around an `ItemsControl` with a `VirtualizingStackPanel`. `TrackingStyles.axaml` also gained the `Icon.*` image themes (chests, dungeon, fame, silver, re-spec).
@@ -356,6 +357,18 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
   content), reporting `IsLoaded && IsEffectivelyVisible` to `GatheringBindings.SetViewVisibility`. Tests draw a pie and a line chart through Skia
   headless and check their pixels. Note that `GatheringBindings` replaces `GatheringStats` series collections itself on its refresh, so tests set the
   series before showing the control.
+
+### DashboardControl, DashboardLootControl, DashboardWindow (T13)
+
+- 1:1 ports (`UserControls/DashboardControl.axaml(.cs)`, `DashboardLootControl`, `Views/DashboardWindow` hosting the control with `ShowOpenWindowButton=False`).
+  Section headers use `PointerPressed` (left button only) instead of `MouseLeftButtonDown`; `ShowOpenWindowButton` and `ShowDetails` are styled properties.
+  The mob list height still follows the control (`UpdateMobListHeight`), re-run when the list is attached or shown (WPF `IsVisibleChanged`).
+  The inline `Border.Style` triggers that top-align a collapsed section are the class `valign-top` (`ObjectConverters.Equal` against `Visibility.Collapsed`).
+- `ImagePathToBitmapConverter` also accepts `Uri` values (faction seal, coin and standing icons) and `/Assets/...` strings (`IconSource`, `ChestIconSource`, `ContentIconSource`).
+- The filter `SelectionChanged` handlers skip the refresh while no `TrackingController` is registered (`ServiceLocator.Resolve` throws; upstream always has one).
+  Tests that need it use `ViewHarness.UseTrackingController()`.
+- Fidelity gaps: the expander chevrons and the status overlay of looted slots were not compared on a real desktop; the dashboard history chart is only checked for its
+  bindings (the dashboard controller refreshes its series itself), the line/pie drawing is covered by the gathering tests.
 
 ## View placeholders
 

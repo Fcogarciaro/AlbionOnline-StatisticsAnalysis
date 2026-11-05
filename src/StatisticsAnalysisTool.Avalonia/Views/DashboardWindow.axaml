@@ -31,8 +31,8 @@
       <Button Theme="{StaticResource WindowButtonStyle}" Content="0" Margin="0,0,56,0" Click="MinimizeButton_Click" />
     </Grid>
 
-    <!-- TODO(T13): DashboardControl (ShowOpenWindowButton=False) replaces the placeholder. -->
-    <userControls:PortingPlaceholderControl Margin="0,33,0,0" ViewName="DashboardControl" />
+    <userControls:DashboardControl Margin="0,33,0,0" ShowOpenWindowButton="False"
+                                   DataContext="{Binding $parent[Window].DataContext}" />
     <fa:WindowResizeHandles />
   </Grid>
 </Window>

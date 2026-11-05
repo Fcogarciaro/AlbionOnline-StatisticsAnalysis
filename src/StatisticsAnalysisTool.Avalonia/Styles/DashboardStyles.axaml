@@ -308,7 +308,8 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
-        <!-- The WPF Visibility setter (Collapsed unless CanDelete inside a ComboBoxItem) was overridden by the local binding on every use. -->
+        <!-- Collapsed unless CanDelete inside a ComboBoxItem (the MultiDataTrigger): see the selector after the resources. Gathering overrides it with a local binding. -->
+        <Setter Property="IsVisible" Value="False" />
         <Style Selector="^:pointerover">
             <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Accent.Red.7}" />
             <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.4}" />
@@ -474,7 +475,7 @@
                     <ColumnDefinition Width="70" />
                 </Grid.ColumnDefinitions>
                 <Grid Width="26" Height="26" VerticalAlignment="Center">
-                    <Image Source="{Binding IconSource}" Stretch="Uniform" IsVisible="{Binding DungeonMode, Converter={x:Static ObjectConverters.NotEqual}, ConverterParameter={x:Static dungeon:DungeonMode.DragonArea}}">
+                    <Image Source="{Binding IconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}" Stretch="Uniform" IsVisible="{Binding DungeonMode, Converter={x:Static ObjectConverters.NotEqual}, ConverterParameter={x:Static dungeon:DungeonMode.DragonArea}}">
                     </Image>
                     <fa:FontAwesomeImage Icon="SolidDungeon" Foreground="{DynamicResource SolidColorBrush.Dungeon.Mode.DragonArea.1}" IsVisible="{Binding DungeonMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static dungeon:DungeonMode.DragonArea}}">
                     </fa:FontAwesomeImage>
@@ -584,7 +585,7 @@
                 <ColumnDefinition Width="125" />
                 <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
-            <Image Width="18" Height="18" Source="{Binding IconSource}" VerticalAlignment="Center" />
+            <Image Width="18" Height="18" Source="{Binding IconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}" VerticalAlignment="Center" />
             <TextBlock Grid.Column="1" Text="{Binding Name}" Theme="{StaticResource Dashboard.CombatRowText}" Margin="0,0,8,0" />
             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <TextBlock Text="{Binding Count, StringFormat='{}{0:N0}', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource Dashboard.CombatRowText}" />
@@ -1118,7 +1119,7 @@
 
                 <DockPanel>
                     <Grid Width="22" Height="22" Margin="0,0,7,0">
-                        <Image Source="{Binding ContentIconSource}" Stretch="Uniform" IsVisible="{Binding ContentType, Converter={x:Static ObjectConverters.NotEqual}, ConverterParameter={x:Static models:DashboardContentType.OpenWorld}}">
+                        <Image Source="{Binding ContentIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}" Stretch="Uniform" IsVisible="{Binding ContentType, Converter={x:Static ObjectConverters.NotEqual}, ConverterParameter={x:Static models:DashboardContentType.OpenWorld}}">
                         </Image>
                         <fa:FontAwesomeImage Icon="SolidEarthEurope"
                                           Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" IsVisible="{Binding ContentType, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static models:DashboardContentType.OpenWorld}}">
@@ -1159,7 +1160,7 @@
                         <Grid Width="36" Height="36">
                             <Image Width="{Binding ChestIconSize}"
                                    Height="{Binding ChestIconSize}"
-                                   Source="{Binding ChestIconSource}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
                                    Stretch="Uniform" />
                             <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/green_glow.png" Opacity="0.65" />
                         </Grid>
@@ -1170,7 +1171,7 @@
                         <Grid Width="36" Height="36">
                             <Image Width="{Binding ChestIconSize}"
                                    Height="{Binding ChestIconSize}"
-                                   Source="{Binding ChestIconSource}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
                                    Stretch="Uniform" />
                             <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/blue_glow.png" Opacity="0.65" />
                         </Grid>
@@ -1181,7 +1182,7 @@
                         <Grid Width="36" Height="36">
                             <Image Width="{Binding ChestIconSize}"
                                    Height="{Binding ChestIconSize}"
-                                   Source="{Binding ChestIconSource}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
                                    Stretch="Uniform" />
                             <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/purple_glow.png" Opacity="0.65" />
                         </Grid>
@@ -1192,7 +1193,7 @@
                         <Grid Width="36" Height="36">
                             <Image Width="{Binding ChestIconSize}"
                                    Height="{Binding ChestIconSize}"
-                                   Source="{Binding ChestIconSource}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
                                    Stretch="Uniform" />
                             <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/gold_glow.png" Opacity="0.65" />
                         </Grid>
@@ -1223,6 +1224,20 @@
         </ItemsControl>
     </DataTemplate>
     <ControlTheme x:Key="Dashboard.MobSummaryCard" TargetType="Border" BasedOn="{StaticResource Dashboard.CombatMetricCard}" />
+
+    <!-- Plain rows (the item content only) for the recent combat events list. -->
+    <ControlTheme x:Key="Dashboard.PlainListItem" TargetType="ListBoxItem">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
 
     <ControlTheme x:Key="Dashboard.MobListItem" TargetType="ListBoxItem">
         <Setter Property="Padding" Value="0" />
@@ -1389,4 +1404,6 @@
     </DataTemplate>
 
   </Styles.Resources>
+
+  <Style Selector="ComboBoxItem Button.session-delete.can-delete"><Setter Property="IsVisible" Value="True" /></Style>
 </Styles>

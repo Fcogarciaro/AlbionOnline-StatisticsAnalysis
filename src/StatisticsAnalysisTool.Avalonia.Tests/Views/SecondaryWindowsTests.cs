@@ -278,13 +278,13 @@ public class SecondaryWindowsTests
     // ---- DashboardWindow / DamageMeterWindow
 
     [AvaloniaTest]
-    public void DashboardWindow_HostsThePlaceholderWithTheLocalizedTitle()
+    public void DashboardWindow_HostsTheDashboardWithTheLocalizedTitle()
     {
         var window = new DashboardWindow(new MainWindowViewModel());
         window.Show();
 
         window.Title.Should().NotBeNullOrEmpty();
-        window.GetVisualDescendants().OfType<StatisticsAnalysisTool.UserControls.PortingPlaceholderControl>().Should().ContainSingle();
+        window.GetVisualDescendants().OfType<StatisticsAnalysisTool.UserControls.DashboardControl>().Should().ContainSingle();
         _log.Errors.Should().BeEmpty();
     }
 

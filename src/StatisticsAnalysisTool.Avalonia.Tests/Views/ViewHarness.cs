@@ -12,6 +12,7 @@ internal sealed class ViewHarness : IDisposable
 {
     private readonly string _root = Directory.CreateTempSubdirectory("sat-view").FullName;
     private readonly IDisposable _xdg;
+    private StatisticsAnalysisTool.Network.Manager.TrackingController _trackingController;
 
     public ViewHarness()
     {
@@ -31,6 +32,17 @@ internal sealed class ViewHarness : IDisposable
     }
 
     public BindingErrorLog Log { get; }
+
+    /// <summary>
+    /// Registers a real TrackingController for the lifetime of the harness (views whose handlers call ServiceLocator.Resolve need it, as in the app).
+    /// It is removed again on dispose so other tests keep seeing the unregistered state.
+    /// </summary>
+    public StatisticsAnalysisTool.Network.Manager.TrackingController UseTrackingController()
+    {
+        _trackingController ??= new StatisticsAnalysisTool.Network.Manager.TrackingController(MainViewModel);
+        StatisticsAnalysisTool.Common.ServiceLocator.Register<StatisticsAnalysisTool.Network.Manager.TrackingController>(_trackingController);
+        return _trackingController;
+    }
 
     public Window Window { get; private set; }
 
@@ -52,6 +64,13 @@ internal sealed class ViewHarness : IDisposable
 
     public void Dispose()
     {
+        if (_trackingController != null)
+        {
+            var services = (System.Collections.IDictionary) typeof(StatisticsAnalysisTool.Common.ServiceLocator)
+                .GetField("Services", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!.GetValue(null)!;
+            services.Remove(typeof(StatisticsAnalysisTool.Network.Manager.TrackingController));
+        }
+
         Window?.Close();
         Log.Dispose();
         _xdg.Dispose();

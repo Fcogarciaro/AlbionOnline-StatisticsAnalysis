@@ -72,7 +72,7 @@ public class MainWindowTests
     public async Task Navigation_HasEveryUpstreamTabInOrderWithLocalizedHeaders()
     {
         await OpenAsync();
-        var tabs = _window.GetVisualDescendants().OfType<TabItem>().ToList();
+        var tabs = _window.GetVisualDescendants().OfType<TabItem>().Where(t => t.Tag != null).ToList(); // navigation tabs only (ported tabs host their own inner tabs)
 
         tabs.Should().HaveCount(16);
         tabs.Select(t => t.Tag).Should().Contain("pack://application:,,,/Assets/Navigation/dashboard.png")
@@ -80,7 +80,6 @@ public class MainWindowTests
             .And.Contain("pack://application:,,,/Assets/Navigation/setting.png");
         tabs.Select(t => t.Header as string).Should().OnlyContain(h => !string.IsNullOrWhiteSpace(h));
         tabs[^1].Header.Should().Be(StatisticsAnalysisTool.Models.TranslationModel.MainWindowTranslation.Settings);
-        _window.GetVisualDescendants().OfType<PortingPlaceholderControl>().Should().NotBeEmpty();
     }
 
     [AvaloniaTest]

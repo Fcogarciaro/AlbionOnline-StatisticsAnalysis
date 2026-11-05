@@ -168,7 +168,7 @@
     <TabControl Theme="{StaticResource TabControlStyle}">
       <TabItem IsVisible="{Binding DashboardTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Dashboard, FallbackValue=DASHBOARD}" Tag="pack://application:,,,/Assets/Navigation/dashboard.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="DashboardControl" />
+          <userControls:DashboardControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding ItemSearchTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.ItemSearch, FallbackValue=ITEM__SEARCH}" Tag="pack://application:,,,/Assets/Navigation/magnifying-glass.png">
