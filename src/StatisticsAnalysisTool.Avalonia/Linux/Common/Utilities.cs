@@ -3,6 +3,7 @@
 // Keep in sync with src/StatisticsAnalysisTool/Common/Utilities.cs when upstream changes.
 using Serilog;
 using StatisticsAnalysisTool.Localization;
+using StatisticsAnalysisTool.Linux.Platform;
 using StatisticsAnalysisTool.Notification;
 using System;
 using System.Collections.Generic;
@@ -113,13 +114,48 @@ public static class Utilities
 
     #region Window Flash
 
-    // TODO(T18): request user attention through the window manager (e.g. _NET_WM_STATE_DEMANDS_ATTENTION).
+    // Avalonia has no urgency-hint API; on X11 wmctrl sets _NET_WM_STATE_DEMANDS_ATTENTION (the window manager clears
+    // it when the window gets focus). A no-op on Wayland or without wmctrl. `count` has no equivalent.
     public static void FlashWindow(this Window win, uint count = uint.MaxValue)
     {
+        global::Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            if (!win.IsActive)
+            {
+                SetAttention(win, true);
+            }
+        });
     }
 
     public static void StopFlashingWindow(this Window win)
     {
+        global::Avalonia.Threading.Dispatcher.UIThread.Post(() => SetAttention(win, false));
+    }
+
+    private static void SetAttention(Window win, bool demandAttention)
+    {
+        try
+        {
+            var handle = win.TryGetPlatformHandle();
+            var arguments = WindowAttention.BuildWmctrlArguments(handle?.HandleDescriptor, handle?.Handle ?? IntPtr.Zero, demandAttention,
+                ExecutableLocator.IsAvailable("wmctrl"));
+            if (arguments == null)
+            {
+                return;
+            }
+
+            var startInfo = new ProcessStartInfo("wmctrl") { UseShellExecute = false, CreateNoWindow = true };
+            foreach (var argument in arguments)
+            {
+                startInfo.ArgumentList.Add(argument);
+            }
+
+            using var process = Process.Start(startInfo);
+        }
+        catch (Exception e) when (e is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            Log.Debug(e, "Window attention request failed");
+        }
     }
 
     #endregion

@@ -8,7 +8,6 @@ using Serilog;
 using StatisticsAnalysisTool.Common.UserSettings;
 using StatisticsAnalysisTool.Linux.Platform;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using AvaloniaApplication = Avalonia.Application;
 
@@ -76,7 +75,7 @@ public class SatNotificationManager
 
         if (channels.HasFlag(NotificationChannels.Desktop))
         {
-            SendDesktopNotification(kind, title, message);
+            DesktopNotifier.Send(kind, title, message);
         }
     }
 
@@ -89,23 +88,5 @@ public class SatNotificationManager
         }
 
         return _inApp;
-    }
-
-    private static void SendDesktopNotification(NotificationKind kind, string title, string message)
-    {
-        try
-        {
-            var startInfo = new ProcessStartInfo("notify-send") { UseShellExecute = false, CreateNoWindow = true };
-            foreach (var argument in NotificationPlan.NotifySendArguments(kind, title, message))
-            {
-                startInfo.ArgumentList.Add(argument);
-            }
-
-            using var process = Process.Start(startInfo);
-        }
-        catch (Exception e) when (e is System.ComponentModel.Win32Exception or InvalidOperationException)
-        {
-            Log.Warning(e, "notify-send failed");
-        }
     }
 }

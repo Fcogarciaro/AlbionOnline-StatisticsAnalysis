@@ -47,6 +47,11 @@
     <ProjectReference Include="..\StatisticsAnalysisTool.Network\StatisticsAnalysisTool.Network.csproj" />
   </ItemGroup>
 
+  <!-- Tray icon, loaded as avares://StatisticsAnalysisTool/Assets/sat-icon.ico. -->
+  <ItemGroup>
+    <AvaloniaResource Include="..\StatisticsAnalysisTool\sat-icon.ico" Link="Assets\sat-icon.ico" />
+  </ItemGroup>
+
   <!-- Alert sounds from the WPF project, discovered at runtime under <app dir>/Sounds. -->
   <ItemGroup>
     <Content Include="..\StatisticsAnalysisTool\Sounds\*.wav" Link="Sounds\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
