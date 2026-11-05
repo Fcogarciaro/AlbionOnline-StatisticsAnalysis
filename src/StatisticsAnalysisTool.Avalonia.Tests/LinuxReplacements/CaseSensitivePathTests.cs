@@ -40,6 +40,23 @@ public class CaseSensitivePathTests
     }
 
     [Test]
+    public void GameFile_ChoosesDeterministicallyWhenOnlyCaseDifferentMatchesExist()
+    {
+        using var _ = AppDataPaths.UseRuntimeBaseDirectoryForTests(_root);
+        Directory.CreateDirectory(AppDataPaths.GameFilesDirectory);
+        foreach (var name in new[] { "items.JSON", "ITEMS.json", "Items.json" })
+        {
+            File.WriteAllText(Path.Combine(AppDataPaths.GameFilesDirectory, name), "[]");
+        }
+
+        // ordinal order: "ITEMS.json" < "Items.json" < "items.JSON"
+        for (var i = 0; i < 3; i++)
+        {
+            AppDataPaths.GameFile("iTEMS.json").Should().Be(Path.Combine(AppDataPaths.GameFilesDirectory, "ITEMS.json"));
+        }
+    }
+
+    [Test]
     public void Extractor_FindsTheBinFilesUnderTheGameFolder()
     {
         var gameData = Path.Combine(_root, "game", "Albion-Online_Data", "StreamingAssets", "GameData");

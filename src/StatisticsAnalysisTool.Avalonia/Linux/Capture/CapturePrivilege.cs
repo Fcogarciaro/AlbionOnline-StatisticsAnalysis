@@ -1,5 +1,6 @@
-// Replaces the Npcap/administrator checks: raw packet capture on Linux needs root, or the CAP_NET_RAW and
-// CAP_NET_ADMIN capabilities in the effective set of the process (granted to the binary with setcap).
+// Replaces the Npcap/administrator checks: raw packet capture on Linux needs root, or CAP_NET_RAW in the effective
+// set of the process (granted to the binary with setcap). CAP_NET_ADMIN is optional (promiscuous mode on some
+// setups); the guidance still grants both, as Wireshark's dumpcap does.
 using System;
 using System.IO;
 
@@ -7,9 +8,8 @@ namespace StatisticsAnalysisTool.Linux.Capture;
 
 internal static class CapturePrivilege
 {
-    private const int CapNetAdmin = 12;
     private const int CapNetRaw = 13;
-    private const ulong CaptureMask = (1UL << CapNetAdmin) | (1UL << CapNetRaw);
+    private const ulong CaptureMask = 1UL << CapNetRaw;
 
     /// <summary>Reads the hex mask of the "CapEff:" line of /proc/self/status, or null when absent or malformed.</summary>
     public static ulong? ParseCapEff(string procStatus)

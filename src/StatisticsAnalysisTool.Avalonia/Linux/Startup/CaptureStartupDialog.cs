@@ -1,5 +1,5 @@
 // Linux version of ShowNpcapInfoDialogOnFirstStart's content: the Npcap link becomes the capabilities(7) man page and,
-// when the process lacks CAP_NET_RAW/CAP_NET_ADMIN, the dialog carries the exact setcap command even when libpcap lists devices.
+// when the process lacks CAP_NET_RAW, the dialog carries the exact setcap command even when libpcap lists devices.
 using StatisticsAnalysisTool.Linux.Capture;
 
 namespace StatisticsAnalysisTool.Linux.Startup;

@@ -15,7 +15,7 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Common/AppDataPaths.cs` | `LocalApplicationData` is the only root; everything (incl. `Settings.json`) sits in it | `Linux/Common/AppDataPaths.cs` (copy, keep in sync) | Same members and `Instances/<id>/...` sub-structure. `Settings.json` goes to `$XDG_CONFIG_HOME/StatisticsAnalysisTool` (default `~/.config`); `Backups`, `UserData-*`, `logs`, `GameFiles` to `$XDG_DATA_HOME/StatisticsAnalysisTool` (default `~/.local/share`, where .NET already pointed `LocalApplicationData`); `temp`, `ImageResources`, `SpellImageResources` to `$XDG_CACHE_HOME/StatisticsAnalysisTool` (default `~/.cache`, safe to delete). Relative XDG values are ignored per spec. Copy the folders between machines by recreating the same `Instances/<id>` layout. Upstream has no portable mode, so none is offered. Extra member `UserSettingsFile`. |
 | `Network/PacketProviders/SocketsPacketProvider.cs` | Raw sockets with Windows `SIO_RCVALL` | `Linux/Network/SocketsPacketProvider.cs` (subclass of the libpcap provider) | The `Sockets` choice (enum value 1, may come from a Windows settings file) runs libpcap. The default `PacketProvider` is already `Npcap` = libpcap. The settings UI still lists both options (`Sockets (must be run as admin)` / `Npcap`); T10 should relabel them. |
 | `Network/PacketProviders/LibpcapPacketProvider.cs` | Frame parsing knows only Ethernet and raw IP; opens every up non-loopback device | `Linux/Network/LibpcapPacketProvider.cs` (copy, keep in sync) | `TryReadNetworkLayer` delegates to `Linux/Capture/LinkLayerDecoder.cs`: Ethernet (with 802.1Q/QinQ tags), Linux cooked SLL (113) and SLL2 (276), raw IP. The `any` pseudo device (cooked headers) is only opened when no concrete interface opened, and is not listed as a selectable device, to avoid every packet arriving twice. Upstream device filtering (skip loopback and down devices, honor `NetworkDevices` selection) works unchanged on Linux: there are no NPF names. The BPF default filter (UDP 5055/5056/5058 plus IPv4 fragments) compiles for every link type. Log text still says "Npcap". |
-| `Core/ApplicationCore.cs` | `WindowsPrincipal` (throws `PlatformNotSupportedException` on Linux) | `Linux/Core/ApplicationCore.cs` | `IsAppStartedAsAdministrator()` means root, or `CAP_NET_RAW` + `CAP_NET_ADMIN` in `CapEff` of `/proc/self/status` (`Linux/Capture/CapturePrivilege.cs`). |
+| `Core/ApplicationCore.cs` | `WindowsPrincipal` (throws `PlatformNotSupportedException` on Linux) | `Linux/Core/ApplicationCore.cs` | `IsAppStartedAsAdministrator()` means root, or `CAP_NET_RAW` in `CapEff` (`CAP_NET_ADMIN` is optional; the setcap text grants both like Wireshark dumpcap) of `/proc/self/status` (`Linux/Capture/CapturePrivilege.cs`). |
 | `Localization/LocalizationController.cs` | Npcap texts | `Linux/Localization/LocalizationController.cs` (copy, one added call) | `Translation()` asks `CaptureGuidance` first. Overridden keys (English only): `NPCAP_INFO_DIALOG_TITLE/MESSAGE/LINK_TEXT`, `ERR_NPCAP_DLL_MISSING`, `MAKE_SURE_YOU_HAVE_INSTALLED_NPCAP`, and, when the process lacks the capture capabilities, `NO_LISTENING_ADAPTERS`, `ERR_NPCAP_OPEN_FAILED`, `START_APPLICATION_AS_ADMINISTRATOR`. These carry the exact `sudo setcap cap_net_raw,cap_net_admin=eip <path>` command for the real process (under `dotnet X.dll` the path is the apphost next to the dll, never the dotnet host). |
 | `Common/AlbionGameProcessMonitor.cs` | `Process.GetProcessesByName` misses the game under Wine/Proton (15-char `comm` such as `Albion-Online.e`, wine loader as the exe) | `Linux/Common/AlbionGameProcessMonitor.cs` | Same class, events and 2 s poll; detection scans `/proc/<pid>/comm` and `argv[0]` for `Albion-Online` / `Albion-Online.exe` (`AlbionProcessMatcher`). Processes of other users are matched too (comm and cmdline are world-readable) |
 | `Common/SoundController.cs` | `System.Windows.Media.MediaPlayer` | `Linux/Common/SoundController.cs` | Sound discovery identical (`Sounds/*.wav` are copied to the output from the WPF project). Playback runs the first available of `pw-play`, `paplay`, `aplay` as a detached process (output is not redirected). Volume is applied by `pw-play` and `paplay`; `aplay` cannot scale volume. Volume 0 plays nothing (as in WPF). With no player installed a single warning is logged. |
@@ -76,7 +76,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   `ShutdownRequested`; both run the same cleanup (notifications off, updater disposed, `PrepareForShutdown`,
   `CriticalData.Save`, backup), which runs once.
 - The Npcap dialog is a message box (`CaptureStartupDialog`): the link is the capabilities(7) man page, and when the
-  process lacks `CAP_NET_RAW`/`CAP_NET_ADMIN` the exact setcap command is part of the text even if libpcap lists devices.
+  process lacks `CAP_NET_RAW` the exact setcap command is part of the text even if libpcap lists devices.
   The same guidance is also logged as a warning on every start. Shown once, like upstream (`IsNpcapInfoDialogShownOnStart`).
 - `SatNotificationManager` is created without a dispatcher argument; `MainWindow` is the T09 placeholder
   (`Views/MainWindow.cs`: geometry, tray service, Albion process monitor, close persistence, start-in-tray). The WPF
@@ -115,7 +115,7 @@ is a no-op there; if they exist it migrates into the XDG targets above.
 
 ## Case sensitivity and path separators
 
-- `AppDataPaths.GameFile(name)` (Linux copy) falls back to a case-insensitive match in `GameFiles`. Upstream reads
+- `AppDataPaths.GameFile(name)` (Linux copy) falls back to a case-insensitive match in `GameFiles` (the first in ordinal order when several differ only by case, with a logged warning). Upstream reads
   `IndexedItems.json` / `Items.json` (Settings defaults) while the extractor writes `indexedItems.json` / `items.json`.
 - **Edit outside `src/StatisticsAnalysisTool/`:** `src/StatisticAnalysisTool.Extractor` hard-coded
   `.\Albion-Online_Data\StreamingAssets\GameData\...` and `cluster\world`. On Linux `\` is a file name character, so
@@ -135,7 +135,7 @@ is a no-op there; if they exist it migrates into the XDG targets above.
   (`libpcap.so.1`, or `libpcap.so.0.8` on Debian) would fail. `Linux/Capture/LibpcapLibrary.cs` hooks
   `AssemblyLoadContext.ResolvingUnmanagedDll` (the package already registers a `DllImportResolver`, and a second one throws)
   to load `libpcap.so.1`, `libpcap.so`, `libpcap.so.0.8` in that order; `Program.Main` installs it.
-- Listing devices works without privileges; opening one needs root or `CAP_NET_RAW` + `CAP_NET_ADMIN`.
+- Listing devices works without privileges; opening one needs root or `CAP_NET_RAW` (`CAP_NET_ADMIN` optional).
 - Permission errors surface through the existing upstream paths: a failed `pcap_activate` is a `PcapException`
   ("CAP_NET_RAW may be required"), no device opens, `Start()` fails and `TrackingController` shows
   `NO_LISTENING_ADAPTERS` (now the setcap guidance). `Start()` also logs the guidance up front.

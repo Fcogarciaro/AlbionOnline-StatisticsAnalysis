@@ -231,7 +231,8 @@ public static class AppDataPaths
     }
 
     // Linux file systems are case-sensitive: upstream asks for "IndexedItems.json" (Settings default) while the
-    // extractor writes "indexedItems.json". An exact match wins, then any case-insensitive match, then the requested name.
+    // extractor writes "indexedItems.json". An exact match wins, then a case-insensitive match (the first in ordinal
+    // order when several differ only by case, with a warning), then the requested name.
     public static string GameFile(string fileName)
     {
         var exact = Path.Combine(GameFilesDirectory, fileName);
@@ -240,9 +241,17 @@ public static class AppDataPaths
             return exact;
         }
 
-        var match = Directory.EnumerateFiles(GameFilesDirectory)
-            .FirstOrDefault(path => string.Equals(Path.GetFileName(path), fileName, StringComparison.OrdinalIgnoreCase));
-        return match ?? exact;
+        var matches = Directory.EnumerateFiles(GameFilesDirectory)
+            .Where(path => string.Equals(Path.GetFileName(path), fileName, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(path => Path.GetFileName(path), StringComparer.Ordinal)
+            .ToList();
+        if (matches.Count > 1)
+        {
+            Serilog.Log.Warning("Several game files match {file} ignoring case ({matches}), using {chosen}",
+                fileName, string.Join(", ", matches.Select(Path.GetFileName)), Path.GetFileName(matches[0]));
+        }
+
+        return matches.FirstOrDefault() ?? exact;
     }
 
     public static string ItemImageFile(string fileName)

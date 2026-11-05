@@ -72,4 +72,28 @@ public class SettingsPersistenceTests
 
         Settings.Default.UpgradeRequired.Should().BeTrue();
     }
+
+    [Test]
+    public void Save_DoesNotThrowWhenTheSettingsFileCannotBeWritten()
+    {
+        if (Environment.IsPrivilegedProcess)
+        {
+            Assert.Ignore("root ignores directory permissions");
+        }
+
+        var dir = Path.GetDirectoryName(AppDataPaths.UserSettingsFile)!;
+        Directory.CreateDirectory(dir);
+        File.SetUnixFileMode(dir, UnixFileMode.UserRead | UnixFileMode.UserExecute);
+        try
+        {
+            Settings.Default.UpgradeRequired = false;
+            var act = () => Settings.Default.Save();
+
+            act.Should().NotThrow();
+        }
+        finally
+        {
+            File.SetUnixFileMode(dir, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        }
+    }
 }

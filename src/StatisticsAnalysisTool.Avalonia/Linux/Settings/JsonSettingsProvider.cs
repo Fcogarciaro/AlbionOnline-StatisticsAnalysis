@@ -1,7 +1,8 @@
 // Settings.Default is an ApplicationSettingsBase. Its stock LocalFileSettingsProvider cannot write on Linux
 // (no ClientConfigurationHost stream, Upgrade() throws), so Settings is given this JSON-backed provider through a
 // partial declaration (the linked Settings.Designer.cs stays untouched). Only user-scoped values that differ from
-// their declared default are stored, as strings, in AppDataPaths.UserSettingsFile.
+// their declared default are stored, as strings, in AppDataPaths.UserSettingsFile. I/O failures while reading
+// or writing are logged and never thrown.
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -72,10 +73,17 @@ namespace StatisticsAnalysisTool.Linux.Settings
                 }
 
                 var file = AppDataPaths.UserSettingsFile;
-                Directory.CreateDirectory(Path.GetDirectoryName(file)!);
-                var temp = file + ".tmp";
-                File.WriteAllText(temp, JsonSerializer.Serialize(stored, new JsonSerializerOptions { WriteIndented = true }));
-                File.Move(temp, file, true);
+                try
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+                    var temp = file + ".tmp";
+                    File.WriteAllText(temp, JsonSerializer.Serialize(stored, new JsonSerializerOptions { WriteIndented = true }));
+                    File.Move(temp, file, true);
+                }
+                catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+                {
+                    Log.Warning(e, "Could not write {file}, the setting changes are not persisted", file);
+                }
             }
         }
 

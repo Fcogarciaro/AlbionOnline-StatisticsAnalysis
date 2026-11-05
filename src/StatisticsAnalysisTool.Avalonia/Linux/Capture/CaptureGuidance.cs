@@ -50,7 +50,7 @@ internal static class CaptureGuidance
     public static string PermissionMessage(string processPath, string entryAssemblyPath)
     {
         var target = SetcapTarget(processPath, entryAssemblyPath);
-        var message = "Capturing network traffic needs the CAP_NET_RAW and CAP_NET_ADMIN capabilities (or root). " +
+        var message = "Capturing network traffic needs the CAP_NET_RAW capability (or root); CAP_NET_ADMIN is optional but granted too, as Wireshark does. " +
                       $"Grant them once with:\n{SetcapCommand(target)}\nThen start the tool again.";
 
         if (IsDotnetHost(processPath))

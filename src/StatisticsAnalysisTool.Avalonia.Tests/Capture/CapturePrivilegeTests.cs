@@ -27,11 +27,11 @@ public class CapturePrivilegeTests
     }
 
     [TestCase(0x3000UL, true)]   // CAP_NET_ADMIN (12) + CAP_NET_RAW (13)
-    [TestCase(0x2000UL, false)]  // CAP_NET_RAW only
+    [TestCase(0x2000UL, true)]   // CAP_NET_RAW only: enough to capture, NET_ADMIN is optional
     [TestCase(0x1000UL, false)]  // CAP_NET_ADMIN only
     [TestCase(0UL, false)]
     [TestCase(0x1ffffffffffUL, true)]
-    public void HasCaptureCapabilities_NeedsNetRawAndNetAdmin(ulong capEff, bool expected)
+    public void HasCaptureCapabilities_NeedsNetRawOnly(ulong capEff, bool expected)
     {
         CapturePrivilege.HasCaptureCapabilities(capEff).Should().Be(expected);
     }
@@ -46,6 +46,8 @@ public class CapturePrivilegeTests
     public void IsCapable_ForNonRootFollowsCapEff()
     {
         CapturePrivilege.IsCapable(false, Status("0000000000003000")).Should().BeTrue();
+        CapturePrivilege.IsCapable(false, Status("0000000000002000")).Should().BeTrue();
+        CapturePrivilege.IsCapable(false, Status("0000000000001000")).Should().BeFalse();
         CapturePrivilege.IsCapable(false, Status("0000000000000000")).Should().BeFalse();
         CapturePrivilege.IsCapable(false, null).Should().BeFalse();
     }
