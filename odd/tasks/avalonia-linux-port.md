@@ -50,7 +50,7 @@ Each task records its route and trigger.
   - Commits: ef44e024, 1fa12448, 0c84102f, 357bb3d2.
   - Evidence: tests 176/176 (re-run by the parent); upstream diff is empty. Behavior differences are listed in PORTING.md.
   - Open: wire `SystemTrayService` in T09; live desktop verification is pending (T20).
-- [ ] T03c Verifier correction:
+- [x] T03c Verifier correction (commit 54844e73):
   - SoundController can play twice (Exited disposes the process before `Begin*ReadLine`), at SoundController.cs:98-103.
   - PickerHost.FindOwner reads windows off the UI thread.
   - The autostart Exec line needs a double backslash escape; add a `Path=` line and an atomic write.
@@ -65,7 +65,14 @@ Each task records its route and trigger.
   - Capture: libpcap resolved via `ResolvingUnmanagedDll`; Ethernet, VLAN, SLL, SLL2 and raw IP decoding; a CapEff capability check with setcap guidance.
   - Evidence: tests 243/243 (re-run by the parent). Live capture is untested, because there is no sudo here.
   - Open for T07/T10: the Npcap link in App startup, the provider labels in Settings, and a `CaptureGuidance.PermissionMessage` call in the first-start view.
-- [ ] T07 App shell: App.axaml, startup flow, single instance, exception handling.
+- [ ] T06c Verifier correction, no blocking defects. Route: delegated (writer, after T07).
+  - The capability gate requires only CAP_NET_RAW, so a user with only cap_net_raw is no longer blocked. NET_ADMIN is optional; the setcap text keeps both, as Wireshark's dumpcap does.
+  - `JsonSettingsProvider.SetPropertyValues` catches and logs I/O errors.
+  - `GameFile` resolves case ambiguity deterministically.
+- [x] T07 App shell: App.axaml, startup flow, single instance, exception handling. Commits 986b16e8, 1ee55666, b7ff7810.
+  - Evidence: tests 257/257 (re-run by the parent). A headless RunAsync smoke test reaches the real MainWindowViewModel and TrackingController. There is no display in the agent shell, so the live run is pending with the user.
+  - Deviations: a single-instance lock file is added (upstream has none); the Npcap dialog is replaced by a capture-guidance MessageBox.
+  - Open: T08 must define the `Color.*` resources (TrackingController NREs without them); the T10 placeholders are FirstStartGuide, GameDataPreparation, LanguageSelection, Dialog, ItemAlert and EventValidation.
 - [ ] T08 Theme: Colors, MainStyles, shared styles; DataTriggers → classes; converters; custom controls.
 - [ ] T09 MainWindow + navigation, footer, bars, tray, window chrome.
 - [ ] T10 Secondary windows: Settings, FirstStartGuide, Language, GameDataPreparation, Dialog, Update.
