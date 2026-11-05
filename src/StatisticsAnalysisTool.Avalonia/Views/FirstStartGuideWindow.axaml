@@ -1,0 +1,265 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        x:Class="StatisticsAnalysisTool.Views.FirstStartGuideWindow"
+        x:DataType="viewModels:FirstStartGuideViewModel"
+        mc:Ignorable="d"
+        Title="{Binding WindowTitle}"
+        Height="560"
+        Width="820"
+        MinHeight="560"
+        MinWidth="820"
+        WindowStartupLocation="CenterScreen"
+        Theme="{StaticResource WindowChrome}"
+        Background="{DynamicResource SolidColorBrush.Background.1}"
+        FontSize="{DynamicResource BaseFontSize}"
+        ShowInTaskbar="True"
+        CanResize="False">
+  <Window.Styles>
+    <!-- DataTriggers of the language colors and of the step dots. -->
+    <Style Selector="TextBlock.language">
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.1}" />
+    </Style>
+    <Style Selector="TextBlock.language.c1"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+    <Style Selector="TextBlock.language.c2"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" /></Style>
+    <Style Selector="TextBlock.language.c3"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" /></Style>
+    <Style Selector="TextBlock.language.c4"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" /></Style>
+    <Style Selector="Ellipse.step"><Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Text.6}" /></Style>
+    <Style Selector="Ellipse.step.completed"><Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" /></Style>
+    <Style Selector="Ellipse.step.active"><Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" /></Style>
+  </Window.Styles>
+  <Grid>
+    <Border BorderThickness="1,0,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+
+    <Grid x:Name="Hotbar" ZIndex="1" Height="33" VerticalAlignment="Top" Background="{DynamicResource SolidColorBrush.Background.3}" PointerPressed="Hotbar_PointerPressed">
+      <Border BorderThickness="1,0,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+      <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+      <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+      <Grid Margin="10,4,0,0" Width="24" Height="24" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <fa:FontAwesomeImage Icon="SolidListCheck" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+      </Grid>
+      <Label Content="{Binding WindowTitle}" Margin="41,0,61,0" VerticalAlignment="Top" Height="33" FontSize="16"
+             Foreground="{DynamicResource SolidColorBrush.Text.1}" FontWeight="Bold" />
+      <Button x:Name="CloseButton" Theme="{StaticResource WindowButtonStyle}" Content="r" Margin="-2,2,2,0" Click="CloseButton_Click" />
+    </Grid>
+
+    <Grid Margin="30,55,30,96" RowDefinitions="Auto,*">
+      <StackPanel Grid.Row="0" Orientation="Vertical">
+        <DockPanel LastChildFill="True">
+          <TextBlock DockPanel.Dock="Right" Text="{Binding StepCounterText}" Foreground="{DynamicResource SolidColorBrush.Text.4}"
+                     FontSize="14" VerticalAlignment="Center" Margin="15,0,0,0" />
+          <TextBlock Text="{Binding CurrentStepTitle}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}"
+                     FontSize="24" FontWeight="Bold" TextWrapping="Wrap" />
+        </DockPanel>
+        <TextBlock Text="{Binding CurrentStepDescription}" Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                   FontSize="14" TextWrapping="Wrap" Margin="0,7,0,14" />
+        <TextBlock Text="{Binding ErrorMessage}" IsVisible="{Binding ErrorVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                   Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" FontSize="14" FontWeight="Bold" TextWrapping="Wrap" Margin="0,0,0,10" />
+      </StackPanel>
+
+      <Grid Grid.Row="1">
+        <Grid x:Name="LanguageStep" IsVisible="{Binding LanguageStepVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Width="690">
+            <TextBlock Text="{Binding LanguageStepDescription}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                       FontSize="16" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,18" />
+            <ItemsControl ItemsSource="{Binding LanguageOptions}" Margin="0,0,0,18">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:FirstStartGuideLanguageOption">
+                  <Border Padding="6,2" Margin="5">
+                    <TextBlock Classes="language" Text="{Binding DisplayText}" FontWeight="Bold" TextAlignment="Center"
+                               Classes.c1="{Binding ColorIndex, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                               Classes.c2="{Binding ColorIndex, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                               Classes.c3="{Binding ColorIndex, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}"
+                               Classes.c4="{Binding ColorIndex, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=4}" />
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ComboBox x:Name="LanguageComboBox" ItemsSource="{Binding LanguageOptions}" SelectedItem="{Binding SelectedLanguageOption, Mode=TwoWay}"
+                      SelectionChanged="LanguageComboBox_SelectionChanged" FontSize="18" FontWeight="Bold" Height="34" Width="360">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:FirstStartGuideLanguageOption">
+                  <TextBlock Text="{Binding Language.DisplayText}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+          </StackPanel>
+        </Grid>
+
+        <ScrollViewer x:Name="GameFolderStep" IsVisible="{Binding GameFolderStepVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" VerticalScrollBarVisibility="Auto">
+          <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+            <TextBlock Text="{Binding GameFolderStepDescription}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                       FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Width="690" Margin="0,0,0,12" />
+            <Grid Width="720" Margin="0,0,0,12" ColumnDefinitions="*,14,*">
+              <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
+                <Label Content="{Binding StandaloneLauncherTitle}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontSize="16" HorizontalContentAlignment="Center" />
+                <Image Source="avares://StatisticsAnalysisTool/Assets/preparation_folder.png" Height="118" Width="280" Stretch="Uniform" />
+                <TextBlock Text="{Binding StandaloneLauncherMessage}" Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="12" TextWrapping="Wrap" TextAlignment="Center" Width="300" />
+              </StackPanel>
+              <Border Grid.Column="1" Background="{DynamicResource SolidColorBrush.Accent.Blue.3}" Width="2" Margin="6,0" />
+              <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center">
+                <Label Content="{Binding SteamLauncherTitle}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontSize="16" HorizontalContentAlignment="Center" />
+                <Image Source="avares://StatisticsAnalysisTool/Assets/preparation_folder_steam.png" Height="118" Width="300" Stretch="Uniform" />
+                <TextBlock Text="{Binding SteamLauncherMessage}" Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="12" TextWrapping="Wrap" TextAlignment="Center" Width="300" />
+              </StackPanel>
+            </Grid>
+            <DockPanel Width="650" LastChildFill="True" Margin="0,2,0,0">
+              <Button DockPanel.Dock="Right" Content="{Binding SelectFolderButtonText}" FontSize="14" FontWeight="Bold" Height="32" Width="210" Margin="10,0,0,0"
+                      Click="BtnSelectMainGameFolder_Click" />
+              <TextBox x:Name="MainGameFolderTextBox" Text="{Binding MainGameFolderPath}" IsReadOnly="True" Height="32" FontSize="13" VerticalContentAlignment="Center" />
+            </DockPanel>
+          </StackPanel>
+        </ScrollViewer>
+
+        <Grid x:Name="ServerStep" IsVisible="{Binding ServerStepVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Width="650">
+            <ComboBox ItemsSource="{Binding StartupUserDataServerOptions}" SelectedItem="{Binding SelectedStartupUserDataServerOption, Mode=TwoWay}"
+                      FontSize="18" FontWeight="Bold" Height="34" Width="320" Margin="0,0,0,18">
+              <ComboBox.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:FirstStartGuideServerOption">
+                  <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ItemsControl ItemsSource="{Binding StartupUserDataServerOptions}" Width="520">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:FirstStartGuideServerOption">
+                  <Border Width="160" Margin="5" Padding="10" BorderBrush="{DynamicResource SolidColorBrush.Background.4}" BorderThickness="1"
+                          Background="{DynamicResource SolidColorBrush.Background.3}">
+                    <TextBlock Text="{Binding Name}" Foreground="{DynamicResource SolidColorBrush.Text.1}" FontSize="14" FontWeight="Bold"
+                               TextAlignment="Center" TextWrapping="Wrap" />
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Grid>
+
+        <Grid x:Name="TrackingModeStep" IsVisible="{Binding TrackingModeStepVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Width="650">
+            <TextBlock Text="{Binding TrackingModeDifferenceText}" Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                       FontSize="15" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,18" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,14">
+              <RadioButton x:Name="NpcapOption" Content="{Binding NpcapOptionText}" GroupName="PacketProvider"
+                           IsChecked="{Binding IsNpcapSelected, Mode=TwoWay}" FontSize="16" Margin="0,0,28,0" />
+              <RadioButton x:Name="SocketsOption" Content="{Binding SocketsOptionText}" GroupName="PacketProvider"
+                           IsChecked="{Binding IsSocketsSelected, Mode=TwoWay}" FontSize="16" />
+            </StackPanel>
+            <TextBlock Text="{Binding TrackingModeInstructionText}" Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                       FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,12" />
+            <!-- The Npcap download link points to the capabilities(7) man page on Linux. -->
+            <TextBlock x:Name="CapabilitiesLink" IsVisible="{Binding NpcapDownloadLinkVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" FontSize="14" TextAlignment="Center" Margin="0,0,0,12"
+                       Text="{Binding NpcapDownloadLinkText, Mode=OneWay}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}"
+                       FontWeight="Bold" TextDecorations="Underline" Cursor="Hand" PointerPressed="CapabilitiesLink_PointerPressed" />
+            <Border IsVisible="{Binding NpcapWarningVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" BorderBrush="{DynamicResource SolidColorBrush.Accent.Orange.3}" BorderThickness="1"
+                    Background="{DynamicResource SolidColorBrush.Background.3}" Padding="12" Width="620">
+              <TextBlock Text="{Binding NpcapWarningText}" Foreground="{DynamicResource SolidColorBrush.Accent.Orange.1}"
+                         FontSize="13" TextWrapping="Wrap" TextAlignment="Center" />
+            </Border>
+            <!-- Linux addition: the setcap guidance whenever the process may not capture, even if libpcap lists devices
+                 (listing works unprivileged, so the warning above stays empty). Hidden when the warning already says it. -->
+            <Border x:Name="CapturePermissionPanel" IsVisible="False" BorderBrush="{DynamicResource SolidColorBrush.Accent.Orange.3}" BorderThickness="1"
+                    Background="{DynamicResource SolidColorBrush.Background.3}" Padding="12" Width="620" Margin="0,10,0,0">
+              <TextBlock x:Name="CapturePermissionText" Foreground="{DynamicResource SolidColorBrush.Accent.Orange.1}"
+                         FontSize="13" TextWrapping="Wrap" TextAlignment="Center" />
+            </Border>
+          </StackPanel>
+        </Grid>
+
+        <ScrollViewer x:Name="NavigationTabsStep" IsVisible="{Binding NavigationTabsStepVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" VerticalScrollBarVisibility="Auto">
+          <ItemsControl ItemsSource="{Binding NavigationTabOptions}" Width="520" HorizontalAlignment="Center">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="viewModels:FirstStartGuideNavigationTabOption">
+                <Border Width="250" Margin="5" Padding="10" BorderBrush="{DynamicResource SolidColorBrush.Background.4}" BorderThickness="1"
+                        Background="{DynamicResource SolidColorBrush.Background.3}">
+                  <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}"
+                            Foreground="{DynamicResource SolidColorBrush.Text.1}" FontSize="14" VerticalContentAlignment="Center" />
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+
+        <Grid x:Name="DonationStep" IsVisible="{Binding DonationStepVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <StackPanel Orientation="Vertical">
+            <TextBlock Text="{Binding DonationHintDescription}" Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                       FontSize="15" TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,24" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Grid Width="115" Background="Transparent" Cursor="Hand" Tag="{Binding DonateUrl}" PointerPressed="Link_PointerPressed">
+              <StackPanel Orientation="Vertical" Width="100">
+                <fa:FontAwesomeImage Icon="BrandsPaypal" Width="32" Height="32" HorizontalAlignment="Center" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Text="PayPal" FontSize="14" Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" Margin="0,8,0,0" />
+              </StackPanel>
+            </Grid>
+            <Grid Width="115" Background="Transparent" Cursor="Hand" Tag="{Binding KofiDonationUrl}" PointerPressed="Link_PointerPressed">
+              <StackPanel Orientation="Vertical" Width="100">
+                <Image Source="avares://StatisticsAnalysisTool/Assets/ko-fi-icon.png" Width="32" Height="32" HorizontalAlignment="Center" Stretch="Uniform" />
+                <TextBlock Text="Ko-fi" FontSize="14" Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" Margin="0,8,0,0" />
+              </StackPanel>
+            </Grid>
+            <Grid Width="115" Background="Transparent" Cursor="Hand" Tag="{Binding PatreonUrl}" PointerPressed="Link_PointerPressed">
+              <StackPanel Orientation="Vertical" Width="100">
+                <fa:FontAwesomeImage Icon="BrandsPatreon" Width="32" Height="32" HorizontalAlignment="Center" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Text="Patreon" FontSize="14" Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" Margin="0,8,0,0" />
+              </StackPanel>
+            </Grid>
+            <Grid Width="115" Background="Transparent" Cursor="Hand" Tag="{Binding GitHubSponsorsUrl}" PointerPressed="Link_PointerPressed">
+              <StackPanel Orientation="Vertical" Width="100">
+                <fa:FontAwesomeImage Icon="RegularHeart" Width="32" Height="32" HorizontalAlignment="Center" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Text="GitHub Sponsors" FontSize="14" Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" TextWrapping="Wrap" Margin="0,8,0,0" />
+              </StackPanel>
+            </Grid>
+            </StackPanel>
+          </StackPanel>
+        </Grid>
+      </Grid>
+    </Grid>
+
+    <Grid Height="82" VerticalAlignment="Bottom" Margin="30,0,30,12">
+      <ItemsControl ItemsSource="{Binding StepIndicators}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,8,0,0">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="viewModels:FirstStartGuideStepIndicator">
+            <Ellipse Classes="step" Width="10" Height="10" Margin="5"
+                     Classes.completed="{Binding IsCompleted}" Classes.active="{Binding IsActive}" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+        <Button Content="{Binding BackButtonText}" IsEnabled="{Binding IsBackEnabled}" FontSize="15" FontWeight="Bold" Height="34" Width="110" Margin="0,0,10,0" Click="BtnBack_Click" />
+        <Button Content="{Binding NextButtonText}" IsEnabled="{Binding IsNextEnabled}" IsVisible="{Binding NextButtonVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                FontSize="15" FontWeight="Bold" Height="34" Width="110" Margin="0,0,0,0" Click="BtnNext_Click" />
+        <Button Content="{Binding FinishButtonText}" IsVisible="{Binding FinishButtonVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                FontSize="15" FontWeight="Bold" Height="34" Width="110" Margin="0,0,0,0" Click="BtnFinish_Click" />
+      </StackPanel>
+    </Grid>
+  </Grid>
+</Window>

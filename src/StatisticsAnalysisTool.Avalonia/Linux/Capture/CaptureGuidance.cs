@@ -109,6 +109,34 @@ internal static class CaptureGuidance
                 text = "2. Allow the tool to capture packets once (setcap or root), see: ";
                 return true;
 
+            // First start guide, tracking mode step: the provider choice is libpcap; Sockets (value 1 of a Windows settings
+            // file) is mapped to libpcap by Linux/Network/SocketsPacketProvider.
+            case "FIRST_START_GUIDE_TRACKING_MODE_DIFFERENCE":
+                text = "On Linux the tool captures with libpcap. The Sockets choice of the Windows version runs libpcap as well, so both need the same permission (CAP_NET_RAW through setcap, or root).";
+                return true;
+
+            case "FIRST_START_GUIDE_NPCAP_OPTION":
+                text = "libpcap";
+                return true;
+
+            case "FIRST_START_GUIDE_SOCKETS_OPTION":
+                text = "Sockets (mapped to libpcap)";
+                return true;
+
+            case "FIRST_START_GUIDE_NPCAP_INSTRUCTION":
+                text = environment.IsCapable
+                    ? "libpcap is used for packet capture and the tool has the permissions it needs."
+                    : PermissionMessage(environment.ProcessPath, environment.EntryAssemblyPath);
+                return true;
+
+            case "FIRST_START_GUIDE_SOCKETS_INSTRUCTION":
+                text = "On Linux the Sockets choice also runs libpcap and needs the same permission (setcap or root).";
+                return true;
+
+            case "FIRST_START_GUIDE_NPCAP_DOWNLOAD_LINK":
+                text = "About Linux capabilities";
+                return true;
+
             default:
                 return false;
         }

@@ -40,7 +40,7 @@ public class AppStartupTests
     public async Task GameDataFailure_ShutsDownEarly_BeforeAnyWindowOfTheMainFlowExists()
     {
         var lifetime = new FakeLifetime();
-        var startup = new AppStartup(lifetime, (_, _, _, _) => Task.FromResult(false), _ => { }, installProcessHooks: false);
+        var startup = new AppStartup(lifetime, (_, _, _, _) => Task.FromResult(false), _ => { }, installProcessHooks: false, showFirstStartGuide: () => true);
 
         await startup.RunAsync();
 
@@ -65,7 +65,7 @@ public class AppStartupTests
                 return Task.FromResult(true);
             },
             content => infoDialogs.Add((content.Title, content.Message)),
-            installProcessHooks: false);
+            installProcessHooks: false, showFirstStartGuide: () => true);
 
         await startup.RunAsync();
 

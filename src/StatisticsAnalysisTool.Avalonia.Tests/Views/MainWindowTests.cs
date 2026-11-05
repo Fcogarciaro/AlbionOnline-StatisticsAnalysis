@@ -40,7 +40,7 @@ public class MainWindowTests
         }));
         _sink = new BindingErrorLog();
 
-        _startup = new AppStartup(new ClassicDesktopStyleApplicationLifetime(), (_, _, _, _) => Task.FromResult(true), _ => { }, installProcessHooks: false);
+        _startup = new AppStartup(new ClassicDesktopStyleApplicationLifetime(), (_, _, _, _) => Task.FromResult(true), _ => { }, installProcessHooks: false, showFirstStartGuide: () => true);
         await _startup.RunAsync();
         _window = (MainWindow) _startup.MainWindow;
         _window.Show();

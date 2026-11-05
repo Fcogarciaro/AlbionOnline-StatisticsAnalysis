@@ -35,6 +35,7 @@ public sealed class AppStartup
     private readonly IClassicDesktopStyleApplicationLifetime _desktop;
     private readonly Func<ServerType, Action<double, string>, double, double, Task<bool>> _initializeGameData;
     private readonly Action<CaptureDialogContent> _showInfoDialog;
+    private readonly Func<bool?> _showFirstStartGuide;
     private readonly bool _installProcessHooks;
     private MainWindowViewModel _mainWindowViewModel;
     private TrackingController _trackingController;
@@ -44,13 +45,16 @@ public sealed class AppStartup
 
     /// <param name="initializeGameData">Defaults to <see cref="GameData.InitializeMainGameDataFilesAsync"/>; tests inject a fake.</param>
     /// <param name="showInfoDialog">Defaults to a modal DialogWindow with the clickable link (as upstream); tests inject a recorder.</param>
+    /// <param name="showFirstStartGuide">Defaults to the modal first start guide window; tests inject a result.</param>
     /// <param name="installProcessHooks">False in tests: the exception hooks and logger are process wide.</param>
     internal AppStartup(
         IClassicDesktopStyleApplicationLifetime desktop,
         Func<ServerType, Action<double, string>, double, double, Task<bool>> initializeGameData = null,
         Action<CaptureDialogContent> showInfoDialog = null,
-        bool installProcessHooks = true)
+        bool installProcessHooks = true,
+        Func<bool?> showFirstStartGuide = null)
     {
+        _showFirstStartGuide = showFirstStartGuide ?? (() => new FirstStartGuideWindow().ShowDialog());
         _desktop = desktop;
         _initializeGameData = initializeGameData ?? GameData.InitializeMainGameDataFilesAsync;
         _showInfoDialog = showInfoDialog ?? (content =>
@@ -226,7 +230,7 @@ public sealed class AppStartup
         SettingsController.CurrentSettings.IsNpcapInfoDialogShownOnStart = false;
     }
 
-    private static bool ShowFirstStartGuideIfNeeded()
+    private bool ShowFirstStartGuideIfNeeded()
     {
         if (SettingsController.CurrentSettings.HasCompletedFirstStartGuide)
         {
@@ -234,8 +238,7 @@ public sealed class AppStartup
         }
 
         Log.Information("First start guide opened.");
-        var dialog = new FirstStartGuideWindow();
-        var result = dialog.ShowDialog();
+        var result = _showFirstStartGuide();
 
         if (result is true)
         {

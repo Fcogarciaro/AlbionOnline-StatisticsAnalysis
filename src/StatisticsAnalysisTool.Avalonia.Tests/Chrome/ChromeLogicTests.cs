@@ -82,3 +82,32 @@ public class ChromeLogicTests
         window.Close();
     }
 }
+
+public class ToStringEqualsConverterTests
+{
+    [TestCase(1, "1", true)]
+    [TestCase(2, "1", false)]
+    [TestCase(null, "1", false)]
+    [TestCase(3, null, false)]
+    public void Compares_ValueAndParameterAsInvariantText(object value, string parameter, bool expected)
+    {
+        ToStringEqualsConverter.Instance.Convert(value, typeof(bool), parameter, CultureInfo.InvariantCulture).Should().Be(expected);
+    }
+}
+
+public class CompatBrushConverterTests
+{
+    [Test]
+    public void Converts_TheShimBrushToAnAvaloniaBrushAndPassesOthersThrough()
+    {
+        var shim = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+
+        var converted = CompatBrushConverter.Instance.Convert(shim, typeof(global::Avalonia.Media.IBrush), null, CultureInfo.InvariantCulture);
+
+        converted.Should().BeAssignableTo<global::Avalonia.Media.ISolidColorBrush>()
+            .Which.Color.Should().Be(global::Avalonia.Media.Colors.Red);
+        var avalonia = global::Avalonia.Media.Brushes.Blue;
+        CompatBrushConverter.Instance.Convert(avalonia, typeof(object), null, CultureInfo.InvariantCulture).Should().BeSameAs(avalonia);
+        CompatBrushConverter.Instance.Convert(null, typeof(object), null, CultureInfo.InvariantCulture).Should().BeNull();
+    }
+}

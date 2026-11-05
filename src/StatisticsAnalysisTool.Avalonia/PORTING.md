@@ -81,7 +81,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
 - `SatNotificationManager` is created without a dispatcher argument; `MainWindow` is the real view since T09.
 - `AppStartup.ApplicationUptime` replaces `App.ApplicationUptime` for the T09 footer.
 - The capture info dialog is the real `DialogWindow` (as upstream) with the capabilities(7) link as its clickable link
-  (`CaptureStartupDialog.BuildContent`). `FirstStartGuideWindow` is still a placeholder until its T10 commit.
+  (`CaptureStartupDialog.BuildContent`). The first start guide is the real window (`AppStartup` takes an optional `showFirstStartGuide` for tests).
 - The theme (T08, `Styles/`) provides the `Color.*` / `SolidColorBrush.*` keys that view models read (for example
   `Color.Accent.Blue.2`, `Color.Text.1`); the startup test no longer defines workarounds.
 
@@ -227,12 +227,21 @@ pointer-delta fallback; double click toggles maximize where upstream did). Resiz
   preselected (Confirm stays manual), and the picker opens at the best-guess folder. Validation is `Extractor.IsValidMainGameFolder`.
 - `EventValidationWindow` uses `Styles/EventValidationStyles.axaml` and a `ListBox` for the WpfToolkit `VirtualizingItemsControl`.
   `DamageMeterWindow` and `DashboardWindow` host `PortingPlaceholderControl` until T14/T13.
+- `FirstStartGuideWindow`: same six steps and view model (it persists `HasCompletedFirstStartGuide` and saves the settings, as upstream). Linux:
+  the tracking step lists `libpcap` and `Sockets (mapped to libpcap)` (texts overridden in `CaptureGuidance`: `FIRST_START_GUIDE_*`,
+  English only), the Npcap download link opens the capabilities(7) man page, and a `CapturePermissionPanel` shows
+  `CaptureGuidance.PermissionMessage` (setcap) whenever the process lacks `CAP_NET_RAW`, unless the view model's own warning
+  already carries it. The game folder step prefills the first detected install (`GameFolderLocator`) and the picker opens near it.
+  Language dots and step dots are classes (`ToStringEqualsConverter` because XAML cannot pass an int `ConverterParameter`).
+- `UpdateWindow`: 1:1 with the upstream constructor. The Linux updater still reports no update, so nothing opens it yet; when T17 adds
+  the GitHub releases check its action should open the release page (there is no installer to run).
+- `CompatBrushConverter`: shim `System.Windows.Media.Brush` properties of view models (e.g. `UpdateNoteSectionViewModel.TitleBrush`) need it in bindings.
 - `ListCollectionView` (shim) is now a read-only `IList`: Avalonia refuses INotifyCollectionChanged sources that are not.
 - Avalonia binding errors are logged, not thrown: view tests collect them with `BindingErrorLog`.
 
 ## View placeholders
 
-`Linux/Views/Placeholders.cs` still declares `FirstStartGuideWindow` (T10) so linked code compiles; it is deleted when the real view lands.
+`Linux/Views/Placeholders.cs` is gone: every upstream window now has its Avalonia view.
 
 ## Data migration
 
