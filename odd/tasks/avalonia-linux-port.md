@@ -50,9 +50,21 @@ Each task records its route and trigger.
   - Commits: ef44e024, 1fa12448, 0c84102f, 357bb3d2.
   - Evidence: tests 176/176 (re-run by the parent); upstream diff is empty. Behavior differences are listed in PORTING.md.
   - Open: wire `SystemTrayService` in T09; live desktop verification is pending (T20).
-- [ ] T04 XDG paths + settings and resources without resx/Settings.settings.
+- [ ] T03c Verifier correction:
+  - SoundController can play twice (Exited disposes the process before `Begin*ReadLine`), at SoundController.cs:98-103.
+  - PickerHost.FindOwner reads windows off the UI thread.
+  - The autostart Exec line needs a double backslash escape; add a `Path=` line and an atomic write.
+  - notify-send markup: escape it or pass `--`.
+  - Document the logging of notification content.
+  - Route: delegated (writer, after T04/T06).
+- [x] T04 XDG paths + settings and resources without resx/Settings.settings. Commits 6ee27c55, d641b965.
+  - Changes: JSON settings provider; case-insensitive game files.
+  - Extractor: its hard-coded `\` paths were fixed (12+/17-). This is a small upstream-adjacent edit with identical behavior on Windows, accepted because extraction fails on Linux without it.
 - [ ] T05 Unit tests on net10.0 against Core, green on Linux.
-- [ ] T06 Linux network capture (libpcap default, capability check, first-run guidance).
+- [x] T06 Linux network capture (libpcap default, capability check, first-run guidance). Commits 4b1ab6cd, 075792d2, 9f74c7d0.
+  - Capture: libpcap resolved via `ResolvingUnmanagedDll`; Ethernet, VLAN, SLL, SLL2 and raw IP decoding; a CapEff capability check with setcap guidance.
+  - Evidence: tests 243/243 (re-run by the parent). Live capture is untested, because there is no sudo here.
+  - Open for T07/T10: the Npcap link in App startup, the provider labels in Settings, and a `CaptureGuidance.PermissionMessage` call in the first-start view.
 - [ ] T07 App shell: App.axaml, startup flow, single instance, exception handling.
 - [ ] T08 Theme: Colors, MainStyles, shared styles; DataTriggers → classes; converters; custom controls.
 - [ ] T09 MainWindow + navigation, footer, bars, tray, window chrome.
