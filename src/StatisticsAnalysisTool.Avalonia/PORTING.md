@@ -95,7 +95,31 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   (`ThemeColorsTests` compares them with the upstream file and checks every literal `Color.*` / `SolidColorBrush.*`
   key used by the linked code). Edit `Colors.xaml` upstream first, then re-sync this file.
 - `Styles/Theme.axaml` is the single entry point (`App.axaml` includes it after `FluentTheme`; the headless `TestApp`
-  does the same). Each dictionary is merged there.
+  does the same). Each dictionary is merged there. Rendering is verified by headless tests (`Theme/SharedStylesTests.cs`).
+- Ported so far (shared, non-feature): `Colors`, `MainStyles`, `HintBarStyles`, `InfoWindowStyles`. Each feature
+  dictionary is ported together with the views that use it: `Dungeon`, `Trade`, `Dashboard`, `DamageMeter`, `Gathering`,
+  `ItemDetails`, `Tracking`, `Guild`, `Party`, `StorageHistory`, `Donation`, `Thanks`, `ItemSearch`, `PlayerInformation`,
+  `Settings`, `EventValidation`. `MainWindowStyles` and `TabControlStyles` (navigation, header, FontAwesome icons) belong
+  to T09 and `WindowButtonStyle` in `MainStyles` (Webdings glyphs) is ported with the window chrome.
+
+### Style mapping (rules ported views must follow)
+
+| WPF | Avalonia |
+|---|---|
+| `Style x:Key="K" TargetType="T"` (keyed) | `ControlTheme x:Key="K" TargetType="T"`; the view writes `Theme="{StaticResource K}"` instead of `Style="{StaticResource K}"` (also for `TextBlock`, `Border`, `Grid`, `Label`, `Window`). |
+| `BasedOn="{StaticResource K2}"` | `BasedOn="{StaticResource K2}"` on the ControlTheme. A theme for a templated control (`Label`, `Window`, `TabControl`, `ComboBoxItem`, ...) that does not bring its own template must say `BasedOn="{StaticResource {x:Type T}}"` (the Fluent theme), otherwise the control has no template. |
+| `Style TargetType="T"` without key and with a `Template` (Button, CheckBox, RadioButton, TabItem) | `ControlTheme x:Key="{x:Type T}"`: replaces the Fluent theme for every `T` without `Theme=`. |
+| `Style TargetType="T"` without key, only property setters (Label, TextBox, ListBox, ComboBox, ScrollBar, ContextMenu, ProgressBar, TabControl) | also `ControlTheme x:Key="{x:Type T}" BasedOn="{StaticResource {x:Type T}}"` (a `<Style Selector="T">` would beat every keyed theme, because style selectors outrank theme setters; WPF lets an explicit Style replace the implicit one). |
+| `{StaticResource SolidColorBrush.*}` inside styles | `{DynamicResource ...}` (the files are loaded separately). Views may keep `StaticResource` for keys that exist when the view is created. |
+| `Trigger IsMouseOver/IsPressed/IsEnabled=False/IsChecked/IsSelected/IsFocused/IsKeyboardFocused` | nested `<Style Selector="^:pointerover|:pressed|:disabled|:checked|:selected|:focus">`; `IsChecked={x:Null}` is `:indeterminate`. |
+| `Setter TargetName="N"` | `^:state /template/ Type#N`; setters without `TargetName` go on `^:state`. |
+| `ControlTemplate.Triggers` / `Style.Triggers` with `DataTrigger` | a converter on the binding (`IsVisible="{Binding X, Converter=...}"`), or a class set from the view model (`Classes.name="{Binding Flag}"`) with `<Style Selector="^.name">`. |
+| `FocusVisualStyle`, `OverridesDefaultStyle`, `SnapsToDevicePixels` | dropped (`UseLayoutRounding` is on by default; Fluent draws the focus adorner). |
+| `Visibility="{Binding V}"` where `V` is the shim `Visibility` | `IsVisible="{Binding V, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"` (see converters below). A `bool` property binds to `IsVisible` directly. |
+| `ListView` + `GridView`, `GridViewColumnHeader`, `ScrollViewer` `GridView.GridViewScrollViewerStyleKey` | not ported: no equivalent. Use `DataGrid` (or `ListBox`) in the view. |
+| Glyph fonts (`Webdings`, `Segoe MDL2 Assets`) | not on Linux: draw a `Path` or use the FontAwesome icon (T16). |
+| `{x:Type controls:X}` / `xmlns:controls="clr-namespace:StatisticsAnalysisTool.Common.Controls"` | unchanged (the Avalonia controls keep names and namespaces). |
+| `x:CompileBindings` | style dictionaries set `x:CompileBindings="False"` (the project compiles bindings by default and style templates have no `x:DataType`); views declare `x:DataType` per view. |
 
 ## Ported views
 

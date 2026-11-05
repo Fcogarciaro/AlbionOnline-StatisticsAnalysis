@@ -9,4 +9,7 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Styles.Resources>
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/MainStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/HintBarStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/InfoWindowStyles.axaml" />
 </Styles>
