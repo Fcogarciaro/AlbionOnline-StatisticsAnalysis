@@ -25,7 +25,7 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 | `Localization/Culture.cs` | `FrameworkElement.LanguageProperty` (xml:lang) | `Linux/Localization/Culture.cs` | Sets thread cultures only; Avalonia has no per-element language. |
 | `Common/WindowsStartupService.cs` | HKCU Run registry key | `Linux/Common/WindowsStartupService.cs` | Writes (atomically, temp file + move) or removes `$XDG_CONFIG_HOME/autostart/StatisticsAnalysisTool.desktop`, with `Path=` set to the executable's directory (default `~/.config/autostart`, relative XDG values ignored per spec). One fixed file name, whereas Windows used one registry value per install path (`InstanceId`); two installs share the entry. `Exec` is the process path, or `dotnet <dll>` when launched through the dotnet host. |
 | `SystemTrayService.cs`, `SystemTrayMenuRenderer.cs` | WinForms `NotifyIcon` | `Linux/Common/SystemTrayService.cs` (renderer dropped) | Same menu (Open, Activate/Deactivate tracking, Exit) and minimize-to-tray logic on an Avalonia `TrayIcon` (needs a StatusNotifierItem host; GNOME needs an extension). Takes `Avalonia.Controls.Window`. Single click restores (no double-click event). The first-hide hint is a `notify-send` notification (no balloon-tip click). Native menus are not themed. The service needs `MainWindowViewModel`, so it is constructed by the real `MainWindow` (T09), not by `LinuxApp`. Icon: `sat-icon.ico` as Avalonia resource |
-| `Shortcut/**`, `WindowChromeController.cs` | Windows shell | none yet | Chrome belongs to T09. |
+| `Shortcut/**` | Windows shell | none | n/a |
 | `Common/Controls/**` (including `FontAwesomeImage`), `TextBoxHelper.cs`, `ScrollViewerExtensions.cs`, `ProgressBarSmoother.cs`, `CultureAwareBinding.cs` | WPF controls and attached properties | `Linux/Controls/{DigitsTextBox,ResponsiveUniformGrid,SpellDescriptionTextBlock,FontAwesomeImage}.cs`, `Linux/Common/{TextBoxHelper,NumericInputRules,ScrollViewerExtensions,ProgressBarSmoother,CultureAwareBinding}.cs` (same names and namespaces) | See "Converters and controls" and "Icons" below. |
 | `Common/Validation/**`, `Converters/ValidationErrorConverter.cs` | WPF validation classes (`ValidationError`, `IDataErrorInfo` templates) | none yet | T10 (settings window) re-creates validation with Avalonia `DataValidationErrors`. |
 | `Views/**`, `UserControls/**`, `*.xaml.cs`, `App.xaml.cs`, `Properties/AssemblyInfo.cs`, `Properties/Resources.Designer.cs` | Views, application shell, resx image resources | ported views (T07-T15) | See view placeholders below. |
@@ -78,9 +78,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
 - The Npcap dialog is a message box (`CaptureStartupDialog`): the link is the capabilities(7) man page, and when the
   process lacks `CAP_NET_RAW` the exact setcap command is part of the text even if libpcap lists devices.
   The same guidance is also logged as a warning on every start. Shown once, like upstream (`IsNpcapInfoDialogShownOnStart`).
-- `SatNotificationManager` is created without a dispatcher argument; `MainWindow` is the T09 placeholder
-  (`Views/MainWindow.cs`: geometry, tray service, Albion process monitor, close persistence, start-in-tray). The WPF
-  chrome buttons, uptime label and stats drop-down are not ported.
+- `SatNotificationManager` is created without a dispatcher argument; `MainWindow` is the real view since T09.
 - `AppStartup.ApplicationUptime` replaces `App.ApplicationUptime` for the T09 footer.
 - Placeholders still standing for T10: `FirstStartGuideWindow` (completes at once, does not persist the flag),
   `GameDataPreparationWindow` (so a first run without a game folder ends in an early shutdown), `LanguageSelectionWindow`
@@ -183,6 +181,38 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
 `TaskScheduler.UnobservedTaskException` identically, `DispatcherUnhandledException` as
 `Dispatcher.UIThread.UnhandledException` (log fatal, flush, not handled). Dropped as WPF-specific: the clipboard
 `COMException` (-2147221040) workaround and the LiveCharts `CompositionTargetTicker` disposal NRE.
+
+## Main window and chrome (T09)
+
+- `Views/MainWindow.axaml(.cs)` ports `MainWindow.xaml(.cs)` 1:1 (header, status, tracking row, party row, stats drop-down, 16 tabs,
+  footer, hint bars). `x:DataType` is `MainWindowViewModel`; `Translation.X` bindings read the static members through the instance
+  path, which compiled bindings accept. Differences: `Visibility` bindings use `VisibilityToBoolConverter`; the design-time
+  `d:ItemsControl.ItemsSource` array is dropped; `Hyperlink`s of the footer are clickable grids (`ExternalLink.Open`, http(s) only,
+  `xdg-open`); `Label ContentStringFormat` is a `Binding StringFormat`; the unsupported-OS warning is never shown (upstream tests
+  `Environment.OSVersion.Version.Major < 10`, which is the kernel version on Linux); `InitWindow` tests Left and Top for the
+  centering (upstream tests Left twice); `MaxHeight = WorkingArea` on maximize is dropped (the window manager maximizes into the
+  working area); the party circles get their template through `ItemTemplate` (Avalonia resources cannot hold an implicit
+  `DataType` template).
+- **Chrome**: theme `WindowChrome` (`ExtendClientAreaToDecorationsHint`, `NoChrome`) plus `MainWindowStyle`. The header grid starts a
+  move with `Window.BeginMoveDrag` (a double click toggles maximize, as upstream); if the compositor rejects the request
+  (`InvalidOperationException`/`NotSupportedException`) `WindowChromeController` falls back to `ManualWindowDrag`
+  (window position follows the pointer delta). Resize uses eight `Border` handles in `ResizeHandles` calling `BeginResizeDrag`
+  (edges 3 px, corners 8 px, bottom-right grip), hidden while maximized (`ResizeMode.NoResize`, as upstream). Minimize/maximize/
+  close buttons keep the Webdings contents (`0`, `1`/`2`, `r`); `ChromeGlyphConverter` draws them as lines.
+  Avalonia 11 runs through X11 (XWayland on Hyprland), where `_NET_WM_MOVERESIZE` works; native Wayland positioning
+  (`Window.Position`) is a no-op, so the saved position is only honoured under X11/XWayland.
+- `Linux/Common/WindowChromeController.cs` replaces `Common/WindowChromeController.cs` (same constructor over the shim `Window`,
+  `ResizeMode` shim in `Compat/ResizeMode.cs`, `Window.ResizeMode` maps to `CanResize`).
+- Styles: `MainWindowStyles.axaml` (also `WindowButtonStyle`), `TabControlStyles.axaml` and a PARTIAL `TrackingStyles.axaml`
+  (party circles, current map, faction points, `ShortNumber`/`ValuePerHour` converter resources; the rest comes with the tracking
+  views). Navigation tab icons use `fa:MaskedImage` (Rectangle + OpacityMask ImageBrush bound to `Tag` cannot be written in
+  Avalonia) with `ImagePathToBitmapConverter` turning the upstream `pack://application:,,,/Assets/...` tags into bitmaps.
+  The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
+- `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
+- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, ItemSearchControl, LoggingControl,
+  DungeonControl, DamageMeterControl, TradeMonitoringControl, GatheringControl, CraftingControl, PartyControl, GuildControl,
+  StorageHistoryControl, MapHistoryControl, PlayerInformationControl, DonationControl, ThanksControl and SettingsControl
+  (until the settings commit of T10). Each is replaced where it is ported (T11-T15).
 
 ## View placeholders
 

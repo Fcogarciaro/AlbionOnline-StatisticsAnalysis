@@ -1,0 +1,145 @@
+<!-- PARTIAL port of Styles/TrackingStyles.xaml: only what the main window header needs (party circles, current map,
+     faction point stats, the two number converters). The rest (logging, dungeon cluster info, ...) is ported with the
+     tracking views. DataTriggers are classes bound with ObjectConverters.Equal (see PORTING.md). -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:enumerations="clr-namespace:StatisticsAnalysisTool.Enumerations"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:networkModel="clr-namespace:StatisticsAnalysisTool.Models.NetworkModel"
+        xmlns:globalization="clr-namespace:System.Globalization;assembly=System.Runtime"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <conv:ValuePerHourConverter x:Key="ValuePerHourConverter" />
+    <conv:ShortNumberConverter x:Key="ShortNumberConverter" />
+
+    <ControlTheme x:Key="Tracker.Fraction.Coin.Icon" TargetType="Image">
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Width" Value="16" />
+      <Style Selector="^.martlock"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_martlock.png" /></Style>
+      <Style Selector="^.lymhurst"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_lymhurst.png" /></Style>
+      <Style Selector="^.bridgewatch"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_bridgewatch.png" /></Style>
+      <Style Selector="^.fortsterling"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_fortsterling.png" /></Style>
+      <Style Selector="^.thetford"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_thetford.png" /></Style>
+      <Style Selector="^.caerleon"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_caerleon.png" /></Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="FactionPointStatsTemplate" DataType="models:MainStatObject">
+      <StackPanel Orientation="Vertical" Margin="10,0,10,0"
+                  IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Image Theme="{StaticResource Tracker.Fraction.Coin.Icon}"
+               ToolTip.Tip="{Binding TranslationTotalFactionPoints, FallbackValue='TOTAL__FACTION__POINTS'}" Width="22" Height="22"
+               Classes.martlock="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Martlock}}"
+               Classes.lymhurst="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Lymhurst}}"
+               Classes.bridgewatch="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Bridgewatch}}"
+               Classes.fortsterling="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.FortSterling}}"
+               Classes.thetford="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Thetford}}"
+               Classes.caerleon="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Caerleon}}" />
+        <TextBlock Text="{Binding Value, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static globalization:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                   FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+        <TextBlock FontSize="16" Text="{Binding ValuePerHour, Converter={StaticResource ValuePerHourConverter}, FallbackValue='0 /h'}"
+                   Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+      </StackPanel>
+    </DataTemplate>
+
+    <!-- Easter eggs of the party circles: the DataTriggers on the player name. -->
+    <ControlTheme x:Key="Style.Party.Circle" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="Icon" Value="SolidCircleUser" />
+      <Style Selector="^.dicky">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Dicky - Most luckiest bastard in game!" />
+        <Setter Property="Icon" Value="SolidPiggyBank" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      </Style>
+      <Style Selector="^.triky313">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Aaron - Dev of this tool!" />
+        <Setter Property="Icon" Value="SolidFont" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+      </Style>
+      <Style Selector="^.faxerix">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Emily!" />
+        <Setter Property="Icon" Value="SolidE" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.MobType.Vanity}" />
+      </Style>
+      <Style Selector="^.rhaegaryn">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Rhaegaryn - Most dedicated contributor!" />
+        <Setter Property="Icon" Value="SolidStar" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+        <Setter Property="Effect">
+          <DropShadowEffect BlurRadius="5" OffsetX="0" OffsetY="0" Opacity="0.5" Color="{DynamicResource Color.Accent.Yellow.2}" />
+        </Setter>
+      </Style>
+    </ControlTheme>
+
+    <!-- WPF applies this template implicitly (DataType only); ItemsControls over PartyMemberCircle set ItemTemplate. -->
+    <DataTemplate x:Key="PartyMemberCircleTemplate" DataType="networkModel:PartyMemberCircle">
+      <Grid Height="20" Width="20" Margin="1,0" VerticalAlignment="Center" ToolTip.Tip="{Binding Name}" Background="Transparent">
+        <fa:FontAwesomeImage Theme="{StaticResource Style.Party.Circle}"
+                             Classes.dicky="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Dicky}"
+                             Classes.triky313="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Triky313}"
+                             Classes.faxerix="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=faxerix}"
+                             Classes.rhaegaryn="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Rhaegaryn}" />
+      </Grid>
+    </DataTemplate>
+
+    <ControlTheme x:Key="MainHeader.PartyMembers" TargetType="ItemsControl">
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="ItemsPanel">
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </Setter>
+      <Setter Property="ItemTemplate" Value="{StaticResource PartyMemberCircleTemplate}" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="ClusterModeIcon.Template">
+      <Image Height="20" Width="20" VerticalAlignment="Center" Classes="cluster-icon"
+             Classes.safe="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.SafeArea}}"
+             Classes.yellow="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Yellow}}"
+             Classes.red="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Red}}"
+             Classes.black="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Black}}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="CurrentMapInfoTemplate" DataType="models:CurrentMapInfoBinding">
+      <Grid Margin="0,0,0,0">
+        <StackPanel Orientation="Horizontal">
+          <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ClusterModeIcon.Template}" Width="24" />
+          <Label Content="{Binding Tier}" FontSize="14" FontWeight="Bold" Height="18" Padding="0" Margin="0,0,5,0" Classes="cluster-tier"
+                 Classes.safearea="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.SafeArea}}"
+                 Classes.island="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Island}}"
+                 Classes.yellow="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Yellow}}"
+                 Classes.red="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Red}}"
+                 Classes.black="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Black}}"
+                 Classes.avalon="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.AvalonTunnel}}"
+                 Classes.mists="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Mists}}"
+                 Classes.unknown="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Unknown}}" />
+          <Label Content="{Binding DisplayedClusterName, FallbackValue='DISPLAYED_CLUSTER_NAME', Mode=OneWay}" FontSize="14" FontWeight="Bold" Height="20" Padding="0" Margin="0" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+
+  </Styles.Resources>
+
+  <!-- Style-selector rules for the classes above (selectors outrank the theme setters, which is wanted here). -->
+  <Style Selector="Image.cluster-icon"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_white_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.safe"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_blue_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.yellow"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_yellow_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.red"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_red_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.black"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_black_icon.png" /></Style>
+
+  <Style Selector="Label.cluster-tier.safearea"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.SafeArea}" /></Style>
+  <Style Selector="Label.cluster-tier.island"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Island}" /></Style>
+  <Style Selector="Label.cluster-tier.yellow"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Yellow}" /></Style>
+  <Style Selector="Label.cluster-tier.red"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Red}" /></Style>
+  <Style Selector="Label.cluster-tier.black"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Black}" /></Style>
+  <Style Selector="Label.cluster-tier.avalon"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Avalon}" /></Style>
+  <Style Selector="Label.cluster-tier.mists"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Mists}" /></Style>
+  <Style Selector="Label.cluster-tier.unknown"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Black}" /></Style>
+</Styles>

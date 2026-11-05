@@ -1,37 +1,45 @@
-// PLACEHOLDER for Views/MainWindow.xaml (T09 replaces this file with the real view). It already does what the WPF
-// code-behind does outside the visual tree: restores the window geometry, owns the system tray service and the Albion
-// process monitor, hosts the MainWindowViewModel as DataContext, hides to the tray on start and persists the window
-// settings on close. Not ported yet: window chrome buttons, the uptime label and the stats drop-down handlers.
 using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.Media;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Serilog;
 using StatisticsAnalysisTool.Common;
 using StatisticsAnalysisTool.Common.UserSettings;
+using StatisticsAnalysisTool.Linux.Startup;
 using StatisticsAnalysisTool.Network.Manager;
 using StatisticsAnalysisTool.ViewModels;
 using System;
 using System.Windows;
+using System.Windows.Threading;
+using AvaloniaWindowState = Avalonia.Controls.WindowState;
 
 namespace StatisticsAnalysisTool.Views;
 
-public class MainWindow : System.Windows.Window
+/// <summary>
+/// Port of Views/MainWindow.xaml(.cs). The window draws its own caption: ExtendClientAreaToDecorationsHint with NoChrome
+/// (theme WindowChrome), drag by BeginMoveDrag on the header, resize through the handles of the XAML.
+/// </summary>
+public partial class MainWindow : System.Windows.Window
 {
     private readonly MainWindowViewModel _mainWindowViewModel;
+    private readonly WindowChromeController _windowChromeController;
+    private readonly DispatcherTimer _applicationUptimeTimer;
     private readonly SystemTrayService _systemTrayService;
     private readonly AlbionGameProcessMonitor _albionGameProcessMonitor;
 
     public MainWindow(MainWindowViewModel mainWindowViewModel)
     {
-        Title = "Statistics Analysis Tool";
-        Content = new TextBlock
+        InitializeComponent();
+        _applicationUptimeTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Text = "Statistics Analysis Tool - main window (T09 ports the real view)",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            Foreground = Brushes.White
+            Interval = TimeSpan.FromSeconds(1)
         };
-
+        _applicationUptimeTimer.Tick += ApplicationUptimeTimer_OnTick;
+        _windowChromeController = new WindowChromeController(
+            this,
+            MaximizedButton,
+            ResizeMode.CanResizeWithGrip,
+            ResizeMode.NoResize);
+        ResizeMode = ResizeMode.CanResizeWithGrip;
         InitWindow();
         _systemTrayService = new SystemTrayService(this, mainWindowViewModel);
         _albionGameProcessMonitor = new AlbionGameProcessMonitor();
@@ -40,8 +48,10 @@ public class MainWindow : System.Windows.Window
         _albionGameProcessMonitor.GameStopped += AlbionGameProcessMonitor_OnGameStopped;
         _mainWindowViewModel = mainWindowViewModel;
         DataContext = _mainWindowViewModel;
-        Opened += MainWindow_OnOpened;
+        Opened += MainWindow_OnLoaded;
         Closing += MainWindow_OnClosing;
+        UpdateApplicationUptime();
+        _applicationUptimeTimer.Start();
     }
 
     public void InitWindow()
@@ -54,19 +64,45 @@ public class MainWindow : System.Windows.Window
         WindowStartupLocation = WindowStartupLocation.Manual;
         if (settings.MainWindowMaximized)
         {
-            WindowState = global::Avalonia.Controls.WindowState.Maximized;
+            WindowState = AvaloniaWindowState.Maximized;
         }
 
+        // Upstream tests MainWindowLeftPosition twice; both coordinates at 0 means "never positioned".
         if (settings.MainWindowLeftPosition == 0 && settings.MainWindowTopPosition == 0)
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
     }
 
+    private void Hotbar_PointerPressed(object sender, PointerPressedEventArgs e)
+    {
+        _windowChromeController.ToggleMaximizeOnDoubleClick(e);
+        if (!e.Handled)
+        {
+            _windowChromeController.DragMoveOnMouseDown(e);
+        }
+    }
+
+    private void ResizeHandle_PointerPressed(object sender, PointerPressedEventArgs e)
+    {
+        if (sender is Control { Tag: string edge } && Enum.TryParse<WindowEdge>(edge, out var windowEdge)
+                                                    && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            BeginResizeDrag(windowEdge, e);
+            e.Handled = true;
+        }
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    {
+        Application.Current?.Shutdown();
+    }
+
     private void MainWindow_OnClosing(object sender, WindowClosingEventArgs eventArgs)
     {
         var windowStateForPersistence = _systemTrayService.WindowStateForPersistence;
-        Opened -= MainWindow_OnOpened;
+        Opened -= MainWindow_OnLoaded;
+        _applicationUptimeTimer.Stop();
         _albionGameProcessMonitor.GameStarted -= AlbionGameProcessMonitor_OnGameStarted;
         _albionGameProcessMonitor.GameStopped -= AlbionGameProcessMonitor_OnGameStopped;
         _albionGameProcessMonitor.Dispose();
@@ -77,9 +113,9 @@ public class MainWindow : System.Windows.Window
     }
 
     // WPF Loaded: runs once when the window is first shown.
-    private void MainWindow_OnOpened(object sender, EventArgs eventArgs)
+    private void MainWindow_OnLoaded(object sender, EventArgs eventArgs)
     {
-        Opened -= MainWindow_OnOpened;
+        Opened -= MainWindow_OnLoaded;
 
         var settings = SettingsController.CurrentSettings;
         _albionGameProcessMonitor.SetMonitoringEnabled(AlbionGameProcessMonitor.IsMonitoringRequired(settings));
@@ -137,5 +173,36 @@ public class MainWindow : System.Windows.Window
         {
             _systemTrayService.HideWindowInSystemTray(false);
         }
+    }
+
+    private void ApplicationUptimeTimer_OnTick(object sender, EventArgs e)
+    {
+        UpdateApplicationUptime();
+    }
+
+    private void UpdateApplicationUptime()
+    {
+        ApplicationUptimeLabel.Content = AppStartup.ApplicationUptime.ToTimerString();
+    }
+
+    private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = AvaloniaWindowState.Minimized;
+    }
+
+    private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+    {
+        _windowChromeController.ToggleMaximize();
+    }
+
+    private void CopyPartyToClipboard_PointerPressed(object sender, PointerPressedEventArgs e)
+    {
+        var trackingController = ServiceLocator.Resolve<TrackingController>();
+        trackingController?.EntityController?.CopyPartyToClipboard();
+    }
+
+    private void TatsDropDownOpenClose_PointerPressed(object sender, PointerPressedEventArgs e)
+    {
+        _mainWindowViewModel?.SwitchStatsDropDownState();
     }
 }

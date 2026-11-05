@@ -1,0 +1,229 @@
+<!-- Port of Styles/MainWindowStyles.xaml plus WindowButtonStyle from MainStyles.xaml (they belong to the window chrome).
+     Rules: see PORTING.md "Style mapping". Webdings glyphs are drawn by ChromeGlyphConverter. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:notification="clr-namespace:StatisticsAnalysisTool.Notification"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="MainWindowStyle" TargetType="Window" BasedOn="{StaticResource WindowChrome}">
+      <Setter Property="BorderThickness" Value="1,1,1,1" />
+      <Setter Property="CanResize" Value="True" />
+      <Setter Property="Height" Value="550" />
+      <Setter Property="Width" Value="1000" />
+      <Setter Property="MinHeight" Value="500" />
+      <Setter Property="MinWidth" Value="1000" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.1}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.1}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="WindowButtonStyle" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="0,2,3,0" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Width" Value="28" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Chrome" BorderBrush="{TemplateBinding BorderBrush}" Margin="0" Background="{TemplateBinding Background}">
+            <Path HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None" StrokeThickness="2"
+                  Stroke="{TemplateBinding Foreground}"
+                  Data="{TemplateBinding Content, Converter={x:Static conv:ChromeGlyphConverter.Instance}}" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Opacity" Value="0.5" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainWindow.Title" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Width" Value="NaN" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="LoadingIconGridStyle" TargetType="Grid">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="0,0,0,0" />
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Width" Value="24" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="LoadingIconStyle" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Icon" Value="SolidCircleNotch" />
+      <Setter Property="Spin" Value="True" />
+      <Setter Property="SpinDuration" Value="4" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Grid.Unfold.Bar" TargetType="Grid">
+      <Setter Property="Height" Value="20" />
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+      <Setter Property="Margin" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainGridStyle" TargetType="Grid">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.1}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="BackgroundImageGridStyle" TargetType="Grid">
+      <Setter Property="ZIndex" Value="-1" />
+      <Setter Property="Width" Value="960" />
+      <Setter Property="Height" Value="398" />
+      <Setter Property="Opacity" Value="0.2" />
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="Background">
+        <ImageBrush Source="avares://StatisticsAnalysisTool/Assets/bg01.png" />
+      </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeader.Root" TargetType="Grid">
+      <Setter Property="Height" Value="90" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeader.Background" TargetType="Grid">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.5}" />
+      <Setter Property="Opacity" Value="0.5" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeader.StatusContainer" TargetType="Grid">
+      <Setter Property="Height" Value="82" />
+      <Setter Property="Margin" Value="10,4,10,0" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeader.TrackingSeparator" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Margin" Value="5,0" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeader.PartyCount" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="MinWidth" Value="20" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeader.PartyCopyButton" TargetType="Grid">
+      <Setter Property="Width" Value="24" />
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Margin" Value="0,0,6,0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <!-- A Grid without a background is not hit-testable in Avalonia (WPF clicks reach it through the child). -->
+      <Setter Property="Background" Value="Transparent" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="HeaderStyle.Tracking.Content" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Height" Value="14" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="HeaderStyle.Tracking.Title" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Height" Value="14" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeaderStatus.Title" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.3}" />
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Margin" Value="0,0,0,1" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeaderStatus.Row" TargetType="StackPanel">
+      <Setter Property="Orientation" Value="Horizontal" />
+      <Setter Property="Height" Value="14" />
+    </ControlTheme>
+
+    <!-- DataTrigger on the row's Tag becomes the "detected" class, bound to the same flag. -->
+    <ControlTheme x:Key="MainHeaderStatus.Dot" TargetType="Ellipse">
+      <Setter Property="Width" Value="8" />
+      <Setter Property="Height" Value="8" />
+      <Setter Property="Margin" Value="0,3,5,0" />
+      <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      <Style Selector="^.detected">
+        <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Green.3}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="MainHeaderStatus.Text" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Style Selector="^.detected">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.3}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="ToolTask.TaskObject" TargetType="ItemsControl">
+      <Setter Property="Margin" Value="0,2,0,2" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="TaskTextObjectDataTemplate" DataType="models:TaskTextObject">
+      <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
+        <Grid Margin="5,0,5,0">
+          <fa:FontAwesomeImage Height="16" Width="16" Spin="{Binding StatusIconSpin, FallbackValue=true}" SpinDuration="5"
+                               Icon="{Binding StatusIcon, FallbackValue=SolidCircleNotch}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+        </Grid>
+        <TextBlock Foreground="{DynamicResource SolidColorBrush.Text.1}" Text="{Binding Text}" />
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TabVisibilityFilter" DataType="models:TabVisibilityFilter">
+      <StackPanel Orientation="Horizontal">
+        <CheckBox IsChecked="{Binding IsSelected}" Width="20" VerticalAlignment="Top" />
+        <TextBlock Text="{Binding Name}" Width="100" TextWrapping="Wrap" />
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="NotificationFilter" DataType="notification:NotificationFilter">
+      <StackPanel Orientation="Horizontal">
+        <CheckBox IsChecked="{Binding IsSelected}" Width="20" VerticalAlignment="Top" />
+        <TextBlock Text="{Binding Name}" Width="100" TextWrapping="Wrap" />
+      </StackPanel>
+    </DataTemplate>
+
+    <ControlTheme x:Key="InfoDescription.Header" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      <Setter Property="FontSize" Value="24" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="Width" Value="NaN" />
+    </ControlTheme>
+
+  </Styles.Resources>
+</Styles>

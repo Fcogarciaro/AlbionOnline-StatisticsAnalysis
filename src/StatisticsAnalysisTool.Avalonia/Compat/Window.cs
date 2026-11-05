@@ -16,6 +16,18 @@ public class Window : AvaloniaWindow
 {
     private bool? _dialogResult;
     private bool _resultAssigned;
+    private ResizeMode _resizeMode = ResizeMode.CanResize;
+
+    /// <summary>WPF ResizeMode on top of Avalonia's CanResize (no resize grip drawing: the view draws it).</summary>
+    public ResizeMode ResizeMode
+    {
+        get => _resizeMode;
+        set
+        {
+            _resizeMode = value;
+            CanResize = value is ResizeMode.CanResize or ResizeMode.CanResizeWithGrip;
+        }
+    }
 
     public Dispatcher Dispatcher => Dispatcher.CurrentDispatcher;
 
