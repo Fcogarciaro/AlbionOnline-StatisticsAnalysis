@@ -28,9 +28,14 @@
     </Grid>
 
     <Grid Margin="0,33,-1,0">
-      <!-- TODO(T14): the damage meter list (DamageMeterFragmentTemplate / MobDamageMeterFragmentTemplate, chosen by
-           DamageMeterBindings.DamageMeterSortSelection) comes with DamageMeterControl. -->
-      <userControls:PortingPlaceholderControl ViewName="DamageMeterWindow content (DamageMeterControl lists)" />
+      <ScrollViewer IsVisible="{Binding DamageMeterBindings.DamageMeterSortSelection.DamageMeterSortType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Mob=False|*=True'}">
+        <ItemsControl ItemsSource="{Binding DamageMeterBindings.DamageMeter, Mode=OneWay}"
+                      ItemTemplate="{DynamicResource DamageMeterFragmentTemplate}" />
+      </ScrollViewer>
+      <ListBox Theme="{DynamicResource DamageMeter.VirtualizedList}"
+               IsVisible="{Binding DamageMeterBindings.DamageMeterSortSelection.DamageMeterSortType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Mob=True|*=False'}"
+               ItemsSource="{Binding DamageMeterBindings.MobDamageMeter, Mode=OneWay}"
+               ItemTemplate="{DynamicResource MobDamageMeterFragmentTemplate}" />
     </Grid>
     <fa:WindowResizeHandles />
   </Grid>

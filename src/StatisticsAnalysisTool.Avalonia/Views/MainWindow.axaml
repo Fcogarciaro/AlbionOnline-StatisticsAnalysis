@@ -188,7 +188,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding DamageMeterTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.DamageMeter, FallbackValue=DAMAGE__METER}" Tag="pack://application:,,,/Assets/Navigation/bar-chart-rotated.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="DamageMeterControl" />
+          <userControls:DamageMeterControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding TradeMonitoringTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.TradeMonitoring, FallbackValue=TRADE__MONITORING}" Tag="pack://application:,,,/Assets/Navigation/market.png">

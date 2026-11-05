@@ -1,0 +1,999 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:iconPacks="clr-namespace:MahApps.Metro.IconPacks"
+        xmlns:damageMeter="clr-namespace:StatisticsAnalysisTool.DamageMeter"
+        xmlns:enumerations="clr-namespace:StatisticsAnalysisTool.Enumerations"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        x:CompileBindings="False">
+  <Styles.Resources>
+    <!-- Damage meter statistics -->
+    <ControlTheme x:Key="YourStats.SectionCard" TargetType="Border">
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="9" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.MetricCard" TargetType="Border">
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Margin" Value="2" />
+      <Setter Property="Padding" Value="5,4" />
+      <Setter Property="MinHeight" Value="54" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Damage.MetricCard" TargetType="Border" BasedOn="{StaticResource YourStats.MetricCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Damage.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Red.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Healing.MetricCard" TargetType="Border" BasedOn="{StaticResource YourStats.MetricCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Healing.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Green.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Defense.MetricCard" TargetType="Border" BasedOn="{StaticResource YourStats.MetricCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Defense.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Combat.MetricCard" TargetType="Border" BasedOn="{StaticResource YourStats.MetricCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Combat.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Yellow.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.HeaderIcon" TargetType="Border">
+      <Setter Property="Width" Value="28" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Margin" Value="0,0,8,0" />
+      <Setter Property="Padding" Value="6" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="5" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.SectionTitle" TargetType="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.MetricLabel" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.3}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="TextAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.MetricValue" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="Margin" Value="0,2,0,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.HighlightCard" TargetType="Border">
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Margin" Value="4" />
+      <Setter Property="Padding" Value="8" />
+      <Setter Property="MinHeight" Value="96" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.RankingCard" TargetType="Border">
+      <Setter Property="MinWidth" Value="164" />
+      <Setter Property="MinHeight" Value="150" />
+      <Setter Property="Margin" Value="0,5,5,5" />
+      <Setter Property="Padding" Value="9,8" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="5" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.HighlightIcon" TargetType="Border">
+      <Setter Property="Width" Value="46" />
+      <Setter Property="Height" Value="46" />
+      <Setter Property="Margin" Value="0,0,8,0" />
+      <Setter Property="Padding" Value="10" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="23" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.HighlightTitle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.HighlightPlayer" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Margin" Value="0,3,0,0" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.HighlightValue" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="0,2,0,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.RankingTitle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.RankingBar" TargetType="ProgressBar">
+      <Setter Property="Height" Value="6" />
+      <Setter Property="Minimum" Value="0" />
+      <Setter Property="Maximum" Value="100" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="Template">
+        <ControlTemplate TargetType="ProgressBar">
+          <Grid>
+            <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="2" />
+            <Border x:Name="PART_Indicator" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}" CornerRadius="2" />
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Damage.SectionCard" TargetType="Border" BasedOn="{StaticResource YourStats.SectionCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Damage.CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Red.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Healing.SectionCard" TargetType="Border" BasedOn="{StaticResource YourStats.SectionCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Healing.CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Green.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Defense.SectionCard" TargetType="Border" BasedOn="{StaticResource YourStats.SectionCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Defense.CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Combat.SectionCard" TargetType="Border" BasedOn="{StaticResource YourStats.SectionCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Combat.CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Yellow.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Damage.HeaderIcon" TargetType="Border" BasedOn="{StaticResource YourStats.HeaderIcon}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Damage.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Red.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Healing.HeaderIcon" TargetType="Border" BasedOn="{StaticResource YourStats.HeaderIcon}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Healing.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Green.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Defense.HeaderIcon" TargetType="Border" BasedOn="{StaticResource YourStats.HeaderIcon}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Defense.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Combat.HeaderIcon" TargetType="Border" BasedOn="{StaticResource YourStats.HeaderIcon}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Combat.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Yellow.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.TopEntryCard" TargetType="Border">
+      <Setter Property="Margin" Value="2,1" />
+      <Setter Property="Padding" Value="6,3" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Defense.TopEntryCard" TargetType="Border" BasedOn="{StaticResource YourStats.TopEntryCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Defense.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.Healing.TopEntryCard" TargetType="Border" BasedOn="{StaticResource YourStats.TopEntryCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Healing.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Green.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.TopEntryRank" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.TopEntryName" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+    <ControlTheme x:Key="YourStats.TopEntryValue" TargetType="TextBlock">
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.Damage.HighlightCard" TargetType="Border" BasedOn="{StaticResource TopStats.HighlightCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Damage.CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Red.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.Healing.HighlightCard" TargetType="Border" BasedOn="{StaticResource TopStats.HighlightCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Healing.CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Green.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.Defense.HighlightCard" TargetType="Border" BasedOn="{StaticResource TopStats.HighlightCard}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Defense.CardBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.Damage.HighlightIcon" TargetType="Border" BasedOn="{StaticResource TopStats.HighlightIcon}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Damage.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Red.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.Healing.HighlightIcon" TargetType="Border" BasedOn="{StaticResource TopStats.HighlightIcon}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Healing.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Green.6}" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.Defense.HighlightIcon" TargetType="Border" BasedOn="{StaticResource TopStats.HighlightIcon}">
+      <Setter Property="Background" Value="{StaticResource YourStats.Defense.MetricBackground}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.RankingIcon" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Width" Value="14" />
+      <Setter Property="Height" Value="14" />
+      <Setter Property="Margin" Value="0,0,6,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.RankingGameIcon" TargetType="iconPacks:PackIconGameIcons">
+      <Setter Property="Width" Value="16" />
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Margin" Value="0,0,6,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.EntryRank" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.EntryName" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.EntryValue" TargetType="TextBlock">
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.DamageSpellValue" TargetType="TextBlock" BasedOn="{StaticResource TopStats.EntryValue}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.DamageSpellShare" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="TopStats.AbilityHeader" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      <Setter Property="FontSize" Value="9" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.Live.PlayerList" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">
+      <Setter Property="IsVisible"
+              Value="{Binding DamageMeterBindings.DamageMeterSortSelection.DamageMeterSortType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Mob=False|*=True'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.VirtualizedListItem" TargetType="ListBoxItem">
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Focusable" Value="False" />
+      <Setter Property="Template">
+        <ControlTemplate TargetType="ListBoxItem">
+          <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.VirtualizedList" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="ItemContainerTheme" Value="{StaticResource DamageMeter.VirtualizedListItem}" />
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+      <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+      <Setter Property="ItemsPanel">
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel />
+        </ItemsPanelTemplate>
+      </Setter>
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.Live.MobList" TargetType="ListBox" BasedOn="{StaticResource DamageMeter.VirtualizedList}">
+      <Setter Property="IsVisible"
+              Value="{Binding DamageMeterBindings.DamageMeterSortSelection.DamageMeterSortType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Mob=True|*=False'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.Snapshot.PlayerList" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">
+      <Setter Property="IsVisible"
+              Value="{Binding DamageMeterBindings.DamageMeterSnapshotSortSelection.DamageMeterSortType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Mob=False|*=True'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.Snapshot.MobList" TargetType="ListBox" BasedOn="{StaticResource DamageMeter.VirtualizedList}">
+      <Setter Property="IsVisible"
+              Value="{Binding DamageMeterBindings.DamageMeterSnapshotSortSelection.DamageMeterSortType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Mob=True|*=False'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.DescriptionIcon" TargetType="Grid">
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Width" Value="16" />
+      <Setter Property="Margin" Value="0,3,10,0" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.DescriptionText" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+    <!-- Damage meter icon -->
+    <ControlTheme x:Key="DamageMeter.ActionButton" TargetType="Button" BasedOn="{StaticResource Style.Button.Neutral}">
+      <Setter Property="Width" Value="32" />
+      <Setter Property="MinWidth" Value="32" />
+      <Setter Property="Margin" Value="0,0,6,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.ActionIcon" TargetType="fa:FontAwesomeImage" BasedOn="{StaticResource Style.Button.Icon.White}">
+      <Setter Property="Width" Value="14" />
+      <Setter Property="Height" Value="14" />
+      <Setter Property="IsHitTestVisible" Value="False" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.TextButton" TargetType="Button" BasedOn="{StaticResource Style.Button.Neutral}">
+      <Setter Property="MinWidth" Value="140" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.DangerButton" TargetType="Button" BasedOn="{StaticResource Style.Button.Danger}">
+      <Setter Property="MinWidth" Value="160" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.SettingCheckBox" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+      <Setter Property="MinHeight" Value="21" />
+      <Setter Property="Margin" Value="0,0,0,12" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.Icon" TargetType="Image">
+      <Setter Property="Height" Value="40" />
+      <Setter Property="Width" Value="40" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.MobBadge" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Normal}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="3" />
+      <Setter Property="Padding" Value="5,1" />
+      <Setter Property="Margin" Value="0,0,5,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.TierBadge" TargetType="Border" BasedOn="{StaticResource DamageMeter.MobBadge}">
+      <Setter Property="BorderBrush"
+              Value="{Binding $self.Tag, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='T1=@SolidColorBrush.Item.Tier.Color.1|T2=@SolidColorBrush.Item.Tier.Color.2|T3=@SolidColorBrush.Item.Tier.Color.3|T4=@SolidColorBrush.Item.Tier.Color.4|T5=@SolidColorBrush.Item.Tier.Color.5|T6=@SolidColorBrush.Item.Tier.Color.6|T7=@SolidColorBrush.Item.Tier.Color.7|T8=@SolidColorBrush.Item.Tier.Color.8'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.MobRankBadge" TargetType="Border" BasedOn="{StaticResource DamageMeter.MobBadge}">
+      <Setter Property="BorderBrush"
+              Value="{Binding MobRankCategory, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Elite=@SolidColorBrush.Accent.Yellow.1|Boss=@SolidColorBrush.Accent.Red.3|*=@SolidColorBrush.Text.1'}" />
+      <Setter Property="TextElement.Foreground"
+              Value="{Binding MobRankCategory, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Elite=@SolidColorBrush.Accent.Yellow.1|Boss=@SolidColorBrush.Accent.Red.3|*=@SolidColorBrush.Text.1'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.ProgressBar.Colors" TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
+      <Setter Property="Foreground"
+              Value="{Binding ShopSubCategory, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='sword=@SolidColorBrush.Weapon.Sword|spear=@SolidColorBrush.Weapon.Spear|quarterstaff=@SolidColorBrush.Weapon.Quarterstaff|shapeshifterstaff=@SolidColorBrush.Weapon.ShapeShifterStaff|naturestaff=@SolidColorBrush.Weapon.NatureStaff|mace=@SolidColorBrush.Weapon.Mace|holystaff=@SolidColorBrush.Weapon.HolyStaff|hammer=@SolidColorBrush.Weapon.Hammer|froststaff=@SolidColorBrush.Weapon.FrostStaff|firestaff=@SolidColorBrush.Weapon.FireStaff|dagger=@SolidColorBrush.Weapon.Dagger|cursestaff=@SolidColorBrush.Weapon.CursedStaff|knuckles=@SolidColorBrush.Weapon.Knuckles|crossbow=@SolidColorBrush.Weapon.Crossbow|bow=@SolidColorBrush.Weapon.Bow|axe=@SolidColorBrush.Weapon.Axe|arcanestaff=@SolidColorBrush.Weapon.ArcaneStaff|*=@SolidColorBrush.Weapon.UnknownWeaponType'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.Category.DamageHeal.Color" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground"
+              Value="{Binding HealthChangeType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Heal=@SolidColorBrush.Accent.Green.4|Damage=@SolidColorBrush.Accent.Red.4|*=@SolidColorBrush.Text.1'}" />
+    </ControlTheme>
+    <ControlTheme x:Key="DamageMeter.Spell.Icon.Selector" TargetType="Image">
+      <Setter Property="Height" Value="40" />
+      <Setter Property="Width" Value="40" />
+    </ControlTheme>
+    <!-- Spell bar -->
+    <DataTemplate x:Key="SpellBarTemplate" DataType="damageMeter:UsedSpellFragment">
+      <Grid HorizontalAlignment="Stretch">
+        <ToolTip.Tip>
+          <ContentControl Content="{Binding}" ContentTemplate="{StaticResource Spell.ToolTipContentTemplate}" DataContext="{Binding SpellInformation}" />
+        </ToolTip.Tip>
+        <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding DamageInPercent}"
+                     Minimum="0"
+                     Maximum="100"
+                     MinHeight="40"
+                     Margin="3,0,2,1"
+                     VerticalAlignment="Top"
+                     Background="{DynamicResource SolidColorBrush.Transparent}"
+                     BorderThickness="0"
+                     Foreground="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.3}"
+                     HorizontalAlignment="Stretch" />
+        <StackPanel Orientation="Horizontal">
+          <Grid Margin="10,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Image Source="{Binding Item.Icon, Mode=OneWay}" Theme="{StaticResource DamageMeter.Icon}" />
+          </Grid>
+          <Grid Margin="0,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Image Theme="{StaticResource DamageMeter.Spell.Icon.Selector}" Source="{Binding Icon, Mode=OneWay}"
+                   IsVisible="{Binding SpellIndex, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='0=False|*=True'}" />
+            <Image Theme="{StaticResource DamageMeter.Spell.Icon.Selector}" Source="avares://StatisticsAnalysisTool/Assets/auto_attack.png"
+                   IsVisible="{Binding SpellIndex, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='0=True|*=False'}" />
+          </Grid>
+          <Label Content="{Binding LocalizationName}" Width="242" Margin="10,5, 0, 0" VerticalAlignment="Top" HorizontalContentAlignment="Left" />
+          <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                 Content="{Binding DamagePercentage, StringFormat={}{0:N2}%}"
+                 HorizontalContentAlignment="Left"
+                 Width="68"
+                 Margin="0,5"
+                 VerticalAlignment="Top" />
+          <Label Theme="{StaticResource DamageMeter.Category.DamageHeal.Color}"
+                 Content="{Binding DamageHealShortString}"
+                 HorizontalContentAlignment="Left"
+                 Width="82"
+                 FontWeight="Bold"
+                 Margin="0,5,0,0"
+                 VerticalAlignment="Top" />
+          <Label Content="{Binding Ticks}" Width="70" FontWeight="Bold" Margin="0,5, 5, 0" VerticalAlignment="Top" HorizontalContentAlignment="Left" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+    <!-- Damage meter -->
+    <DataTemplate x:Key="DamageMeterFragmentTemplate" DataType="damageMeter:DamageMeterFragment">
+      <Grid>
+        <Grid MinHeight="42"
+              common:MouseCommands.LeftClick="{Binding ShowSpells}"
+              IsVisible="{Binding DamageMeterStyleFragmentType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Damage=True|*=False'}">
+          <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding DamageInPercent}"
+                       Minimum="0"
+                       Maximum="100"
+                       MinHeight="40"
+                       Margin="3,0,2,1"
+                       VerticalAlignment="Top"
+                       Background="{DynamicResource SolidColorBrush.Transparent}"
+                       BorderThickness="0"
+                       Theme="{StaticResource DamageMeter.ProgressBar.Colors}" />
+          <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding HealInPercent}"
+                       Minimum="0"
+                       Maximum="100"
+                       Height="2"
+                       Margin="3,0,2,2"
+                       VerticalAlignment="Bottom"
+                       Background="{DynamicResource SolidColorBrush.Transparent}"
+                       BorderThickness="0"
+                       Foreground="{DynamicResource SolidColorBrush.Weapon.HealBar}" />
+          <StackPanel Orientation="Horizontal">
+            <Grid Margin="10,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image Source="{Binding CauserMainHand?.Icon}" Theme="{StaticResource DamageMeter.Icon}" />
+            </Grid>
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding DamagePercentage, StringFormat={}{0:N2}%}"
+                   MinWidth="55"
+                   Margin="10,5"
+                   HorizontalContentAlignment="Right"
+                   VerticalAlignment="Top" />
+            <Label Content="{Binding Name}" MinWidth="125" MaxWidth="125" Margin="10,5, 0, 0" VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding DamageShortString}"
+                   MinWidth="100"
+                   MaxWidth="100"
+                   FontWeight="Bold"
+                   Margin="10,5, 5, 0"
+                   VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding DpsString, StringFormat={}{0:N0}/dps}"
+                   MinWidth="75"
+                   MaxWidth="75"
+                   FontWeight="Bold"
+                   Margin="10,5, 50, 0"
+                   VerticalAlignment="Top" />
+            <Grid Width="16"
+                  Height="16"
+                  Margin="0,10"
+                  VerticalAlignment="Top"
+                  ToolTip.Tip="{Binding TranslationCombatTime, FallbackValue='COMBAT_TIME'}">
+              <fa:FontAwesomeImage Icon="RegularClock" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </Grid>
+            <TextBlock Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                       VerticalAlignment="Top"
+                       MinWidth="75"
+                       MaxWidth="100"
+                       FontWeight="Bold"
+                       Margin="10,10,50,0">
+              <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00}">
+                  <Binding Path="CombatTime.Hours" />
+                  <Binding Path="CombatTime.Minutes" />
+                  <Binding Path="CombatTime.Seconds" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+          </StackPanel>
+        </Grid>
+        <Grid MinHeight="42"
+              common:MouseCommands.LeftClick="{Binding ShowSpells}"
+              IsVisible="{Binding DamageMeterStyleFragmentType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='TakenDamage=True|*=False'}">
+          <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding TakenDamageInPercent}"
+                       Minimum="0"
+                       Maximum="100"
+                       MinHeight="40"
+                       Margin="3,0,2,1"
+                       VerticalAlignment="Top"
+                       Background="{DynamicResource SolidColorBrush.Transparent}"
+                       BorderThickness="0"
+                       Foreground="{DynamicResource SolidColorBrush.Weapon.TakenDamageBar}" />
+          <StackPanel Orientation="Horizontal">
+            <Grid Margin="10,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image Source="{Binding CauserMainHand?.Icon}" Theme="{StaticResource DamageMeter.Icon}" />
+            </Grid>
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding TakenDamagePercentage, StringFormat={}{0:N2}%}"
+                   MinWidth="55"
+                   Margin="10,5"
+                   HorizontalContentAlignment="Right"
+                   VerticalAlignment="Top" />
+            <Label Content="{Binding Name}" MinWidth="125" MaxWidth="125" Margin="10,5, 0, 0" VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding TakenDamageShortString}"
+                   MinWidth="100"
+                   MaxWidth="100"
+                   FontWeight="Bold"
+                   Margin="10,5, 5, 0"
+                   VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content=""
+                   MinWidth="75"
+                   MaxWidth="75"
+                   FontWeight="Bold"
+                   Margin="10,5, 50, 0"
+                   VerticalAlignment="Top" />
+            <Grid Width="16"
+                  Height="16"
+                  Margin="0,10"
+                  VerticalAlignment="Top"
+                  ToolTip.Tip="{Binding TranslationCombatTime, FallbackValue='COMBAT_TIME'}">
+              <fa:FontAwesomeImage Icon="RegularClock" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </Grid>
+            <TextBlock Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                       VerticalAlignment="Top"
+                       MinWidth="75"
+                       MaxWidth="100"
+                       FontWeight="Bold"
+                       Margin="10,10,50,0">
+              <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00}">
+                  <Binding Path="CombatTime.Hours" />
+                  <Binding Path="CombatTime.Minutes" />
+                  <Binding Path="CombatTime.Seconds" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+          </StackPanel>
+        </Grid>
+        <Grid MinHeight="42"
+              common:MouseCommands.LeftClick="{Binding ShowSpells}"
+              IsVisible="{Binding DamageMeterStyleFragmentType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Heal=True|*=False'}">
+          <Grid>
+            <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding HealInPercent}"
+                         Minimum="0"
+                         Maximum="100"
+                         MinHeight="40"
+                         Margin="3,0,2,1"
+                         VerticalAlignment="Top"
+                         Background="{DynamicResource SolidColorBrush.Transparent}"
+                         BorderThickness="0"
+                         Foreground="{DynamicResource SolidColorBrush.Weapon.HealBar}" />
+          </Grid>
+          <StackPanel Orientation="Horizontal">
+            <Grid Margin="10,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image Source="{Binding CauserMainHand?.Icon}" Theme="{StaticResource DamageMeter.Icon}" />
+            </Grid>
+            <StackPanel Orientation="Vertical" Margin="10,0" MinWidth="55" VerticalAlignment="Top" Height="40">
+              <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                     Content="{Binding HealPercentage, StringFormat={}{0:N2}%}"
+                     Margin="0,5,0,0"
+                     Padding="0"
+                     HorizontalContentAlignment="Right"
+                     VerticalAlignment="Top"
+                     ToolTip.Tip="{Binding TranslationHealingWithoutOverhealed}" />
+              <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                     Opacity="0.50"
+                     Content="{Binding OverhealedPercentageOfTotalHealing, StringFormat={}{0:N2}%}"
+                     Margin="0,-15,0,0"
+                     Padding="0,0"
+                     HorizontalContentAlignment="Right"
+                     VerticalAlignment="Top"
+                     VerticalContentAlignment="Top"
+                     ToolTip.Tip="{Binding TranslationOverhealedPercentageOfTotalHealing}" />
+            </StackPanel>
+            <Label Content="{Binding Name}" MinWidth="125" MaxWidth="125" Margin="10,5, 0, 0" VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding HealShortString}"
+                   MinWidth="100"
+                   MaxWidth="100"
+                   FontWeight="Bold"
+                   Margin="10,5, 5, 0"
+                   VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding HpsString, StringFormat={}{0:N0}/hps}"
+                   MinWidth="75"
+                   MaxWidth="75"
+                   FontWeight="Bold"
+                   Margin="10,5, 50, 0"
+                   VerticalAlignment="Top" />
+            <Grid Width="16"
+                  Height="16"
+                  Margin="0,10"
+                  VerticalAlignment="Top"
+                  ToolTip.Tip="{Binding TranslationCombatTime, FallbackValue='COMBAT_TIME'}">
+              <fa:FontAwesomeImage Icon="RegularClock" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </Grid>
+            <TextBlock Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                       VerticalAlignment="Top"
+                       MinWidth="75"
+                       MaxWidth="100"
+                       FontWeight="Bold"
+                       Margin="10,10,50,0">
+              <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00}">
+                  <Binding Path="CombatTime.Hours" />
+                  <Binding Path="CombatTime.Minutes" />
+                  <Binding Path="CombatTime.Seconds" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+          </StackPanel>
+        </Grid>
+        <Grid Margin="10,41,0,3"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Stretch"
+              IsVisible="{Binding SpellsContainerVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <StackPanel Orientation="Horizontal"
+                      Height="24"
+                      HorizontalAlignment="Stretch"
+                      Margin="2,0,2,0"
+                      VerticalAlignment="Top"
+                      Background="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.5}">
+            <Label Content="" Width="96" />
+            <Label Content="{Binding TranslationName}" FontWeight="Bold" Width="244" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+            <Label Content="{Binding TranslationDmgPercent}" FontWeight="Bold" Width="64" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+            <Label Content="{Binding TranslationDamageHeal}" FontWeight="Bold" Width="84" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+            <Label Content="{Binding TranslationTicks}" FontWeight="Bold" Width="70" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+          </StackPanel>
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" Margin="0,25,0,0">
+            <ItemsControl ItemsSource="{Binding Spells}" ItemTemplate="{StaticResource SpellBarTemplate}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel Orientation="Vertical" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
+      </Grid>
+    </DataTemplate>
+    <!-- Mob damage meter -->
+    <DataTemplate x:Key="MobDamageMeterFragmentTemplate" DataType="damageMeter:MobDamageMeterFragment">
+      <StackPanel>
+        <Border MinWidth="980"
+                Height="70"
+                Margin="3,0,5,0"
+                BorderBrush="{DynamicResource SolidColorBrush.Background.3}"
+                BorderThickness="1"
+                CornerRadius="5">
+          <Grid ToolTip.Tip="{Binding UniqueName}" common:MouseCommands.LeftClick="{Binding ShowPlayers}">
+            <Grid Margin="5,5,5,5">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="375" />
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="70" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="30" />
+              </Grid.ColumnDefinitions>
+              <Image Grid.Column="0" Width="100" Height="100" Source="{Binding AvatarSource}" Stretch="UniformToFill" Margin="-10,-20,0,0" />
+              <Grid Grid.Column="1" Margin="5,0,5,0">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*" />
+                  <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Text="{Binding Name}"
+                           TextTrimming="CharacterEllipsis" />
+                <WrapPanel Grid.Row="1" VerticalAlignment="Center">
+                  <Border Theme="{StaticResource Dashboard.MobTierTag}" IsVisible="{Binding HasTier}">
+                    <TextBlock Text="{Binding TierDisplay}"
+                               Theme="{StaticResource Dashboard.MobTagText}"
+                               Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" />
+                  </Border>
+                  <Border Theme="{StaticResource Dashboard.MobTypeTag}" IsVisible="{Binding HasMobTypeCategory}">
+                    <TextBlock Text="{Binding MobTypeCategoryDisplay}"
+                               Theme="{StaticResource Dashboard.MobTagText}"
+                               Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" />
+                  </Border>
+                  <Border Theme="{StaticResource Dashboard.MobTag}" IsVisible="{Binding HasCategory}">
+                    <TextBlock Text="{Binding CategoryDisplay}" Theme="{StaticResource Dashboard.MobTagText}" />
+                  </Border>
+                  <Border Theme="{StaticResource Dashboard.MobTag}" IsVisible="{Binding HasFaction}">
+                    <TextBlock Text="{Binding FactionDisplay}" Theme="{StaticResource Dashboard.MobTagText}" />
+                  </Border>
+                  <Border Theme="{StaticResource Dashboard.MobTag}" IsVisible="{Binding HasAttackType}">
+                    <TextBlock Text="{Binding AttackTypeDisplay}" Theme="{StaticResource Dashboard.MobTagText}" />
+                  </Border>
+                </WrapPanel>
+              </Grid>
+              <StackPanel Grid.Column="2" Margin="0,0" VerticalAlignment="Center" ToolTip.Tip="{Binding TranslationFirstAttackTime}">
+                <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold" Text="{Binding FirstAttackTimeLocal, StringFormat={}{0:g}}" />
+                <TextBlock HorizontalAlignment="Center" FontSize="11" Opacity="0.35" Text="{Binding TranslationFirstAttackTime}" />
+              </StackPanel>
+              <StackPanel Grid.Column="3" Margin="6,0" VerticalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center" FontSize="15" FontWeight="Bold" Text="{Binding DamageShortString}" />
+                <TextBlock HorizontalAlignment="Center" FontSize="11" Opacity="0.65" Text="{Binding DamagePercentage, StringFormat={}{0:N2}%}" />
+              </StackPanel>
+              <TextBlock Grid.Column="4"
+                         Margin="6,0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         FontSize="15"
+                         FontWeight="Bold"
+                         Foreground="{DynamicResource SolidColorBrush.Accent.Green.4}"
+                         Text="{Binding DpsShortString, StringFormat={}{0}/dps}" />
+              <StackPanel Grid.Column="5"
+                          Margin="6,0"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Orientation="Horizontal"
+                          ToolTip.Tip="{Binding TranslationCombatTime}">
+                <fa:FontAwesomeImage Width="15" Height="15" Margin="0,0,7,0" Icon="RegularClock" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding CombatTimeString}" />
+              </StackPanel>
+              <StackPanel Grid.Column="6"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Orientation="Horizontal"
+                          ToolTip.Tip="{Binding TranslationPlayers}">
+                <fa:FontAwesomeImage Width="16" Height="16" Margin="0,0,7,0" Icon="SolidUsers" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock VerticalAlignment="Center" FontSize="14" FontWeight="Bold" Text="{Binding PlayerCount}" />
+              </StackPanel>
+              <Border Grid.Column="7"
+                      Margin="8,0,4,0"
+                      Padding="10,5"
+                      Background="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.5}"
+                      CornerRadius="5"
+                      ToolTip.Tip="{Binding TranslationLocation}">
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock FontWeight="SemiBold" Text="{Binding ContentTypeName}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Margin="0,2,0,0" FontSize="11" Opacity="0.72" Text="{Binding MapName}" TextTrimming="CharacterEllipsis" />
+                  </StackPanel>
+                  <Border Grid.Column="1"
+                          Margin="8,0,0,0"
+                          VerticalAlignment="Center"
+                          Theme="{StaticResource DamageMeter.TierBadge}"
+                          Tag="{Binding MapTier}">
+                    <TextBlock FontSize="10" FontWeight="Bold" Text="{Binding MapTierString}" />
+                  </Border>
+                </Grid>
+              </Border>
+              <Grid Grid.Column="8" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <fa:FontAwesomeImage Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                     Icon="{Binding PlayersContainerVisibility, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Visible=SolidChevronUp|*=SolidChevronDown'}" />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Border>
+        <Border MinWidth="980"
+                Margin="28,0,3,6"
+                Padding="0,2,0,0"
+                BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.5}"
+                BorderThickness="1,0,0,0"
+                IsVisible="{Binding PlayersContainerVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <ItemsControl ItemsSource="{Binding Players, Mode=OneWay}" ItemTemplate="{StaticResource DamageMeterFragmentTemplate}" />
+        </Border>
+      </StackPanel>
+    </DataTemplate>
+    <!-- Damage meter snapshot fragment -->
+    <DataTemplate x:Key="DamageMeterSnapshotFragmentTemplate" DataType="damageMeter:DamageMeterSnapshotFragment">
+      <Grid>
+        <Grid MinHeight="42"
+              common:MouseCommands.LeftClick="{Binding ShowSpells}"
+              IsVisible="{Binding DamageMeterStyleFragmentType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Damage=True|*=False'}">
+          <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding DamageInPercent}"
+                       Minimum="0"
+                       Maximum="100"
+                       MinHeight="40"
+                       Margin="3,0,2,1"
+                       VerticalAlignment="Top"
+                       Background="{DynamicResource SolidColorBrush.Transparent}"
+                       BorderThickness="0"
+                       Theme="{StaticResource DamageMeter.ProgressBar.Colors}" />
+          <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding HealInPercent}"
+                       Minimum="0"
+                       Maximum="100"
+                       Height="2"
+                       Margin="3,0,2,2"
+                       VerticalAlignment="Bottom"
+                       Background="{DynamicResource SolidColorBrush.Transparent}"
+                       BorderThickness="0"
+                       Foreground="{DynamicResource SolidColorBrush.Weapon.HealBar}" />
+          <StackPanel Orientation="Horizontal">
+            <Grid Margin="10,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image Source="{Binding CauserMainHand?.Icon}" Theme="{StaticResource DamageMeter.Icon}" />
+            </Grid>
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding DamagePercentage, StringFormat={}{0:N2}%}"
+                   MinWidth="55"
+                   Margin="10,5"
+                   HorizontalContentAlignment="Right"
+                   VerticalAlignment="Top" />
+            <Label Content="{Binding Name}" MinWidth="125" MaxWidth="125" Margin="10,5, 0, 0" VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding DamageShortString}"
+                   MinWidth="100"
+                   MaxWidth="100"
+                   FontWeight="Bold"
+                   Margin="10,5, 5, 0"
+                   VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding DpsString, StringFormat={}{0:N0}/dps}"
+                   MinWidth="75"
+                   MaxWidth="75"
+                   FontWeight="Bold"
+                   Margin="10,5, 50, 0"
+                   VerticalAlignment="Top" />
+            <Grid Width="16"
+                  Height="16"
+                  Margin="0,10"
+                  VerticalAlignment="Top"
+                  ToolTip.Tip="{Binding TranslationCombatTime, FallbackValue='COMBAT_TIME'}">
+              <fa:FontAwesomeImage Icon="RegularClock" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </Grid>
+            <TextBlock Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                       VerticalAlignment="Top"
+                       MinWidth="75"
+                       MaxWidth="100"
+                       FontWeight="Bold"
+                       Margin="10,10,50,0">
+              <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00}">
+                  <Binding Path="CombatTime.Hours" />
+                  <Binding Path="CombatTime.Minutes" />
+                  <Binding Path="CombatTime.Seconds" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+          </StackPanel>
+        </Grid>
+        <Grid MinHeight="42"
+              common:MouseCommands.LeftClick="{Binding ShowSpells}"
+              IsVisible="{Binding DamageMeterStyleFragmentType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='TakenDamage=True|*=False'}">
+          <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding TakenDamageInPercent}"
+                       Minimum="0"
+                       Maximum="100"
+                       MinHeight="40"
+                       Margin="3,0,2,1"
+                       VerticalAlignment="Top"
+                       Background="{DynamicResource SolidColorBrush.Transparent}"
+                       BorderThickness="0"
+                       Foreground="{DynamicResource SolidColorBrush.Weapon.TakenDamageBar}" />
+          <StackPanel Orientation="Horizontal">
+            <Grid Margin="10,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image Source="{Binding CauserMainHand?.Icon}" Theme="{StaticResource DamageMeter.Icon}" />
+            </Grid>
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding TakenDamagePercentage, StringFormat={}{0:N2}%}"
+                   MinWidth="55"
+                   Margin="10,5"
+                   HorizontalContentAlignment="Right"
+                   VerticalAlignment="Top" />
+            <Label Content="{Binding Name}" MinWidth="125" MaxWidth="125" Margin="10,5, 0, 0" VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding TakenDamageShortString}"
+                   MinWidth="100"
+                   MaxWidth="100"
+                   FontWeight="Bold"
+                   Margin="10,5, 5, 0"
+                   VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content=""
+                   MinWidth="75"
+                   MaxWidth="75"
+                   FontWeight="Bold"
+                   Margin="10,5, 50, 0"
+                   VerticalAlignment="Top" />
+            <Grid Width="16"
+                  Height="16"
+                  Margin="0,10"
+                  VerticalAlignment="Top"
+                  ToolTip.Tip="{Binding TranslationCombatTime, FallbackValue='COMBAT_TIME'}">
+              <fa:FontAwesomeImage Icon="RegularClock" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </Grid>
+            <TextBlock Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                       VerticalAlignment="Top"
+                       MinWidth="75"
+                       MaxWidth="100"
+                       FontWeight="Bold"
+                       Margin="10,10,50,0">
+              <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00}">
+                  <Binding Path="CombatTime.Hours" />
+                  <Binding Path="CombatTime.Minutes" />
+                  <Binding Path="CombatTime.Seconds" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+          </StackPanel>
+        </Grid>
+        <Grid MinHeight="42"
+              IsVisible="{Binding DamageMeterStyleFragmentType, Converter={x:Static conv:ValueMapConverter.Instance}, ConverterParameter='Heal=True|*=False'}">
+          <ProgressBar common:ProgressBarSmoother.SmoothValue="{Binding HealInPercent}"
+                       Minimum="0"
+                       Maximum="100"
+                       Height="40"
+                       Margin="3,1,2,1"
+                       VerticalAlignment="Top"
+                       Background="{DynamicResource SolidColorBrush.Transparent}"
+                       BorderThickness="0"
+                       Theme="{StaticResource DamageMeter.ProgressBar.Colors}" />
+          <StackPanel Orientation="Horizontal">
+            <Grid Margin="10,0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Image Source="{Binding CauserMainHand?.Icon}" Theme="{StaticResource DamageMeter.Icon}" />
+            </Grid>
+            <StackPanel Orientation="Vertical" Margin="10,0" MinWidth="55" VerticalAlignment="Top" Height="40">
+              <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                     Content="{Binding HealPercentage, StringFormat={}{0:N2}%}"
+                     Margin="0,5,0,0"
+                     Padding="0"
+                     HorizontalContentAlignment="Right"
+                     VerticalAlignment="Top" />
+              <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                     Opacity="0.50"
+                     Content="{Binding OverhealedPercentageOfTotalHealing, StringFormat={}{0:N2}%}"
+                     Margin="0,-15,0,0"
+                     Padding="0,0"
+                     HorizontalContentAlignment="Right"
+                     VerticalAlignment="Top"
+                     VerticalContentAlignment="Top" />
+            </StackPanel>
+            <Label Content="{Binding Name}" MinWidth="125" MaxWidth="125" Margin="10,5, 0, 0" VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding HealShortString}"
+                   MinWidth="100"
+                   MaxWidth="100"
+                   FontWeight="Bold"
+                   Margin="10,5, 5, 0"
+                   VerticalAlignment="Top" />
+            <Label Foreground="{DynamicResource SolidColorBrush.Weapon.Text}"
+                   Content="{Binding HpsString, StringFormat={}{0:N0}/hps}"
+                   MinWidth="75"
+                   MaxWidth="75"
+                   FontWeight="Bold"
+                   Margin="10,5, 50, 0"
+                   VerticalAlignment="Top" />
+            <Grid Width="16"
+                  Height="16"
+                  Margin="0,10"
+                  VerticalAlignment="Top"
+                  ToolTip.Tip="{Binding TranslationCombatTime, FallbackValue='COMBAT_TIME'}">
+              <fa:FontAwesomeImage Icon="RegularClock" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </Grid>
+            <TextBlock Foreground="{DynamicResource SolidColorBrush.Weapon.Text}" MinWidth="75" MaxWidth="100" FontWeight="Bold" Margin="10,13,50,0">
+              <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0:00}:{1:00}:{2:00}">
+                  <Binding Path="CombatTime.Hours" />
+                  <Binding Path="CombatTime.Minutes" />
+                  <Binding Path="CombatTime.Seconds" />
+                </MultiBinding>
+              </TextBlock.Text>
+            </TextBlock>
+          </StackPanel>
+        </Grid>
+        <Grid Margin="10,41,0,3"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Stretch"
+              IsVisible="{Binding SpellsContainerVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+          <StackPanel Orientation="Horizontal"
+                      Height="24"
+                      HorizontalAlignment="Stretch"
+                      Margin="2,0,2,0"
+                      VerticalAlignment="Top"
+                      Background="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.5}">
+            <Label Content="" Width="96" />
+            <Label Content="{Binding TranslationName}" FontWeight="Bold" Width="244" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+            <Label Content="{Binding TranslationDmgPercent}" FontWeight="Bold" Width="64" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+            <Label Content="{Binding TranslationDamageHeal}" FontWeight="Bold" Width="84" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+            <Label Content="{Binding TranslationTicks}" FontWeight="Bold" Width="70" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+          </StackPanel>
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" Margin="0,25,0,0">
+            <ItemsControl ItemsSource="{Binding Spells}" ItemTemplate="{StaticResource SpellBarTemplate}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <VirtualizingStackPanel Orientation="Vertical" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
+      </Grid>
+    </DataTemplate>
+  </Styles.Resources>
+</Styles>

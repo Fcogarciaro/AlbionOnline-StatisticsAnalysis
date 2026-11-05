@@ -207,8 +207,7 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   Avalonia) with `ImagePathToBitmapConverter` turning the upstream `pack://application:,,,/Assets/...` tags into bitmaps.
   The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
-- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DungeonControl,
-  DamageMeterControl and TradeMonitoringControl (SettingsControl is real since T10; ItemSearch,
+- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DungeonControl and TradeMonitoringControl (DamageMeterControl since T14) (SettingsControl is real since T10; ItemSearch,
   Party, Guild, StorageHistory, MapHistory, PlayerInformation, Donation and Thanks since T11). Each is replaced where it is ported
   (T12-T15). `ItemSearchControl` hosts a placeholder named ItemDetailsControl in its details slot until the item details view lands.
 
@@ -383,6 +382,34 @@ errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
 - `Journal` and `Calculation` are null until a crafting exists: bindings use `?.` and the journal popup flags use `TargetNullValue=False`.
 - **`LossExplorerControl` is not ported yet**: its tab hosts a `PortingPlaceholderControl` (it was not part of T12/T13).
 - Not verified on a real desktop: popup placement and light dismiss with the price text boxes, and the `DataGrid` row look.
+
+## DamageMeter, Dungeon, LossExplorer, TradeMonitoring, ItemDetails (T14, T15)
+
+### Conversion tool and `ValueMapConverter`
+
+The big XAML files of T14/T15 were converted by a throw-away script (XML tree to XML tree) that applies the rules above mechanically
+(namespaces, `Style` to `ControlTheme`, `Style=` to `Theme=`, `Visibility` to `IsVisible`, `ToolTip` to `ToolTip.Tip`, `MouseBinding` to
+`MouseCommands`, `IsAsync`, `x:Type`, brush resources to `DynamicResource`, `Label ContentStringFormat` into the binding, `ImageBrush.ImageSource`),
+followed by manual review. The script is not part of the repository; the output is the source of truth.
+
+`conv:ValueMapConverter` (`Linux/Common/Converters/ValueMapConverter.cs`) replaces groups of DataTriggers (and `Trigger Property="Tag"`) that set one
+property from one binding value: `ConverterParameter='sword=@SolidColorBrush.Weapon.Sword|*=@SolidColorBrush.Weapon.Unknown'`. The value is compared by
+its invariant text (enum members by name), `*` is the default (the original setter), `@Key` is an application resource, other results are parsed as
+the target type. It is used inside `ControlTheme` setters (`<Setter Property="Foreground" Value="{Binding X, Converter=...}"/>`, the binding runs against the
+control's data context), in local attributes (inline `X.Style` with triggers) and for `DataTemplate.Triggers` with `TargetName` (the binding goes on the named
+element). Visibility triggers become `IsVisible` with `Name=True|*=False`.
+
+### DamageMeterControl, DamageMeterStyles, DamageMeterWindow (T14)
+
+- 1:1 ports. `DamageMeter.TrackingStatusText` (Text switched by a trigger) is two stacked text blocks with `IsVisible`; `DamageMeter.Spell.Icon.Selector`
+  is two stacked images (the auto attack icon for spell index 0). The activation toggle color binds through `CompatBrushConverter`.
+- `DamageMeterWindow` shows the player list (`ScrollViewer` + `ItemsControl`) or the mob list (`ListBox`, theme `DamageMeter.VirtualizedList`), chosen by
+  the sort type. Upstream has no `Topmost` and no transparency settings (`AllowsTransparency` only): none were added. Note for any future always-on-top
+  overlay: `Window.Topmost` is honoured by X11/XWayland window managers but native Wayland compositors may ignore it (no protocol for it outside layer-shell).
+- Null paths use `?.` (`CauserMainHand?.Icon`, `DamageMeterSnapshotSelection?.DamageMeter`). Compiled bindings are off in the control (`x:CompileBindings="False"`);
+  the window keeps `x:DataType` (without it the Avalonia compiler demands a parameterless constructor).
+- The Spell tooltip is the content of `ToolTip.Tip`; the `Spell.ToolTip` theme chrome (Border, padding, max width) is not applied to the tip itself,
+  so the default Avalonia tooltip frame surrounds the spell text.
 
 ## View placeholders
 

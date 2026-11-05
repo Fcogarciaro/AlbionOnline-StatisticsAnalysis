@@ -8,7 +8,7 @@ using AvaloniaWindowState = Avalonia.Controls.WindowState;
 
 namespace StatisticsAnalysisTool.Views;
 
-/// <summary>Port of Views/DamageMeterWindow.xaml(.cs); the list content is a placeholder until T14.</summary>
+/// <summary>Port of Views/DamageMeterWindow.xaml(.cs).</summary>
 public partial class DamageMeterWindow : System.Windows.Window
 {
     private readonly WindowChromeController _windowChromeController;
