@@ -209,8 +209,8 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
 - **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, ItemSearchControl, LoggingControl,
   DungeonControl, DamageMeterControl, TradeMonitoringControl, GatheringControl, CraftingControl, PartyControl, GuildControl,
-  StorageHistoryControl, MapHistoryControl, PlayerInformationControl, DonationControl, ThanksControl and SettingsControl
-  (Settings is real since T10). Each is replaced where it is ported (T11-T15).
+  StorageHistoryControl, MapHistoryControl, PlayerInformationControl, DonationControl and ThanksControl
+  (SettingsControl is real since T10). Each is replaced where it is ported (T11-T15).
 
 ## Secondary windows (T10)
 
