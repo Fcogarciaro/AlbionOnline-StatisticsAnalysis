@@ -9,7 +9,7 @@ surface under `Linux/`, or covered by a WPF-shaped shim under `Compat/` (namespa
 
 | WPF file (excluded) | Reason | Replacement | Behavior difference |
 |---|---|---|---|
-| `Updater/AutoUpdateController.cs`, `Updater/UpdateDownloadSession.cs` | NetSparkleUpdater.UI.WPF, Authenticode, WPF update window | `Linux/Updater/AutoUpdateController.cs` | No update check or notification. TODO(T03/T17): GitHub releases check. |
+| `Updater/AutoUpdateController.cs`, `Updater/UpdateDownloadSession.cs` | NetSparkleUpdater.UI.WPF, Authenticode, WPF update window | `Linux/Updater/AutoUpdateController.cs` (+ pure logic in `Linux/Updater/LinuxUpdate.cs`) | Notify-only updater. Checks the GitHub releases of the fork (`Fcogarciaro/AlbionOnline-StatisticsAnalysis`) at start and every 6 h, takes the newest non-draft `linux-v<version>` release that ships `StatisticsAnalysisTool-linux-x64.tar.gz` (pre-releases only with `IsSuggestPreReleaseUpdatesActive`), compares it with the assembly `<Version>` (missing components count as 0), raises `UpdateAvailabilityChanged` (footer badge) and opens `UpdateWindow` with the release notes. Its action opens the release page. **It never downloads or swaps files**: the binary carries file capabilities (setcap) that a replaced file loses, the PKGBUILD install is root-owned, and a `.sha256` from the same origin does not authenticate the archive. Update with the package manager or `install.sh`. A failed check is silent in the background and a message box on the manual check. |
 | `Updater/AuthenticodeSignatureVerifier.cs` | Windows Authenticode | none (only used by the excluded controller) | n/a |
 | generated `AutoUpdateSecurityBuildSettings.g.cs` | MSBuild-generated in the WPF project | `Linux/Updater/AutoUpdateSecurityBuildSettings.cs` | All flags off. |
 | `Common/AppDataPaths.cs` | `LocalApplicationData` is the only root; everything (incl. `Settings.json`) sits in it | `Linux/Common/AppDataPaths.cs` (copy, keep in sync) | Same members and `Instances/<id>/...` sub-structure. `Settings.json` goes to `$XDG_CONFIG_HOME/StatisticsAnalysisTool` (default `~/.config`); `Backups`, `UserData-*`, `logs`, `GameFiles` to `$XDG_DATA_HOME/StatisticsAnalysisTool` (default `~/.local/share`, where .NET already pointed `LocalApplicationData`); `temp`, `ImageResources`, `SpellImageResources` to `$XDG_CACHE_HOME/StatisticsAnalysisTool` (default `~/.cache`, safe to delete). Relative XDG values are ignored per spec. Copy the folders between machines by recreating the same `Instances/<id>` layout. Upstream has no portable mode, so none is offered. Extra member `UserSettingsFile`. |
@@ -230,8 +230,8 @@ pointer-delta fallback; double click toggles maximize where upstream did). Resiz
   `CaptureGuidance.PermissionMessage` (setcap) whenever the process lacks `CAP_NET_RAW`, unless the view model's own warning
   already carries it. The game folder step prefills the first detected install (`GameFolderLocator`) and the picker opens near it.
   Language dots and step dots are classes (`ToStringEqualsConverter` because XAML cannot pass an int `ConverterParameter`).
-- `UpdateWindow`: 1:1 with the upstream constructor. The Linux updater still reports no update, so nothing opens it yet; when T17 adds
-  the GitHub releases check its action should open the release page (there is no installer to run).
+- `UpdateWindow`: 1:1 with the upstream constructor. The Linux updater (notify-only, see the table) opens it from the footer badge and the
+  manual check in Settings; the action button reads "Open release page" (English literal, there is no installer to run).
 - `CompatBrushConverter`: shim `System.Windows.Media.Brush` properties of view models (e.g. `UpdateNoteSectionViewModel.TitleBrush`) need it in bindings.
 - `ListCollectionView` (shim) is now a read-only `IList`: Avalonia refuses INotifyCollectionChanged sources that are not.
 - Avalonia binding errors are logged, not thrown: view tests collect them with `BindingErrorLog`.

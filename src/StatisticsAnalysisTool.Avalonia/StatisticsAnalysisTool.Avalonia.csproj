@@ -6,6 +6,8 @@
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <AssemblyName>StatisticsAnalysisTool</AssemblyName>
+    <!-- Compared with the newest `linux-v*` GitHub release by the update check; build-tarball.sh overrides it from the tag. -->
+    <Version>0.1.0</Version>
     <RootNamespace>StatisticsAnalysisTool</RootNamespace>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
