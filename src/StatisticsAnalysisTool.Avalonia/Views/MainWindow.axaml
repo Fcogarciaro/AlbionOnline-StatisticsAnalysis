@@ -218,7 +218,7 @@
       </TabItem>
       <TabItem IsVisible="{Binding StorageHistoryTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.StorageHistory, FallbackValue=STORAGE_HISTORY}" Tag="pack://application:,,,/Assets/Navigation/treasure.png">
         <Grid Theme="{StaticResource TabItemGridStyle}">
-          <userControls:PortingPlaceholderControl ViewName="StorageHistoryControl" />
+          <userControls:StorageHistoryControl />
         </Grid>
       </TabItem>
       <TabItem IsVisible="{Binding MapHistoryTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.MapHistory, FallbackValue=MAP__HISTORY}" Tag="pack://application:,,,/Assets/Navigation/location.png">

@@ -22,4 +22,5 @@
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ThanksStyle.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DonationStyles.axaml" />
   <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/PartyStyle.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/StorageHistoryStyle.axaml" />
 </Styles>
