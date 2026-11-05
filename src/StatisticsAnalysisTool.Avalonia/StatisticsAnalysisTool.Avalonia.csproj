@@ -51,6 +51,8 @@
   <ItemGroup>
     <AvaloniaResource Include="..\StatisticsAnalysisTool\sat-icon.ico" Link="Assets\sat-icon.ico" />
     <AvaloniaResource Include="..\StatisticsAnalysisTool\Assets\sat-icon.png" Link="Assets\sat-icon.png" />
+    <!-- Font Awesome Free 6.7.2 fonts (SIL OFL 1.1), see Assets/Fonts/FontAwesome-LICENSE.txt. -->
+    <AvaloniaResource Include="Assets\Fonts\*.ttf" />
   </ItemGroup>
 
   <!-- Localization table, read from <app dir>/Localization/localization.json (AppDataPaths.LocalizationFile). -->
