@@ -84,6 +84,21 @@ public class MainWindowTests
     }
 
     [AvaloniaTest]
+    public async Task Tabs_OfTheSimpleViewsHostTheRealControlsNotPlaceholders()
+    {
+        await OpenAsync();
+        var hosted = _window.GetVisualDescendants().OfType<TabItem>()
+            .Select(t => (t.Content as Panel)?.Children.FirstOrDefault())
+            .Where(c => c != null)
+            .Select(c => c.GetType())
+            .ToList();
+
+        hosted.Should().Contain([typeof(ItemSearchControl), typeof(PartyControl), typeof(GuildControl), typeof(StorageHistoryControl), typeof(MapHistoryControl),
+            typeof(PlayerInformationControl), typeof(DonationControl), typeof(ThanksControl)]);
+        _sink.Errors.Should().BeEmpty();
+    }
+
+    [AvaloniaTest]
     public async Task Header_ShowsUptimeStatusFooterAndBars()
     {
         await OpenAsync();

@@ -207,10 +207,10 @@ so linked code casts them unchanged. The Avalonia theme must define the `Color.*
   Avalonia) with `ImagePathToBitmapConverter` turning the upstream `pack://application:,,,/Assets/...` tags into bitmaps.
   The images of `Assets/` and `Resources/` of the WPF project are linked into the assembly (`avares://StatisticsAnalysisTool/...`).
 - `UserControls/{Footer,ErrorBar,WarningBar,InformationBar}Control` are ported; the bar texts are styled properties.
-- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, ItemSearchControl, LoggingControl,
-  DungeonControl, DamageMeterControl, TradeMonitoringControl, GatheringControl, CraftingControl, PartyControl, GuildControl,
-  StorageHistoryControl, MapHistoryControl, PlayerInformationControl, DonationControl and ThanksControl
-  (SettingsControl is real since T10). Each is replaced where it is ported (T11-T15).
+- **Tabs still hosting `PortingPlaceholderControl`** ("Not yet ported: X"): DashboardControl, LoggingControl, DungeonControl,
+  DamageMeterControl, TradeMonitoringControl, GatheringControl and CraftingControl (SettingsControl is real since T10; ItemSearch,
+  Party, Guild, StorageHistory, MapHistory, PlayerInformation, Donation and Thanks since T11). Each is replaced where it is ported
+  (T12-T15). `ItemSearchControl` hosts a placeholder named ItemDetailsControl in its details slot until the item details view lands.
 
 ## Secondary windows (T10)
 
@@ -252,6 +252,68 @@ pointer-delta fallback; double click toggles maximize where upstream did). Resiz
 - Still English/Windows wording in the settings texts that come from the localization table ("Start with Windows", "notification area"):
   they describe the XDG autostart entry and the tray; no overrides yet.
 - Not verified live in this session: the real desktop (see the T20 note in the feature document).
+
+## Simple tabs (T11)
+
+Each view keeps the upstream structure, bindings, handlers, texts and icons; its feature dictionary is ported with it (`Styles/*.axaml`,
+merged in `Theme.axaml`, keys unchanged). Tests render the real control with the real `MainWindowViewModel` and assert zero binding
+errors (`Views/ViewHarness.cs`, `BindingErrorLog`).
+
+### Helpers added for these views
+
+- **`common:MouseCommands.LeftClick` / `LeftDoubleClick` / `CommandParameter`** (`Linux/Common/MouseCommands.cs`): replace
+  `<X.InputBindings><MouseBinding MouseAction="LeftClick" Command="..."/>`. Fires on the left press (double click on the second press).
+- **`conv:GridLengthConverter`**: two-way, for `RowDefinition.Height="{Binding VaultBindings.GridSplitterPosition, Mode=TwoWay, Converter=...}"`
+  where the view model holds the shim `System.Windows.GridLength` (a string `FallbackValue` cannot be converted, so none is used).
+- **`conv:ValueInListConverter`**: `ConverterParameter='A|B|C'`, true when the bound value equals one of the names; turns a group of
+  DataTriggers with the same setters (city names) into one class. Apostrophes in names are written `\'`.
+- **`conv:DonationTypeIconConverter`**: the 35 `DonationType` DataTriggers of `Donation.Icon.Style` as one lookup table (a test compares
+  it with the upstream XAML).
+- **`fa:UrlImage`** (`Linux/Controls/UrlImage.cs`): `Image` with a `Url` property that downloads an http(s) url asynchronously (WPF
+  converted the string itself). Replaces `Image Source="{Binding SomeUrl}"` and `Ellipse` + `ImageBrush ImageSource="{Binding SomeUrl}"`
+  (an `ImageBrush` cannot download: use a `Border CornerRadius ClipToBounds` around the `UrlImage`).
+- **`DataGrid`** (`Avalonia.Controls.DataGrid` 11.3.12; there is no 11.3.22): the replacement of `ListView` + `GridView`.
+  `Styles/DataGridStyles.axaml` gives it the look of the upstream `ListView`/`ListViewItem`/`GridViewColumnHeader` styles (transparent,
+  blue hover/selection, 14 px blue headers). Column headers are `DataGridTemplateColumn.Header` with a `TextBlock` (a bound `Header`
+  string does not see the view model). The WPF header gripper had Width 0, so `CanUserResizeColumns` is off.
+
+### Conversion rules found on the way
+
+- `Width="auto"`/`Height="auto"` is `NaN` (or just removed); `ToolTip=` is `ToolTip.Tip=`; `Panel.ZIndex` is `ZIndex`;
+  `MouseEnter`/`MouseLeave` are `PointerEntered`/`PointerExited`; a `Grid` with no `Background` is not hit-testable, so hover areas
+  get `Background="Transparent"`; `Visibility.Hidden` (keeps the space) is `Opacity` 0 through a class, `Collapsed` is `IsVisible`.
+- Null mid-path values log a binding warning in Avalonia (WPF is silent): write `Item?.Icon`, `GameInfoPlayers?.LifetimeStatistics?.Total`.
+- `x:Name` on `ColumnDefinition`/`DataGridColumn` does not compile (not a `StyledElement`): take them by index in the code-behind.
+- `ComboBox DisplayMemberPath` is `DisplayMemberBinding="{ReflectionBinding X}"`, `SelectedValuePath` is
+  `SelectedValueBinding="{ReflectionBinding X}"`; a ComboBox template contains a `TextBox`/`Button`, so tests filter on `TemplatedParent == null`.
+- `ItemsControl.ItemContainerStyle` of a `ContentPresenter` is `ItemContainerTheme` (a `ControlTheme` cannot contain a descendant selector).
+- `VirtualizingItemsControl` (WpfToolkit) is a `ScrollViewer` around an `ItemsControl` with a `VirtualizingStackPanel` (or a `WrapPanel`
+  for the container icons); no recycling options.
+- Style rules that must be selectors (`Image.cluster-row...`, per-class gradients) live after `Styles.Resources` in the same dictionary.
+
+### Per view
+
+- **GuildControl** + `GuildStyles`: 1:1. `LootLogCheck.ContainerItem.Template` is not ported (only a commented-out tab used it). The first
+  (hidden) tab keeps `IsVisible="False"`. Upstream binds the delete button to `TradeMonitoringBindings.IsDeleteTradesButtonEnabled`
+  (kept). The info icon gets a transparent background so the pointer events fire.
+- **PartyControl** + `PartyStyle`: 1:1; the header click uses `MouseCommands`; the item power block of the local player is invisible
+  but keeps its space (Opacity 0), as `Visibility.Hidden`. The splitter position goes through `GridLengthConverter`.
+- **StorageHistoryControl** + `StorageHistoryStyle`: 1:1. The WPF value text also set `Visibility` in its triggers, but its local
+  binding won, so only the binding applies here too.
+- **MapHistoryControl**: 1:1 (selection tracking, copy and delete dialogs). It needed `ClusterInfoTemplate` and `MapMarkerIconTemplate`,
+  added to the partial `TrackingStyles.axaml` with the per-mode gradients and butterfly/marker images as classes.
+- **ItemSearchControl** (+ `ItemSearchImageCounterControl`) + `ItemSearchStyles`: the list is a `DataGrid`; saved column widths are
+  applied and written back (`DataGridColumn.WidthProperty` observable); the click on an already selected row refreshes the details
+  (tunnelling `PointerPressed`). `ItemDetailsControl` is a placeholder in the details slot (same data context and visibility).
+  The counter control keeps binding to the inherited data context, as upstream. The toolbar separator is a 1 px vertical line.
+- **DonationControl** + `DonationStyles`: the logos are clickable grids (`xdg-open`, http(s) only). The Patreon, PayPal and GitHub logos are
+  72x72 (the WPF inline size is not defined); the progress bar template keeps the 2.8 s shimmer as a style animation.
+- **ThanksControl** + `ThanksStyle`: 1:1.
+- **PlayerInformationControl** + `PlayerInformationStyles`: 1:1; the avatar is a circular clip around `fa:UrlImage`; the
+  `PlayerMode.Label.*`/`PlayerMode.Title*` styles are not ported (unused upstream). The header tabs are a `TabControl` whose template is
+  only the item strip (needs a live check on the real desktop).
+- Not verified on a real desktop in this session: the look of the `DataGrid` (template part names `BackgroundRectangle`,
+  `VerticalSeparator` come from the Fluent DataGrid theme) and of the shimmer.
 
 ## View placeholders
 
