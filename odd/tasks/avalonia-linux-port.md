@@ -83,7 +83,9 @@ Each task records its route and trigger.
     - live Wayland/Hyprland chrome test (user);
     - Settings still uses Windows wording ("Start with Windows");
     - one flaky "Dispatcher shut down" test cascade was observed once.
-- [ ] T11 Simple tabs: Guild, Party, StorageHistory, MapHistory, ItemSearch, Donation, Thanks, PlayerInformation.
+- [x] T11 Simple tabs: Guild, Party, StorageHistory, MapHistory, ItemSearch, Donation, Thanks, PlayerInformation. Commits 46ef5cd3..0ccc77a8.
+  - Evidence: tests 556/556 (re-run by the parent).
+  - Changes: ItemSearch uses a DataGrid (Avalonia.Controls.DataGrid 11.3.12); ItemDetails stays a placeholder until T15.
 - [ ] T12 Logging + EventValidation (virtualized lists).
 - [ ] T13 Dashboard, DashboardLoot, Gathering, Crafting (LiveCharts Avalonia).
 - [ ] T14 DamageMeter (+ window), Dungeon, LossExplorer.
