@@ -1,0 +1,72 @@
+<!-- The MainStyles.xaml styles that use FontAwesomeImage (Style.Button.Icon.White/Black, App.TrackingStateButton).
+     DataTrigger "ancestor Button is disabled" is the :disabled pseudoclass of the icon (IsEnabled is inherited), so it
+     also applies under any other disabled ancestor. The tracking toggle swaps icon and text with two sets of children
+     shown by :checked, instead of setters with bindings on template parts. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        x:CompileBindings="False">
+  <Styles.Resources>
+    <ControlTheme x:Key="Style.Button.Icon.White" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Normal}" />
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Style.Button.Icon.Black" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Icon.Black}" />
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.TrackingStateButton" TargetType="ToggleButton">
+      <Setter Property="Height" Value="{DynamicResource App.ControlHeight}" />
+      <Setter Property="Width" Value="180" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Normal}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Normal}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Normal}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="TrackingStateSurface"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="3"
+                  TextElement.Foreground="{TemplateBinding Foreground}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+              <Panel Width="16" Height="16" Margin="0,0,8,0" IsHitTestVisible="False">
+                <fa:FontAwesomeImage x:Name="TrackingStateIconOff" Icon="SolidToggleOff" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <fa:FontAwesomeImage x:Name="TrackingStateIconOn" Icon="SolidToggleOn" IsVisible="False" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+              </Panel>
+              <Panel VerticalAlignment="Center">
+                <TextBlock x:Name="TrackingStateTextOff" Text="{Binding DataContext.Translation.TrackingIsNotActive, RelativeSource={RelativeSource TemplatedParent}}" />
+                <TextBlock x:Name="TrackingStateTextOn" IsVisible="False" Text="{Binding DataContext.Translation.TrackingIsActive, RelativeSource={RelativeSource TemplatedParent}}" />
+              </Panel>
+            </StackPanel>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:checked /template/ fa|FontAwesomeImage#TrackingStateIconOff"><Setter Property="IsVisible" Value="False" /></Style>
+      <Style Selector="^:checked /template/ fa|FontAwesomeImage#TrackingStateIconOn"><Setter Property="IsVisible" Value="True" /></Style>
+      <Style Selector="^:checked /template/ TextBlock#TrackingStateTextOff"><Setter Property="IsVisible" Value="False" /></Style>
+      <Style Selector="^:checked /template/ TextBlock#TrackingStateTextOn"><Setter Property="IsVisible" Value="True" /></Style>
+      <Style Selector="^:pointerover /template/ Border#TrackingStateSurface">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.MouseOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.MouseOver}" />
+      </Style>
+      <Style Selector="^:pressed /template/ Border#TrackingStateSurface">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Pressed}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Border#TrackingStateSurface">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Disabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Disabled}" />
+      </Style>
+    </ControlTheme>
+  </Styles.Resources>
+</Styles>

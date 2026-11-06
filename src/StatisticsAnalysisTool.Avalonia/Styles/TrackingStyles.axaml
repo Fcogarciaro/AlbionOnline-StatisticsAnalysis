@@ -1,0 +1,863 @@
+<!-- PARTIAL port of Styles/TrackingStyles.xaml: the main window header (party circles, current map, faction point stats,
+     the two number converters), the map history rows and the logging templates (notifications, looting players). The rest
+     (dungeon chests and cluster info, ...) is ported with the tracking views. DataTriggers are classes bound with ObjectConverters.Equal (see PORTING.md). -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:enumerations="clr-namespace:StatisticsAnalysisTool.Enumerations"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:networkModel="clr-namespace:StatisticsAnalysisTool.Models.NetworkModel"
+        xmlns:cluster="clr-namespace:StatisticsAnalysisTool.Cluster"
+        xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
+        xmlns:eventLogging="clr-namespace:StatisticsAnalysisTool.EventLogging"
+        xmlns:notification="clr-namespace:StatisticsAnalysisTool.EventLogging.Notification"
+        xmlns:globalization="clr-namespace:System.Globalization;assembly=System.Runtime"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <conv:ValuePerHourConverter x:Key="ValuePerHourConverter" />
+    <conv:ShortNumberConverter x:Key="ShortNumberConverter" />
+
+    <ControlTheme x:Key="Tracker.Fraction.Coin.Icon" TargetType="Image">
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Width" Value="16" />
+      <Style Selector="^.martlock"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_martlock.png" /></Style>
+      <Style Selector="^.lymhurst"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_lymhurst.png" /></Style>
+      <Style Selector="^.bridgewatch"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_bridgewatch.png" /></Style>
+      <Style Selector="^.fortsterling"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_fortsterling.png" /></Style>
+      <Style Selector="^.thetford"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_thetford.png" /></Style>
+      <Style Selector="^.caerleon"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factioncoin_caerleon.png" /></Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="FactionPointStatsTemplate" DataType="models:MainStatObject">
+      <StackPanel Orientation="Vertical" Margin="10,0,10,0"
+                  IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Image Theme="{StaticResource Tracker.Fraction.Coin.Icon}"
+               ToolTip.Tip="{Binding TranslationTotalFactionPoints, FallbackValue='TOTAL__FACTION__POINTS'}" Width="22" Height="22"
+               Classes.martlock="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Martlock}}"
+               Classes.lymhurst="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Lymhurst}}"
+               Classes.bridgewatch="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Bridgewatch}}"
+               Classes.fortsterling="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.FortSterling}}"
+               Classes.thetford="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Thetford}}"
+               Classes.caerleon="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Caerleon}}" />
+        <TextBlock Text="{Binding Value, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static globalization:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                   FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+        <TextBlock FontSize="16" Text="{Binding ValuePerHour, Converter={StaticResource ValuePerHourConverter}, FallbackValue='0 /h'}"
+                   Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+      </StackPanel>
+    </DataTemplate>
+
+    <!-- Easter eggs of the party circles: the DataTriggers on the player name. -->
+    <ControlTheme x:Key="Style.Party.Circle" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="Icon" Value="SolidCircleUser" />
+      <Style Selector="^.dicky">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Dicky - Most luckiest bastard in game!" />
+        <Setter Property="Icon" Value="SolidPiggyBank" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      </Style>
+      <Style Selector="^.triky313">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Aaron - Dev of this tool!" />
+        <Setter Property="Icon" Value="SolidFont" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+      </Style>
+      <Style Selector="^.faxerix">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Emily!" />
+        <Setter Property="Icon" Value="SolidE" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.MobType.Vanity}" />
+      </Style>
+      <Style Selector="^.rhaegaryn">
+        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="ToolTip.Tip" Value="Rhaegaryn - Most dedicated contributor!" />
+        <Setter Property="Icon" Value="SolidStar" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+        <Setter Property="Effect">
+          <DropShadowEffect BlurRadius="5" OffsetX="0" OffsetY="0" Opacity="0.5" Color="{DynamicResource Color.Accent.Yellow.2}" />
+        </Setter>
+      </Style>
+    </ControlTheme>
+
+    <!-- WPF applies this template implicitly (DataType only); ItemsControls over PartyMemberCircle set ItemTemplate. -->
+    <DataTemplate x:Key="PartyMemberCircleTemplate" DataType="networkModel:PartyMemberCircle">
+      <Grid Height="20" Width="20" Margin="1,0" VerticalAlignment="Center" ToolTip.Tip="{Binding Name}" Background="Transparent">
+        <fa:FontAwesomeImage Theme="{StaticResource Style.Party.Circle}"
+                             Classes.dicky="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Dicky}"
+                             Classes.triky313="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Triky313}"
+                             Classes.faxerix="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=faxerix}"
+                             Classes.rhaegaryn="{Binding Name, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=Rhaegaryn}" />
+      </Grid>
+    </DataTemplate>
+
+    <ControlTheme x:Key="MainHeader.PartyMembers" TargetType="ItemsControl">
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="ItemsPanel">
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </Setter>
+      <Setter Property="ItemTemplate" Value="{StaticResource PartyMemberCircleTemplate}" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="ClusterModeIcon.Template">
+      <Image Height="20" Width="20" VerticalAlignment="Center" Classes="cluster-icon"
+             Classes.safe="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.SafeArea}}"
+             Classes.yellow="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Yellow}}"
+             Classes.red="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Red}}"
+             Classes.black="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Black}}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="CurrentMapInfoTemplate" DataType="models:CurrentMapInfoBinding">
+      <Grid Margin="0,0,0,0">
+        <StackPanel Orientation="Horizontal">
+          <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ClusterModeIcon.Template}" Width="24" />
+          <Label Content="{Binding Tier}" FontSize="14" FontWeight="Bold" Height="18" Padding="0" Margin="0,0,5,0" Classes="cluster-tier"
+                 Classes.safearea="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.SafeArea}}"
+                 Classes.island="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Island}}"
+                 Classes.yellow="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Yellow}}"
+                 Classes.red="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Red}}"
+                 Classes.black="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Black}}"
+                 Classes.avalon="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.AvalonTunnel}}"
+                 Classes.mists="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Mists}}"
+                 Classes.unknown="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Unknown}}" />
+          <Label Content="{Binding DisplayedClusterName, FallbackValue='DISPLAYED_CLUSTER_NAME', Mode=OneWay}" FontSize="14" FontWeight="Bold" Height="20" Padding="0" Margin="0" />
+        </StackPanel>
+      </Grid>
+    </DataTemplate>
+
+    <!-- MapMarkerType DataTriggers: the image, and the margin that lifts the icons whose artwork has empty space. -->
+    <DataTemplate x:Key="MapMarkerIconTemplate" DataType="enumerations:MapMarkerType">
+      <Image Height="36" Width="36" Classes="map-marker"
+               Classes.elite="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.DungeonElite}}"
+               Classes.group="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.DungeonGroup}}"
+               Classes.solo="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.DungeonSolo}}"
+               Classes.roadraid="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.RoadsOfAvalonRaidPve}}"
+               Classes.roadgroup="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.RoadsOfAvalonGroupPve}}"
+               Classes.roadsolo="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.RoadsOfAvalonSoloPve}}"
+               Classes.stone="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Stone}}"
+               Classes.fiber="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Fiber}}"
+               Classes.wood="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Wood}}"
+               Classes.hide="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Hide}}"
+               Classes.ore="{Binding ., Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:MapMarkerType.Ore}}" />
+    </DataTemplate>
+
+    <!-- ClusterInfo rows of the map history. Background gradient by ClusterMode, border while selected, click toggles the selection. -->
+    <DataTemplate x:Key="ClusterInfoTemplate" DataType="cluster:ClusterInfo">
+      <Border Margin="0,0,0,1" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.3}" Classes="cluster-row-border"
+              Classes.selected="{Binding IsSelectedInMapHistory}">
+        <Grid Classes="cluster-row"
+                      Classes.safearea="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.SafeArea}}"
+                      Classes.island="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Island}}"
+                      Classes.yellow="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Yellow}}"
+                      Classes.red="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Red}}"
+                      Classes.black="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Black}}"
+                      Classes.avalon="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.AvalonTunnel}}"
+                      Classes.mists="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Mists}}"
+                      Classes.unknown="{Binding ClusterMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:ClusterMode.Unknown}}">
+          <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+              <StackPanel Orientation="Horizontal" Background="Transparent" common:MouseCommands.LeftClick="{Binding ToggleMapHistorySelectionCommand}">
+                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource ClusterModeIcon.Template}" Width="24" />
+                <Label Width="140" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}">
+                  <TextBlock Text="{Binding Entered, StringFormat='{}{0}', ConverterCulture={x:Static globalization:CultureInfo.DefaultThreadCurrentUICulture}, FallbackValue='00.00.0000 00:00:00'}" />
+                </Label>
+                <Label Content="{Binding TierRomanString}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="35" />
+                <StackPanel Orientation="Horizontal" Width="149">
+                  <Label Content="{Binding ClusterHistoryString1}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                  <Image Height="18" Width="16" ToolTip.Tip="{Binding RandomDungeonTierLevelToolTip}" Classes="dungeon-level"
+                         IsVisible="{Binding HasRandomDungeonLevelIcon}"
+                         Classes.l0="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=0}"
+                         Classes.l1="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}"
+                         Classes.l2="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}"
+                         Classes.l3="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}"
+                         Classes.l4="{Binding RandomDungeonLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=4}" />
+                </StackPanel>
+                <Label Content="{Binding ClusterHistoryString2}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="149" />
+                <Label Content="{Binding ClusterHistoryString3}" FontSize="12" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="149" />
+              </StackPanel>
+              <TextBox Text="{Binding MapHistoryNote}" Width="149" Background="{DynamicResource SolidColorBrush.Value.Silver.Transparent}" BorderThickness="0" />
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding MapMarkers}" ItemTemplate="{StaticResource MapMarkerIconTemplate}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
+          </StackPanel>
+        </Grid>
+      </Border>
+    </DataTemplate>
+
+
+    <!-- Chest, dungeon, fame, silver and re-spec icons -->
+    <ControlTheme x:Key="Icon.Chest.Standard.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_standard.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Standard.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_standard.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Uncommon.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_uncommon.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Uncommon.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_uncommon.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Rare.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_rare.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Rare.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_rare.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Legendary.Close" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_close_legendary.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Chest.Legendary.Open" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/chest_open_legendary.png"/>
+        <Setter Property="Width" Value="18"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Dungeon" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/dungeon.png"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="30"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Fame" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/fame.png"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Width" Value="16"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.Silver" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/silver.png"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Width" Value="16"/>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Icon.ReSpec" TargetType="Image">
+        <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/respec.png"/>
+        <Setter Property="Height" Value="16"/>
+        <Setter Property="Width" Value="16"/>
+    </ControlTheme>
+
+
+    <!-- ===== Logging (LoggingControl) ===== -->
+    <ControlTheme x:Key="LineFragmentImageStyle" TargetType="Image">
+      <Setter Property="Width" Value="16" />
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Margin" Value="2" />
+    </ControlTheme>
+
+    <!-- Text "+ " / "- " by AttributeStatOperator; the view sets Classes.minus from the fragment's Operator. -->
+    <ControlTheme x:Key="OperatorTextBlockStyle" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Text" Value="+ " />
+      <Style Selector="^.minus"><Setter Property="Text" Value="- " /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Tracker.Fragment.FameText" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Style Selector="^.pve"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.Color.Pve}" /></Style>
+      <Style Selector="^.pvp"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.Color.Pvp}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Tracker.Fragment.PveText" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.Color.Pve}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Tracker.Fraction.Flag.Icon" TargetType="Image">
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Width" Value="16" />
+      <Style Selector="^.martlock"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factionflag_martlock.png" /></Style>
+      <Style Selector="^.lymhurst"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factionflag_lymhurst.png" /></Style>
+      <Style Selector="^.bridgewatch"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factionflag_bridgewatch.png" /></Style>
+      <Style Selector="^.fortsterling"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factionflag_fortsterling.png" /></Style>
+      <Style Selector="^.thetford"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factionflag_thetford.png" /></Style>
+      <Style Selector="^.caerleon"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/factionflag_caerleon.png" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Tracker.Icon.SeasonPoints" TargetType="Image">
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Width" Value="16" />
+      <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Resources/icon_daily_season_points.png" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="LootComparator.RemovePlayerButton" TargetType="Button">
+      <Setter Property="Width" Value="18" />
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Margin" Value="6,1,0,0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Focusable" Value="False" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}">
+            <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover"><Setter Property="Opacity" Value="0.75" /></Style>
+      <Style Selector="^:pressed"><Setter Property="Opacity" Value="0.55" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="LootComparator.PlayerMetricBadge" TargetType="Border">
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Margin" Value="3,0" />
+      <Setter Property="Padding" Value="7,0" />
+      <Setter Property="CornerRadius" Value="3" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.4}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Logging.ComparatorCard" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.T.2}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="12" />
+    </ControlTheme>
+
+    <!-- The activation toggle icon: DataTrigger on IsLoggingTrackingActive / IsLootComparatorTrackingActive is Classes.on. -->
+    <ControlTheme x:Key="Logging.ToggleIcon" TargetType="fa:FontAwesomeImage">
+      <Setter Property="Icon" Value="SolidToggleOff" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Width" Value="16" />
+      <Setter Property="Height" Value="16" />
+      <Setter Property="Margin" Value="0,0,8,0" />
+      <Setter Property="IsHitTestVisible" Value="False" />
+      <Style Selector="^.on">
+        <Setter Property="Icon" Value="SolidToggleOn" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      </Style>
+    </ControlTheme>
+
+    <!-- Rows of the notification list: no selection chrome, the item content only. -->
+    <ControlTheme x:Key="Logging.PlainListBoxItem" TargetType="ListBoxItem">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Focusable" Value="False" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+
+    <!-- WPF resolves the fragment templates implicitly by DataType; here they are the DataTemplates of the ContentControl in NotificationTemplate. -->
+    <DataTemplate x:Key="NotificationTemplate" DataType="notification:TrackingNotification">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Margin="3" Text="{Binding DateTime, StringFormat=[hh:mm:ss]}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+        <TextBlock Grid.Column="1" Margin="3" Text="{Binding ClusterDisplayText}"
+                   IsVisible="{Binding ClusterDisplayVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                   Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+        <ContentControl Grid.Column="2" Margin="3" Content="{Binding Fragment}">
+          <ContentControl.DataTemplates>
+            <DataTemplate DataType="notification:TextFragment">
+              <TextBlock Text="{Binding Text, StringFormat='{}{0} '}" TextWrapping="Wrap" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:FameNotificationFragment">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding StartText, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Theme="{StaticResource OperatorTextBlockStyle}"
+                           Classes.minus="{Binding Operator, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:AttributeStatOperator.Minus}}" />
+
+                <Image Source="avares://StatisticsAnalysisTool/Resources/fame.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding TotalGainedFame, StringFormat='{} {0:N0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding FameText, StringFormat='{} {0} '}" Theme="{StaticResource Tracker.Fragment.FameText}"
+                           Classes.pve="{Binding PvpPveType, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:PvpPveType.Pve}}"
+                           Classes.pvp="{Binding PvpPveType, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:PvpPveType.Pvp}}" />
+                <TextBlock Text="(" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <Image Source="avares://StatisticsAnalysisTool/Resources/zone.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding Zone, StringFormat='{} {0:N0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <Image Source="avares://StatisticsAnalysisTool/Resources/crown.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding Premium, StringFormat='{}{0:N0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <Image Source="avares://StatisticsAnalysisTool/Resources/satchel.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding Satchel, StringFormat='{}{0:N0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <!-- Visibility.Hidden with Width 0 in WPF: collapsed. -->
+                <TextBlock Text="{Binding BonusFactorInPercent, StringFormat='{} +{0:N2}%'}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                           IsVisible="{Binding IsBonusFactorActive}" />
+
+                <TextBlock Text="{Binding EndText, StringFormat='{}) {0}'}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+              </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:SilverNotificationFragment">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding StartText, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Theme="{StaticResource OperatorTextBlockStyle}"
+                           Classes.minus="{Binding Operator, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:AttributeStatOperator.Minus}}" />
+
+                <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding TotalGainedSilver, StringFormat='{} {0:N2} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding SilverText, StringFormat='{} {0} '}" Theme="{StaticResource Tracker.Fragment.PveText}" />
+                <TextBlock Text="(" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <Image Source="avares://StatisticsAnalysisTool/Resources/zone.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding ClusterBonus, StringFormat='{}{0:N2} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <Image Source="avares://StatisticsAnalysisTool/Resources/crown.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding PremiumBonus, StringFormat='{}{0:N2}  '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="-" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <Image Source="avares://StatisticsAnalysisTool/Resources/shields.png" Theme="{StaticResource LineFragmentImageStyle}" />
+                <TextBlock Text="{Binding ClusterTax, StringFormat='{}{0:N2}) '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding EndText, StringFormat='{}{0}'}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+              </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:FactionPointsNotificationFragment">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding StartText, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Theme="{StaticResource OperatorTextBlockStyle}"
+                           Classes.minus="{Binding Operator, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:AttributeStatOperator.Minus}}" />
+
+                <Image Theme="{StaticResource Tracker.Fraction.Coin.Icon}"
+                       Classes.martlock="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Martlock}}"
+                       Classes.lymhurst="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Lymhurst}}"
+                       Classes.bridgewatch="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Bridgewatch}}"
+                       Classes.fortsterling="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.FortSterling}}"
+                       Classes.thetford="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Thetford}}"
+                       Classes.caerleon="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Caerleon}}" />
+                <TextBlock Text="{Binding GainedFractionPoints, StringFormat='{} {0:N0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding ValueText, StringFormat='{} {0} '}" Theme="{StaticResource Tracker.Fragment.PveText}" />
+                <TextBlock Text="{Binding EndText, StringFormat='{}{0}'}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+              </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:FactionFlagPointsNotificationFragment">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding StartText, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Theme="{StaticResource OperatorTextBlockStyle}"
+                           Classes.minus="{Binding Operator, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:AttributeStatOperator.Minus}}" />
+
+                <Image Theme="{StaticResource Tracker.Fraction.Flag.Icon}"
+                       Classes.martlock="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Martlock}}"
+                       Classes.lymhurst="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Lymhurst}}"
+                       Classes.bridgewatch="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Bridgewatch}}"
+                       Classes.fortsterling="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.FortSterling}}"
+                       Classes.thetford="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Thetford}}"
+                       Classes.caerleon="{Binding CityFaction, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:CityFaction.Caerleon}}" />
+                <TextBlock Text="{Binding GainedFractionPoints, StringFormat='{} {0:N2} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding ValueText, StringFormat='{} {0} '}" Theme="{StaticResource Tracker.Fragment.PveText}" />
+                <TextBlock Text="{Binding EndText, StringFormat='{}{0}'}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+              </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:SeasonPointsNotificationFragment">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding StartText, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Theme="{StaticResource OperatorTextBlockStyle}"
+                           Classes.minus="{Binding Operator, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enumerations:AttributeStatOperator.Minus}}" />
+
+                <Image Theme="{StaticResource Tracker.Icon.SeasonPoints}" />
+                <TextBlock Text="{Binding GainedSeasonPoints, StringFormat='{} {0:N0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding ValueText, StringFormat='{} {0} '}" Theme="{StaticResource Tracker.Fragment.PveText}" />
+                <TextBlock Text="{Binding EndText, StringFormat='{}{0}'}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+              </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:CombatNotificationFragment">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding CauserName, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Text="{Binding Damage, StringFormat='{}{0:N0} '}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                <TextBlock Text="{Binding TargetName, StringFormat='{}{0}'}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+              </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:OtherGrabbedLootNotificationFragment">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding LootedByName, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+                <TextBlock Text="{Binding LootedByAffiliations, StringFormat='{}({0}) '}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}"
+                           ToolTip.Tip="{Binding TranslationAffiliations}"
+                           IsVisible="{Binding !IsLootedByAffiliationsEmpty}" />
+                <TextBlock Text="{Binding LootedTranslation, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding Quantity, StringFormat='{}{0}x '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <Image Source="{Binding Icon}" Width="25" Height="25" Stretch="Fill" />
+                <TextBlock Text="{Binding LocalizedName, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+
+                <TextBlock Text="{Binding FromTranslation, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Text="{Binding LootedFromName, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Accent.Red.3}" />
+                <StackPanel Orientation="Horizontal">
+                  <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Height="14" Width="14" Margin="10,-10,5,0"
+                         ToolTip.Tip="{Binding TranslationAverageEstMarketValue}" />
+                  <TextBlock Text="{Binding EstimatedMarketValueDisplayString, StringFormat='{}{0}'}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                </StackPanel>
+                <TextBlock Text="{Binding LootedFromAffiliations, StringFormat='{}({0}) '}" Foreground="{DynamicResource SolidColorBrush.Accent.Red.3}"
+                           ToolTip.Tip="{Binding TranslationAffiliations}"
+                           IsVisible="{Binding !IsLootedFromAffiliationsEmpty}" />
+              </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="notification:KillNotificationFragment">
+              <StackPanel Orientation="Horizontal" Height="24">
+                <TextBlock Text="{Binding Died, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Accent.Red.3}" />
+                <TextBlock Text="{Binding DiedPlayerAffiliations, StringFormat='{} ({0})'}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}"
+                           IsVisible="{Binding !IsDiedPlayerAffiliationsEmpty}" />
+                <TextBlock Text="{Binding ValueText, StringFormat='{}{0} '}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                <TextBlock Text="{Binding KilledBy, StringFormat='{}{0}'}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+                <TextBlock Text="{Binding KilledByAffiliations, StringFormat='{} ({0})'}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}"
+                           IsVisible="{Binding !IsKilledByAffiliationsEmpty}" />
+                <Image Source="avares://StatisticsAnalysisTool/Assets/skull.png" Margin="0,-5,0,0" Height="24" Width="24" />
+              </StackPanel>
+            </DataTemplate>
+          </ContentControl.DataTemplates>
+        </ContentControl>
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="LoggingFilterObject" DataType="eventLogging:LoggingFilterObject">
+      <StackPanel Orientation="Horizontal">
+        <CheckBox IsChecked="{Binding IsSelected}" Width="20" VerticalAlignment="Top" />
+        <TextBlock Text="{Binding Name}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TopLooterObjectTemplate" DataType="eventLogging:TopLooterObject">
+      <StackPanel Orientation="Horizontal" Margin="5,-5,5,0" Height="20">
+        <Label Content="{Binding PlayerName, StringFormat={}{0:N0}}" Padding="0,5,0,0" />
+        <Label Content="{Binding LootActions, StringFormat={}({0:N0})}" Padding="0,5,0,0" />
+      </StackPanel>
+    </DataTemplate>
+
+    <!-- Status colors of a looted item slot (LootedItemStatus DataTriggers); the overlay fades out while the pointer is over the slot. -->
+    <ControlTheme x:Key="LootedItem.StatusOverlay" TargetType="Rectangle">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+      <Setter Property="Fill" Value="Transparent" />
+      <Setter Property="Opacity" Value="0.4" />
+      <Style Selector="^.resolved">
+        <Setter Property="Opacity" Value="0.4" />
+        <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Green.4}" />
+      </Style>
+      <Style Selector="^.lost">
+        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Text.6}" />
+      </Style>
+      <Style Selector="^.donated">
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+      </Style>
+      <Style Selector="^.unknown">
+        <Setter Property="Opacity" Value="0.4" />
+        <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Red.4}" />
+      </Style>
+      <Style Selector="^.ignored">
+        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Text.6}" />
+      </Style>
+      <Style Selector="^:pointerover"><Setter Property="Opacity" Value="0" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="LootedItem.QuantityBadge" TargetType="Border">
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Style Selector="^.empty"><Setter Property="Opacity" Value="0" /></Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="LootedItemTemplate" DataType="eventLogging:LootedItem">
+      <Grid Height="80" Width="80" Margin="1" ToolTip.Tip="{Binding Tooltip}"
+            IsVisible="{Binding Visibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Image Source="{Binding Item?.Icon, Mode=OneWay}" Stretch="Fill" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+
+        <Rectangle Theme="{StaticResource LootedItem.StatusOverlay}"
+                   Classes.resolved="{Binding Status, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static eventLogging:LootedItemStatus.Resolved}}"
+                   Classes.lost="{Binding Status, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static eventLogging:LootedItemStatus.Lost}}"
+                   Classes.donated="{Binding Status, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static eventLogging:LootedItemStatus.Donated}}"
+                   Classes.unknown="{Binding Status, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static eventLogging:LootedItemStatus.Unknown}}"
+                   Classes.ignored="{Binding Status, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static eventLogging:LootedItemStatus.Ignored}}" />
+
+        <!-- Visibility.Hidden when Quantity is 0: the corner badge is transparent then. -->
+        <Border Theme="{StaticResource LootedItem.QuantityBadge}"
+                Classes.empty="{Binding Quantity, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=0}">
+          <Viewbox StretchDirection="DownOnly" Stretch="Uniform" Width="16" Height="16" Margin="0,0,12,14">
+            <TextBlock Text="{Binding Quantity}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+          </Viewbox>
+        </Border>
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="LootingPlayersTemplate" DataType="eventLogging:LootingPlayer">
+      <Border Theme="{StaticResource Logging.ComparatorCard}" Margin="0,0,0,10"
+              IsVisible="{Binding LootingPlayerVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <Grid Margin="0,0,0,6">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+              <TextBlock Text="{Binding DisplayName, FallbackValue='PLAYER__NAME', Mode=OneWay}"
+                         Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}"
+                         FontSize="16" FontWeight="Bold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+              <StackPanel Orientation="Horizontal" Height="18" Margin="8,0,0,0"
+                          IsVisible="{Binding TotalEstimatedMarketValueVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+                <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Height="14" Width="14" Margin="0,1,4,0"
+                       ToolTip.Tip="{Binding DataContext.Translation.EstMarketValue, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='Est. market value'}" />
+                <TextBlock Text="{Binding TotalEstimatedMarketValueShortString, Mode=OneWay}"
+                           Foreground="{DynamicResource SolidColorBrush.Text.1}" FontSize="13" VerticalAlignment="Center" />
+              </StackPanel>
+            </StackPanel>
+
+            <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+              <Border Theme="{StaticResource LootComparator.PlayerMetricBadge}" BorderBrush="{DynamicResource SolidColorBrush.Text.6}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <fa:FontAwesomeImage Icon="SolidCrosshairs" Foreground="{DynamicResource SolidColorBrush.Text.2}" Width="11" Height="11" Margin="0,0,5,0" />
+                  <TextBlock Text="{Binding DataContext.LoggingBindings.Translation.Kills, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=Kills}"
+                             Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="11" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding KillCount}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                             FontSize="11" FontWeight="Bold" Margin="6,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border Theme="{StaticResource LootComparator.PlayerMetricBadge}" BorderBrush="{DynamicResource SolidColorBrush.Text.6}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <fa:FontAwesomeImage Icon="SolidSkull" Foreground="{DynamicResource SolidColorBrush.Text.2}" Width="11" Height="11" Margin="0,0,5,0" />
+                  <TextBlock Text="{Binding DataContext.LoggingBindings.Translation.Deaths, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=Deaths}"
+                             Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="11" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding DeathCount}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                             FontSize="11" FontWeight="Bold" Margin="6,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border Theme="{StaticResource LootComparator.PlayerMetricBadge}" BorderBrush="{DynamicResource SolidColorBrush.Text.6}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <TextBlock Text="◆" Foreground="{DynamicResource SolidColorBrush.Text.6}" FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding DataContext.LoggingBindings.Translation.Gray, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=Gray}"
+                             Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="11" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding GrayItemCount}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                             FontSize="11" FontWeight="Bold" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border Theme="{StaticResource LootComparator.PlayerMetricBadge}" BorderBrush="{DynamicResource SolidColorBrush.Accent.Green.4}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <TextBlock Text="◆" Foreground="{DynamicResource SolidColorBrush.Accent.Green.4}" FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding DataContext.LoggingBindings.Translation.Green, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=Green}"
+                             Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="11" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding GreenItemCount}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                             FontSize="11" FontWeight="Bold" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border Theme="{StaticResource LootComparator.PlayerMetricBadge}" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.4}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <TextBlock Text="◆" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.4}" FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding DataContext.LoggingBindings.Translation.Blue, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=Blue}"
+                             Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="11" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding BlueItemCount}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                             FontSize="11" FontWeight="Bold" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border Theme="{StaticResource LootComparator.PlayerMetricBadge}" BorderBrush="{DynamicResource SolidColorBrush.Accent.Red.4}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                  <TextBlock Text="◆" Foreground="{DynamicResource SolidColorBrush.Accent.Red.4}" FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding DataContext.LoggingBindings.Translation.Red, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=Red}"
+                             Foreground="{DynamicResource SolidColorBrush.Text.2}" FontSize="11" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding RedItemCount}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                             FontSize="11" FontWeight="Bold" Margin="5,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+
+              <Border Width="1" Height="18" Margin="7,3,2,3" Background="{DynamicResource SolidColorBrush.Background.4}" />
+              <Button Theme="{StaticResource LootComparator.RemovePlayerButton}"
+                      IsEnabled="{Binding HasLootLogEntries}"
+                      Command="{Binding DataContext.LoggingBindings.CopyLootingPlayerLogsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="{Binding DataContext.LoggingBindings.Translation.CopyPlayerLootLogs, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='Copy player loot logs'}">
+                <fa:FontAwesomeImage Icon="RegularCopy" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="11" Height="11" />
+              </Button>
+              <Button Theme="{StaticResource LootComparator.RemovePlayerButton}"
+                      Command="{Binding DataContext.LoggingBindings.RemoveLootingPlayerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      CommandParameter="{Binding}"
+                      ToolTip.Tip="{Binding DataContext.LoggingBindings.Translation.RemovePlayerFromLootComparator, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='Remove player'}">
+                <fa:FontAwesomeImage Icon="SolidXmark" Foreground="{DynamicResource SolidColorBrush.Accent.Red.3}" Width="10" Height="10" />
+              </Button>
+            </WrapPanel>
+          </Grid>
+
+          <ItemsControl Grid.Row="1" ItemsSource="{Binding LootedItems}" ItemTemplate="{StaticResource LootedItemTemplate}" Cursor="Hand">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+        </Grid>
+      </Border>
+    </DataTemplate>
+
+    <!-- Remaining parts of TrackingStyles.xaml (T15). Upstream no longer references them; kept for parity. -->
+    <ControlTheme x:Key="Tracking.Information.Border" TargetType="Border">
+      <Setter Property="CornerRadius" Value="7" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+    </ControlTheme>
+    <ControlTheme x:Key="Tracking.Information.StackPanel" TargetType="StackPanel">
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="Orientation" Value="Vertical" />
+      <Setter Property="Margin" Value="5,0,5,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="Tracking.Information.Title" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Padding" Value="0,3,0,0" />
+    </ControlTheme>
+    <ControlTheme x:Key="ButtonLabel" TargetType="TextBlock">
+      <Setter Property="Text" Value="{Binding $parent[Button].Content}" />
+    </ControlTheme>
+    <ControlTemplate x:Key="BarButton" TargetType="Button">
+      <Grid>
+        <TextBlock Name="LabelText" Theme="{StaticResource ButtonLabel}" />
+      </Grid>
+    </ControlTemplate>
+  </Styles.Resources>
+
+  <!-- Style-selector rules for the classes above (selectors outrank the theme setters, which is wanted here). -->
+  <Style Selector="Image.cluster-icon"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_white_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.safe"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_blue_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.yellow"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_yellow_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.red"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_red_icon.png" /></Style>
+  <Style Selector="Image.cluster-icon.black"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/map_black_icon.png" /></Style>
+
+  <Style Selector="Label.cluster-tier.safearea"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.SafeArea}" /></Style>
+  <Style Selector="Label.cluster-tier.island"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Island}" /></Style>
+  <Style Selector="Label.cluster-tier.yellow"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Yellow}" /></Style>
+  <Style Selector="Label.cluster-tier.red"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Red}" /></Style>
+  <Style Selector="Label.cluster-tier.black"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Black}" /></Style>
+  <Style Selector="Label.cluster-tier.avalon"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Avalon}" /></Style>
+  <Style Selector="Label.cluster-tier.mists"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Mists}" /></Style>
+  <Style Selector="Label.cluster-tier.unknown"><Setter Property="Foreground" Value="{DynamicResource Solid.Color.Cluster.Black}" /></Style>
+  <!-- Map history rows. -->
+  <Style Selector="Border.cluster-row-border"><Setter Property="BorderThickness" Value="0" /></Style>
+  <Style Selector="Border.cluster-row-border.selected"><Setter Property="BorderThickness" Value="1" /></Style>
+  <Style Selector="Grid.cluster-row.safearea">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.SafeArea}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.island">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Island}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.yellow">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Yellow}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.red">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Red}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.black">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Black}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.avalon">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Avalon}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.mists">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Mists}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Grid.cluster-row.unknown">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%,100%" EndPoint="90%,0%">
+        <GradientStop Color="{DynamicResource Color.Cluster.Black}" Offset="0.0" />
+        <GradientStop Color="{DynamicResource Color.Background.1}" Offset="1.0" />
+      </LinearGradientBrush>
+    </Setter>
+  </Style>
+  <Style Selector="Image.dungeon-level.l0"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_common.png" /></Style>
+  <Style Selector="Image.dungeon-level.l1"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_uncommon.png" /></Style>
+  <Style Selector="Image.dungeon-level.l2"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_rare.png" /></Style>
+  <Style Selector="Image.dungeon-level.l3"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_epic.png" /></Style>
+  <Style Selector="Image.dungeon-level.l4"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/butterfly_legendary.png" /></Style>
+
+  <Style Selector="Image.map-marker">
+    <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/empty_icon.png" />
+    <Setter Property="Margin" Value="0,-10,0,0" />
+  </Style>
+  <Style Selector="Image.map-marker.elite"><Setter Property="Margin" Value="0,0,0,0" /><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/raid_dungeon.png" /></Style>
+  <Style Selector="Image.map-marker.group"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/group_dungeon.png" /></Style>
+  <Style Selector="Image.map-marker.solo"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/solo_dungeon.png" /></Style>
+  <Style Selector="Image.map-marker.roadraid"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/road_chest_raid.png" /><Setter Property="Margin" Value="0,-18,0,0" /></Style>
+  <Style Selector="Image.map-marker.roadgroup"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/road_chest_group.png" /><Setter Property="Margin" Value="0,-18,0,0" /></Style>
+  <Style Selector="Image.map-marker.roadsolo"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/road_chest_solo.png" /><Setter Property="Margin" Value="0,-18,0,0" /></Style>
+  <Style Selector="Image.map-marker.stone"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_stone.png" /></Style>
+  <Style Selector="Image.map-marker.fiber"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_fiber.png" /></Style>
+  <Style Selector="Image.map-marker.wood"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_wood.png" /></Style>
+  <Style Selector="Image.map-marker.hide"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_hide.png" /></Style>
+  <Style Selector="Image.map-marker.ore"><Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/MiniMapMarker/minimapmarker_ore.png" /></Style>
+</Styles>

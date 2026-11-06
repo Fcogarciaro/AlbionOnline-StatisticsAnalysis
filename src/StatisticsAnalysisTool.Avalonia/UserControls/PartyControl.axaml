@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+             xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+             x:Class="StatisticsAnalysisTool.UserControls.PartyControl"
+             x:DataType="viewModels:MainWindowViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="650" d:DesignWidth="800">
+    <Grid>
+        <TabControl Background="Transparent" BorderThickness="0">
+            <TabItem Header="{Binding PartyBindings.TranslationDeathAlert, FallbackValue=DEATH_ALERT}">
+                <Grid>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
+                        <ItemsControl ItemsSource="{Binding PartyBindings.PartyCollectionView, Mode=OneWay}" ItemTemplate="{StaticResource PartyPlayerDeathAlertTemplate}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+            <TabItem Header="{Binding PartyBindings.TranslationPartyBuilder, FallbackValue=PARTY_BUILDER}">
+                <Grid Margin="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="{Binding PartyBindings.GridSplitterPosition, Mode=TwoWay, Converter={x:Static conv:GridLengthConverter.Instance}}"/>
+                    </Grid.RowDefinitions>
+
+                    <GridSplitter Grid.Row="1" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" Margin="0,0,1,1" Background="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+
+                    <Grid Grid.Row="0" Margin="0,5,0,6" Grid.RowSpan="2">
+                        <ScrollViewer>
+                            <StackPanel Orientation="Vertical">
+                                <ContentControl Margin="0,0,0,0" ContentTemplate="{StaticResource PartyBuilderConditionsTemplate}" Content="{Binding PartyBindings}" />
+                                <ContentControl Margin="0,0,0,0" ContentTemplate="{StaticResource PartyBuilderPartyInfoTemplate}" Content="{Binding PartyBindings}" />
+                                <ContentControl Margin="0,0,0,0" ContentTemplate="{StaticResource PartyBuilderDescriptionsTemplate}" Content="{Binding PartyBindings}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
+                            <ItemsControl ItemsSource="{Binding PartyBindings.PartyCollectionView, Mode=OneWay}" ItemTemplate="{StaticResource PartyBuilderPlayerTemplate}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><VirtualizingStackPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

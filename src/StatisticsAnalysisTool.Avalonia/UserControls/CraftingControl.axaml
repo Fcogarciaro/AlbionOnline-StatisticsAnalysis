@@ -1,0 +1,887 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+             xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+             xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
+             xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:iconPacks="clr-namespace:MahApps.Metro.IconPacks"
+             xmlns:gl="clr-namespace:System.Globalization;assembly=System.Runtime"
+             xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+             xmlns:userControls="clr-namespace:StatisticsAnalysisTool.UserControls"
+             xmlns:crafting="clr-namespace:StatisticsAnalysisTool.Crafting"
+             xmlns:translation="clr-namespace:StatisticsAnalysisTool.Models.TranslationModel"
+             xmlns:enum="clr-namespace:StatisticsAnalysisTool.Enumerations"
+             x:Class="StatisticsAnalysisTool.UserControls.CraftingControl"
+             x:DataType="viewModels:MainWindowViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="800" d:DesignWidth="1200">
+    <TabControl Background="Transparent" BorderThickness="0">
+        <TabItem Header="{x:Static crafting:CraftingBindings.TranslationItemCrafting}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="285" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Row="0" Grid.ColumnSpan="2" ZIndex="20">
+                    <Border Theme="{StaticResource App.TopFilterCard}" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="5*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" Margin="4,0,4,6" VerticalAlignment="Bottom">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <fa:FontAwesomeImage Grid.Column="0" Icon="SolidMagnifyingGlass" Width="16" Height="16" Margin="0,0,9,0"
+                                                  VerticalAlignment="Center" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBox x:Name="CraftingItemSearchTextBox" Classes="item-search" Grid.Column="1"
+                                         Text="{Binding CraftingBindings.ItemSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         GotFocus="CraftingItemSearch_OnGotKeyboardFocus"
+                                         LostFocus="CraftingItemSearch_OnLostKeyboardFocus"
+                                         Theme="{StaticResource ItemSearchTextBoxStyle}" />
+                                <Button Grid.Column="2" Width="32" Height="32" Margin="6,0,0,0" Padding="0"
+                                        ToolTip.Tip="{x:Static translation:MainWindowTranslation.ResetFilters}"
+                                        Theme="{StaticResource Style.Button.Neutral}"
+                                        Click="CraftingItemFilterReset_Click">
+                                    <fa:FontAwesomeImage Icon="SolidRotateRight" Width="14" Height="14" IsHitTestVisible="False"
+                                                      Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                </Button>
+                            </Grid>
+
+                            <UniformGrid Grid.Column="1" Columns="5">
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.ShopCategory}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding CraftingBindings.ItemShopCategories}"
+                                              SelectedItem="{Binding CraftingBindings.SelectedItemShopCategory, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Id}" DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.ShopSubCategory1}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding CraftingBindings.ItemSubCategories1}"
+                                              SelectedItem="{Binding CraftingBindings.SelectedItemShopSubCategory1, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Id}" DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.ShopSubCategory2}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding CraftingBindings.ItemSubCategories2}"
+                                              SelectedItem="{Binding CraftingBindings.SelectedItemShopSubCategory2, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Id}" DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.Tier}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding CraftingBindings.ItemTiers}"
+                                              SelectedValue="{Binding CraftingBindings.SelectedItemTier, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Key}" DisplayMemberBinding="{ReflectionBinding Value}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.Level}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding CraftingBindings.ItemLevels}"
+                                              SelectedValue="{Binding CraftingBindings.SelectedItemLevel, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Key}" DisplayMemberBinding="{ReflectionBinding Value}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                            </UniformGrid>
+                        </Grid>
+                    </Border>
+                    <Popup PlacementTarget="{Binding #CraftingItemSearchTextBox}" Placement="Bottom" IsOpen="{Binding CraftingBindings.IsItemSearchPopupOpen, Mode=TwoWay, FallbackValue=False, TargetNullValue=False}" IsLightDismissEnabled="True" OverlayInputPassThroughElement="{Binding #CraftingItemSearchTextBox}">
+                            <Border
+                                    Background="{DynamicResource SolidColorBrush.Background.2}" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.4}"
+                                    BorderThickness="1" Width="420" MaxHeight="520">
+                                <ListBox x:Name="CraftingItemSearchListBox"
+                                         SelectionMode="Single"
+                                         SelectionChanged="ListBoxItemSearch_OnSelectionChanged"
+                                         ItemsSource="{Binding CraftingBindings.ListBoxItemSearchItems}"
+                                         Width="420"
+                                         MinHeight="38"
+                                         MaxHeight="520"
+                                         BorderThickness="0"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="{Binding Icon}" Width="28" Height="28" Margin="0,0,6,0" />
+                                                <TextBlock Text="{Binding Name}" Foreground="{DynamicResource SolidColorBrush.Text.1}" VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Width="370" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
+                    </Popup>
+                </Grid>
+
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
+                    <TextBlock Text="{Binding CraftingBindings.TranslationCrafting, FallbackValue=CRAFTING}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationNumberOfRuns, FallbackValue=NUMBER_OF_RUNS}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <TextBox Text="{Binding CraftingBindings.CraftingRuns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="90" Height="24" VerticalAlignment="Top" common:TextBoxHelper.OnlyNumeric="Natural" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationFocus, FallbackValue=FOCUS}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <CheckBox IsChecked="{Binding CraftingBindings.UsesFocus, Mode=TwoWay}" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationDailyBonusRrr, FallbackValue=DAILY_BONUS_RRR}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <ComboBox ItemsSource="{Binding CraftingBindings.DailyBonusOptions}"
+                                  SelectedItem="{Binding CraftingBindings.SelectedDailyBonus, Mode=TwoWay}"
+                                  DisplayMemberBinding="{ReflectionBinding Name}" Width="90" Height="24" VerticalAlignment="Top" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationHideoutBonus, FallbackValue=HIDEOUT_BONUS}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <ComboBox ItemsSource="{Binding CraftingBindings.HideoutBonusOptions}"
+                                  SelectedItem="{Binding CraftingBindings.SelectedHideoutBonus, Mode=TwoWay}"
+                                  DisplayMemberBinding="{ReflectionBinding Name}" Width="180" Height="24" VerticalAlignment="Top" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5" ZIndex="10">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationCraftingLocation, FallbackValue=CRAFTING_LOCATION}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <Grid>
+                            <TextBox x:Name="CraftingLocationSearchTextBox"
+                                     Text="{Binding CraftingBindings.CraftingLocationSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     MinWidth="180"
+                                     Height="24"
+                                     TextWrapping="NoWrap"
+                                     GotFocus="CraftingLocationSearch_OnGotKeyboardFocus" />
+                            <Popup PlacementTarget="{Binding #CraftingLocationSearchTextBox}" Placement="Bottom" IsOpen="{Binding CraftingBindings.IsCraftingLocationPopupOpen, Mode=TwoWay, FallbackValue=False, TargetNullValue=False}" IsLightDismissEnabled="True" OverlayInputPassThroughElement="{Binding #CraftingLocationSearchTextBox}">
+                                <Border
+                                        Background="{DynamicResource SolidColorBrush.Background.2}"
+                                        BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.4}"
+                                        BorderThickness="1"
+                                        Width="320"
+                                        MaxHeight="520">
+                                    <ListBox SelectionMode="Single"
+                                             SelectionChanged="ListBoxCraftingLocation_OnSelectionChanged"
+                                             ItemsSource="{Binding CraftingBindings.ListBoxCraftingLocationItems}"
+                                             Width="320"
+                                             MinHeight="38"
+                                             MaxHeight="520"
+                                             BorderThickness="0"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical" Margin="2">
+                                                    <TextBlock Text="{Binding DisplayName}" Foreground="{DynamicResource SolidColorBrush.Text.1}" TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding BonusSummary}" Foreground="{DynamicResource SolidColorBrush.Text.3}" FontSize="11" TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.SelectedCraftingLocationBonusSummary}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}"
+                                   MaxWidth="250" Height="34" Margin="0,0,0,5" TextWrapping="Wrap" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationReturnRatePercent, FallbackValue=RETURN_RATE_PERCENT}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <TextBox Text="{Binding CraftingBindings.ReturnRatePercentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="90" Height="24" VerticalAlignment="Top" common:TextBoxHelper.OnlyNumeric="Double" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationPriceMarket, FallbackValue=PRICE_MARKET}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <ComboBox ItemsSource="{Binding CraftingBindings.MarketLocations}"
+                                  SelectedValue="{Binding CraftingBindings.SelectedMarketLocation, Mode=TwoWay}"
+                                  SelectedValueBinding="{ReflectionBinding Key}" DisplayMemberBinding="{ReflectionBinding Value}" Width="180" Height="24" VerticalAlignment="Top" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationStationFee, FallbackValue=STATION_FEE}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <TextBox Text="{Binding CraftingBindings.StationFee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="90" Height="24" VerticalAlignment="Top" common:TextBoxHelper.OnlyNumeric="Double" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationSalesTaxPercent, FallbackValue=SALES_TAX_PERCENT}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <TextBox Text="{Binding CraftingBindings.SalesTaxPercentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="90" Height="24" VerticalAlignment="Top" common:TextBoxHelper.OnlyNumeric="Double" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationSetupFee, FallbackValue=SETUP_FEE}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <TextBox Text="{Binding CraftingBindings.SetupFeePercentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="90" Height="24" VerticalAlignment="Top" common:TextBoxHelper.OnlyNumeric="Double" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,5">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationOtherCosts, FallbackValue=OTHER_COSTS}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <TextBox Text="{Binding CraftingBindings.OtherCosts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="90" Height="24" VerticalAlignment="Top" common:TextBoxHelper.OnlyNumeric="Double" />
+                    </DockPanel>
+                    <DockPanel LastChildFill="False" Margin="0,0,0,10">
+                        <TextBlock Text="{Binding CraftingBindings.TranslationSellPrice, FallbackValue=SELL_PRICE}" Theme="{StaticResource CraftingEditorLabel}" />
+                        <Grid>
+                            <TextBox x:Name="OutputUnitPriceTextBox" Classes="price-input"
+                                     Text="{Binding CraftingBindings.OutputUnitPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="90"
+                                     Height="24"
+                                     VerticalAlignment="Top"
+                                     common:TextBoxHelper.OnlyNumeric="Double"
+                                     GotFocus="OutputUnitPrice_OnGotKeyboardFocus"
+                                     LostFocus="PriceTextBox_OnLostKeyboardFocus" />
+                            <Popup PlacementTarget="{Binding #OutputUnitPriceTextBox}" Placement="Bottom" IsOpen="{Binding CraftingBindings.IsSellPricePopupOpen, Mode=TwoWay, FallbackValue=False, TargetNullValue=False}" IsLightDismissEnabled="True" OverlayInputPassThroughElement="{Binding #OutputUnitPriceTextBox}">
+                                <Border
+                                        Background="{DynamicResource SolidColorBrush.Background.2}"
+                                        BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.4}"
+                                        BorderThickness="1"
+                                        Width="230"
+                                        MaxHeight="360">
+                                    <ListBox x:Name="SellPriceOptionsListBox"
+                                             SelectionMode="Single"
+                                             SelectionChanged="ListBoxSellPrice_OnSelectionChanged"
+                                             ItemsSource="{Binding CraftingBindings.SellPriceOptions}"
+                                             Width="230"
+                                             MinHeight="38"
+                                             MaxHeight="360"
+                                             BorderThickness="0"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding DisplayText}" ToolTip.Tip="{Binding UpdateDateTimeText}" Theme="{StaticResource CraftingSellPriceOptionText}" Classes.normal="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.Normal}}" Classes.old1="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldFirst}}" Classes.old2="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldSecond}}" Classes.old3="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldThird}}" Classes.none="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.NoValue}}" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </DockPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button Content="{Binding CraftingBindings.TranslationNew, FallbackValue=NEW}" Width="80" Height="24" Command="{Binding CraftingBindings.NewCommand}" />
+                        <Button Content="{Binding CraftingBindings.TranslationSave, FallbackValue=SAVE}" Width="80" Height="24" Margin="5,0,0,0" Command="{Binding CraftingBindings.SaveCommand}" />
+                        <Button Content="{Binding CraftingBindings.TranslationDelete, FallbackValue=DELETE}" Width="80" Height="24" Margin="5,0,0,0"
+                                Theme="{StaticResource Style.Button.Danger}" Command="{Binding CraftingBindings.DeleteCommand}" />
+                        <Button Content="{Binding CraftingBindings.TranslationPrices, FallbackValue=PRICES}" Width="80" Height="24" Margin="5,0,0,0" Command="{Binding CraftingBindings.LoadPricesCommand}" />
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding CraftingBindings.StatusText}" Foreground="{DynamicResource SolidColorBrush.Text.3}" TextWrapping="Wrap" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="10,0">
+                    <TextBlock Text="{Binding CraftingBindings.TranslationResources, FallbackValue=RESOURCES}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <DataGrid x:CompileBindings="False" SelectionMode="Single" ItemsSource="{Binding CraftingBindings.Resources}" MinHeight="150" MinWidth="620">
+                        <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="45"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationIcon}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourceIconColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <Image Source="{Binding Icon}" Width="32" Height="32" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="250"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationResource}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourceNameColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding DisplayName}"
+                                                       Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                                       Cursor="Hand"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       VerticalAlignment="Center"
+                                                       PointerReleased="CopyTextBlockTextToClipboard_OnMouseLeftButtonUp" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="125"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationType}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourceTypeColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding ResourceKindText}" Foreground="{DynamicResource SolidColorBrush.Text.1}" VerticalAlignment="Center" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="80"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationGross}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourceGrossColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding GrossQuantity, StringFormat='{}{0:#,0.##}'}" Theme="{StaticResource CraftingResourceQuantityText}" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="115"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationExpectedReturn}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourceExpectedReturnColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding ExpectedReturnQuantity, StringFormat='{}{0:#,0.##}'}" Theme="{StaticResource CraftingResourceQuantityText}" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="80"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationNet}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourceNetColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding NetQuantity, StringFormat='{}{0:#,0.##}'}" Theme="{StaticResource CraftingResourceNetQuantityText}" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="110"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationPrice}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourcePriceColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <Grid>
+                                                <TextBox x:Name="ResourceUnitPriceTextBox" Classes="price-input resource-price"
+                                                         Text="{Binding UnitPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         Width="78"
+                                                         Height="22"
+                                                         common:TextBoxHelper.OnlyNumeric="Double"
+                                                         GotFocus="ResourcePrice_OnGotKeyboardFocus"
+                                                         LostFocus="PriceTextBox_OnLostKeyboardFocus" />
+                                                <Popup PlacementTarget="{Binding #ResourceUnitPriceTextBox}" Placement="Bottom" IsOpen="{Binding IsPricePopupOpen, Mode=TwoWay, FallbackValue=False, TargetNullValue=False}" IsLightDismissEnabled="True" OverlayInputPassThroughElement="{Binding #ResourceUnitPriceTextBox}">
+                                                    <Border
+                                                            Background="{DynamicResource SolidColorBrush.Background.2}"
+                                                            BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.4}"
+                                                            BorderThickness="1"
+                                                            Width="230"
+                                                            MaxHeight="360">
+                                                        <ListBox SelectionMode="Single"
+                                                                 SelectionChanged="ListBoxResourcePrice_OnSelectionChanged"
+                                                                 ItemsSource="{Binding PriceOptions}"
+                                                                 Tag="{Binding}"
+                                                                 Width="230"
+                                                                 MinHeight="38"
+                                                                 MaxHeight="360"
+                                                                 BorderThickness="0"
+                                                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                            <ListBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding DisplayText}" ToolTip.Tip="{Binding UpdateDateTimeText}" Theme="{StaticResource CraftingSellPriceOptionText}" Classes.normal="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.Normal}}" Classes.old1="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldFirst}}" Classes.old2="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldSecond}}" Classes.old3="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldThird}}" Classes.none="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.NoValue}}" />
+                                                                </DataTemplate>
+                                                            </ListBox.ItemTemplate>
+                                                        </ListBox>
+                                                    </Border>
+                                                </Popup>
+                                            </Grid>
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="110"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationNetCost}" ToolTip.Tip="{x:Static crafting:CraftingBindings.TranslationResourceNetCostColumnTooltip}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding NetCost, StringFormat='{}{0:N0}'}" Theme="{StaticResource CraftingResourceCostText}" />
+                                                <Image Theme="{StaticResource Icon.Silver}" Margin="5,0,0,0" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Margin="0,12,0,0" IsVisible="{Binding CraftingBindings.HasJournal}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Vertical">
+                            <TextBlock Text="{Binding CraftingBindings.TranslationJournals, FallbackValue=JOURNALS}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" 
+                                       FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding CraftingBindings.Journal?.Icon}" Width="36" Height="36" />
+                                <StackPanel Orientation="Vertical" Margin="10,0,0,0" >
+                                    <TextBlock Text="{Binding CraftingBindings.Journal?.DisplayName}" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                               Cursor="Hand"
+                                               VerticalAlignment="Top"
+                                               TextWrapping="Wrap"
+                                               PointerReleased="CopyTextBlockTextToClipboard_OnMouseLeftButtonUp" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal" MinWidth="80">
+                                            <TextBlock Text="{Binding CraftingBindings.TranslationEmpty, Mode=OneWay, FallbackValue=EMPTY}" 
+                                                       Foreground="{DynamicResource SolidColorBrush.Accent.Blue.1}" />
+                                            <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Accent.Blue.1}" />
+                                            <TextBlock Text="{Binding CraftingBindings.Journal?.RequiredEmptyJournals, Mode=OneWay, FallbackValue=0}" 
+                                                       Foreground="{DynamicResource SolidColorBrush.Accent.Yellow.3}" FontWeight="Bold" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" MinWidth="80">
+                                            <TextBlock Text="{Binding CraftingBindings.TranslationFull, Mode=OneWay, FallbackValue=FULL}" 
+                                                       Foreground="{DynamicResource SolidColorBrush.Accent.Blue.1}" />
+                                            <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Accent.Blue.1}" />
+                                            <TextBlock Text="{Binding CraftingBindings.Journal?.ExpectedFullJournals, Mode=OneWay, FallbackValue=0}" 
+                                                       Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" MinWidth="120">
+                                            <TextBlock Text="{Binding CraftingBindings.TranslationPartial, Mode=OneWay, FallbackValue=PARTIAL}" 
+                                                       Foreground="{DynamicResource SolidColorBrush.Accent.Blue.1}" />
+                                            <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Accent.Blue.1}" />
+                                            <TextBlock Text="{Binding CraftingBindings.Journal?.PartialJournalPercent, Mode=OneWay, StringFormat='{}{0:N2}%', FallbackValue=0.00%}" 
+                                                       Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding CraftingBindings.TranslationEmptyPrice, FallbackValue=EMPTY_PRICE}" Foreground="{DynamicResource SolidColorBrush.Text.1}" 
+                                           MinWidth="80" VerticalAlignment="Center" />
+                                <Grid MinWidth="120">
+                                    <TextBox x:Name="EmptyJournalPriceTextBox" Classes="price-input" HorizontalAlignment="Left"
+                                             Text="{Binding CraftingBindings.Journal?.EmptyJournalPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                             Width="90" Height="22" common:TextBoxHelper.OnlyNumeric="Double" GotFocus="JournalEmptyPrice_OnGotKeyboardFocus"
+                                             LostFocus="PriceTextBox_OnLostKeyboardFocus" />
+                                    <Popup PlacementTarget="{Binding #EmptyJournalPriceTextBox}" Placement="Bottom" IsOpen="{Binding CraftingBindings.Journal?.IsEmptyJournalPricePopupOpen, Mode=TwoWay, FallbackValue=False, TargetNullValue=False}" IsLightDismissEnabled="True" OverlayInputPassThroughElement="{Binding #EmptyJournalPriceTextBox}">
+                                        <Border
+                                                Background="{DynamicResource SolidColorBrush.Background.2}"
+                                                BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.4}"
+                                                BorderThickness="1"
+                                                Width="230"
+                                                MaxHeight="360">
+                                            <ListBox SelectionMode="Single"
+                                                     SelectionChanged="ListBoxJournalEmptyPrice_OnSelectionChanged"
+                                                     ItemsSource="{Binding CraftingBindings.Journal?.EmptyJournalPriceOptions}"
+                                                     Width="230"
+                                                     MinHeight="38"
+                                                     MaxHeight="360"
+                                                     BorderThickness="0"
+                                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding DisplayText}" ToolTip.Tip="{Binding UpdateDateTimeText}" Theme="{StaticResource CraftingSellPriceOptionText}" Classes.normal="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.Normal}}" Classes.old1="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldFirst}}" Classes.old2="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldSecond}}" Classes.old3="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldThird}}" Classes.none="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.NoValue}}" />
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" MinWidth="300">
+                                    <TextBlock Text="{Binding CraftingBindings.TranslationCosts, Mode=OneWay, FallbackValue=COSTS}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                    <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                    <TextBlock Text="{Binding CraftingBindings.Journal?.TotalEmptyJournalCosts, Mode=OneWay, StringFormat='{}{0:N0}', FallbackValue=0}" 
+                                               Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock Text="{Binding CraftingBindings.TranslationFullPrice, FallbackValue=FULL_PRICE}" Foreground="{DynamicResource SolidColorBrush.Text.2}" 
+                                           VerticalAlignment="Center" MinWidth="80" />
+                                <Grid MinWidth="120">
+                                    <TextBox x:Name="FullJournalPriceTextBox" Classes="price-input" HorizontalAlignment="Left" 
+                                             Text="{Binding CraftingBindings.Journal?.FullJournalPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Width="90" Height="22" common:TextBoxHelper.OnlyNumeric="Double" GotFocus="JournalFullPrice_OnGotKeyboardFocus"
+                                             LostFocus="PriceTextBox_OnLostKeyboardFocus" />
+                                    <Popup PlacementTarget="{Binding #FullJournalPriceTextBox}" Placement="Bottom" IsOpen="{Binding CraftingBindings.Journal?.IsFullJournalPricePopupOpen, Mode=TwoWay, FallbackValue=False, TargetNullValue=False}" IsLightDismissEnabled="True" OverlayInputPassThroughElement="{Binding #FullJournalPriceTextBox}">
+                                        <Border
+                                                Background="{DynamicResource SolidColorBrush.Background.2}"
+                                                BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.4}"
+                                                BorderThickness="1" Width="230" MaxHeight="360">
+                                            <ListBox SelectionMode="Single"
+                                                     SelectionChanged="ListBoxJournalFullPrice_OnSelectionChanged"
+                                                     ItemsSource="{Binding CraftingBindings.Journal?.FullJournalPriceOptions}" Width="230" MinHeight="38" 
+                                                     MaxHeight="360" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding DisplayText}" ToolTip.Tip="{Binding UpdateDateTimeText}" Theme="{StaticResource CraftingSellPriceOptionText}" Classes.normal="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.Normal}}" Classes.old1="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldFirst}}" Classes.old2="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldSecond}}" Classes.old3="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.ToOldThird}}" Classes.none="{Binding PriceDateStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:ValueTimeStatus.NoValue}}" />
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" MinWidth="300">
+                                    <TextBlock Text="{Binding CraftingBindings.TranslationRevenue, Mode=OneWay, FallbackValue=REVENUE}" 
+                                               Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Left" />
+                                    <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                    <TextBlock Text="{Binding CraftingBindings.Journal?.TotalFullJournalRevenue, Mode=OneWay, StringFormat='{}{0:N0}', FallbackValue=0}" 
+                                               Foreground="{DynamicResource SolidColorBrush.Accent.Green.2}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="{Binding CraftingBindings.TranslationNotes, FallbackValue=NOTES}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontSize="16" FontWeight="SemiBold" Margin="0,12,0,4" />
+                    <TextBox Text="{Binding CraftingBindings.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="52" MinWidth="620"
+                             TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" />
+                </StackPanel>
+
+                <Grid Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" Margin="0,14,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="{Binding CraftingBindings.TranslationResults, FallbackValue=RESULTS}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+
+                    <WrapPanel Grid.Row="1">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationOutputTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationOutput, FallbackValue=OUTPUT}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.OutputQuantity, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultInfoValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationTotalCostsTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationTotalCosts, FallbackValue=TOTAL_COSTS}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.TotalCosts, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationSalesNetTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationSalesNet, FallbackValue=SALES_NET}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.SalesRevenueNet, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultRevenueValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationProfitTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationProfit, FallbackValue=PROFIT}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.Profit, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultProfitValue}" Classes.positive="{Binding CraftingBindings.Calculation?.IsProfitPositive}" Classes.negative="{Binding CraftingBindings.Calculation?.IsProfitNegative}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationProfitPerItemTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationProfitPerItem, FallbackValue=PROFIT_PER_ITEM}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.ProfitPerItem, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultProfitPerItemValue}" Classes.positive="{Binding CraftingBindings.Calculation?.IsProfitPerItemPositive}" Classes.negative="{Binding CraftingBindings.Calculation?.IsProfitPerItemNegative}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationRoiTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationRoi, FallbackValue=ROI}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.RoiPercent, StringFormat='{}{0:N2}%', FallbackValue=0.00%}" Theme="{StaticResource CraftingResultRoiValue}" Classes.positive="{Binding CraftingBindings.Calculation?.IsRoiPositive}" Classes.negative="{Binding CraftingBindings.Calculation?.IsRoiNegative}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationBreakEvenTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationBreakEven, FallbackValue=BREAK_EVEN}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.BreakEvenPrice, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultBreakEvenValue}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationGrossMaterialsTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationGrossMaterials, FallbackValue=GROSS_MATERIALS}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.GrossMaterialCosts, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationNetMaterialsTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationNetMaterials, FallbackValue=NET_MATERIALS}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.NetMaterialCosts, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationNonReturnableTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationNonReturnable, FallbackValue=NON_RETURNABLE}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.NonReturnableMaterialCosts, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationStationTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationStation, FallbackValue=STATION}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.StationFee, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationOtherCostsTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationOtherCosts, FallbackValue=OTHER_COSTS}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.OtherCosts, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationJournalCostsTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationJournalCosts, FallbackValue=JOURNAL_COSTS}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.JournalCosts, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationJournalRevenueTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationJournalRevenue, FallbackValue=JOURNAL_REVENUE}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.JournalRevenue, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultRevenueValue}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationSalesGrossTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationSalesGross, FallbackValue=SALES_GROSS}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.SalesRevenueGross, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultRevenueValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationSalesTaxTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationSalesTax, FallbackValue=SALES_TAX}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.SalesTax, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationSetupFeeTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationSetupFee, FallbackValue=SETUP_FEE}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.SetupFee, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource CraftingResultCostValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationWeightBeforeTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationWeightBefore, FallbackValue=WEIGHT_BEFORE}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.WeightBeforeCrafting, StringFormat='{}{0:N2}', FallbackValue=0.00}" Theme="{StaticResource CraftingResultValue}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Theme="{StaticResource CraftingResultTile}" ToolTip.Tip="{Binding CraftingBindings.TranslationWeightAfterTooltip}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding CraftingBindings.TranslationWeightAfter, FallbackValue=WEIGHT_AFTER}" Theme="{StaticResource CraftingResultLabel}" />
+                                        <TextBlock Text="{Binding CraftingBindings.Calculation?.WeightAfterCrafting, StringFormat='{}{0:N2}', FallbackValue=0.00}" Theme="{StaticResource CraftingResultValue}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </WrapPanel>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+
+        <GridSplitter Grid.Row="1" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" Background="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+
+        <Grid Grid.Row="2" Margin="10,5,10,10">
+            <TextBlock Text="{Binding CraftingBindings.TranslationSavedCraftings, FallbackValue=SAVED_CRAFTINGS}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8" />
+            <DataGrid x:CompileBindings="False" SelectionMode="Single" ItemsSource="{Binding CraftingBindings.SavedCraftings}"
+                      SelectedItem="{Binding CraftingBindings.SelectedSavedCrafting, Mode=TwoWay}"
+                      SelectionChanged="SavedCraftings_OnSelectionChanged"
+                      Margin="0,28,0,0"
+                      RowHeight="50">
+                <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="65"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationIcon}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <Image Source="{Binding Icon}" Width="50" Height="50" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="260"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationItem}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding ItemName}" Theme="{StaticResource SavedCraftingCellText}" MaxHeight="40" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="300"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationDetails}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding Summary}" Theme="{StaticResource SavedCraftingCellText}" MaxHeight="40" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="70"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationFocus}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <fa:FontAwesomeImage Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Theme="{StaticResource Crafting.FocusIcon}" Classes.on="{Binding UsesFocus}" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="110"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationTotalCosts}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding TotalCosts, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingCostText}" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="110"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationProfit}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding Profit, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingProfitText}" Classes.positive="{Binding IsProfitPositive}" Classes.negative="{Binding IsProfitNegative}" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="125"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationProfitPerItem}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding ProfitPerItem, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingProfitPerItemText}" Classes.positive="{Binding IsProfitPerItemPositive}" Classes.negative="{Binding IsProfitPerItemNegative}" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="90"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationRoi}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding RoiPercent, StringFormat='{}{0:N2}%'}" Theme="{StaticResource SavedCraftingRoiText}" Classes.positive="{Binding IsRoiPositive}" Classes.negative="{Binding IsRoiNegative}" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="120"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationBreakEven}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding BreakEvenPrice, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingBreakEvenText}" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="150"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationChanged}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding LastChangedUtc}" Foreground="{DynamicResource SolidColorBrush.Text.1}" VerticalAlignment="Center" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="300"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationNotes}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                    <TextBlock Text="{Binding Notes}" Theme="{StaticResource SavedCraftingCellText}" MaxHeight="40" />
+                                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+        </TabItem>
+        <TabItem Header="{x:Static crafting:LossExplorerBindings.TranslationLossExplorer}"
+                 IsVisible="{Binding CraftingBindings.LossExplorerTabVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+            <userControls:LossExplorerControl />
+        </TabItem>
+        <TabItem Header="{x:Static crafting:CraftingBindings.TranslationBlackMarket}"
+                 IsVisible="{Binding CraftingBindings.BlackMarketTabVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+            <Grid DataContext="{Binding CraftingBindings.BlackMarket}" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="{Binding GridSplitterPosition, Mode=TwoWay, Converter={x:Static conv:GridLengthConverter.Instance}}" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Theme="{StaticResource App.TopFilterCard}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <fa:FontAwesomeImage Grid.Column="0" Icon="SolidMagnifyingGlass" Width="16" Height="16" Margin="0,0,9,0"
+                                                  VerticalAlignment="Center" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Theme="{StaticResource ItemSearchTextBoxStyle}" />
+                                <Button Grid.Column="2" Width="32" Height="32" Margin="6,0,0,0" Padding="0"
+                                        ToolTip.Tip="{x:Static translation:MainWindowTranslation.ResetFilters}"
+                                        Theme="{StaticResource Style.Button.Neutral}"
+                                        Click="FilterReset_Click">
+                                    <fa:FontAwesomeImage Icon="SolidRotateRight" Width="14" Height="14" IsHitTestVisible="False"
+                                                      Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                </Button>
+                            </Grid>
+
+                            <UniformGrid Grid.Row="1" Columns="7" Margin="-4,10,-4,0">
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.ShopCategory}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding ItemShopCategories}"
+                                              SelectedItem="{Binding SelectedItemShopCategory, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Id}" DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.ShopSubCategory1}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding ItemSubCategories1}"
+                                              SelectedItem="{Binding SelectedItemShopSubCategory1, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Id}" DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.ShopSubCategory2}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding ItemSubCategories2}"
+                                              SelectedItem="{Binding SelectedItemShopSubCategory2, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Id}" DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.ShopSubCategory3}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding ItemSubCategories3}"
+                                              SelectedItem="{Binding SelectedItemShopSubCategory3, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Id}" DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.Tier}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding ItemTiers}"
+                                              SelectedValue="{Binding SelectedItemTier, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Key}" DisplayMemberBinding="{ReflectionBinding Value}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static translation:MainWindowTranslation.Level}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding ItemLevels}"
+                                              SelectedValue="{Binding SelectedItemLevel, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Key}" DisplayMemberBinding="{ReflectionBinding Value}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                                <StackPanel Theme="{StaticResource ItemSearch.FilterField}">
+                                    <TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationQuality}"
+                                               Theme="{StaticResource App.FilterLabel}" />
+                                    <ComboBox ItemsSource="{Binding ItemQualities}"
+                                              SelectedValue="{Binding SelectedQualityLevel, Mode=TwoWay}"
+                                              SelectedValueBinding="{ReflectionBinding Key}" DisplayMemberBinding="{ReflectionBinding Value}"
+                                              Theme="{StaticResource ItemSearch.FilterComboBox}" />
+                                </StackPanel>
+                            </UniformGrid>
+
+                            <Border Grid.Row="2" BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                                    BorderThickness="0,1,0,0" Padding="0,8,0,0">
+                                <DockPanel>
+                                    <TextBlock Text="{Binding MarketStatusText}" Foreground="{DynamicResource SolidColorBrush.Text.3}" />
+                                    <TextBlock Text="{Binding ItemCounterText}" Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                                               HorizontalAlignment="Right" DockPanel.Dock="Right" />
+                                </DockPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid x:CompileBindings="False" Grid.Row="1"
+                              ItemsSource="{Binding ItemsView}"
+                              SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                              SelectionMode="Single">
+                        <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="65"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationIcon}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <Image Source="{Binding Icon}" Width="50" Height="50" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="330"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationItem}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding ItemName}" Theme="{StaticResource SavedCraftingCellText}" MaxHeight="42" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="70"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationTier}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding TierText}" Theme="{StaticResource Crafting.TierText}" Classes.t1="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}" Classes.t2="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}" Classes.t3="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}" Classes.t4="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=4}" Classes.t5="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=5}" Classes.t6="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=6}" Classes.t7="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=7}" Classes.t8="{Binding Tier, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=8}" />
+                                                <TextBlock Text="." FontWeight="Bold" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                                                <TextBlock Text="{Binding EnchantmentLevelText}" Theme="{StaticResource Crafting.LevelText}" Classes.l0="{Binding EnchantmentLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=0}" Classes.l1="{Binding EnchantmentLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=1}" Classes.l2="{Binding EnchantmentLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=2}" Classes.l3="{Binding EnchantmentLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=3}" Classes.l4="{Binding EnchantmentLevel, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=4}" />
+                                            </StackPanel>
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="120"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationQuality}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding QualityName}" Foreground="{DynamicResource SolidColorBrush.Text.1}" VerticalAlignment="Center" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="130"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationCurrentBuyPrice}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding CurrentBuyPrice, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingCellText}" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="150"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationAverageBoughtPrice}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding LatestAveragePrice, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingCellText}" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="140"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationBoughtLast30Days}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding SoldLast30Days, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingCellText}" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="150"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationBoughtLast365Days}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                            <TextBlock Text="{Binding SoldLast365Days, StringFormat='{}{0:N0}'}" Theme="{StaticResource SavedCraftingCellText}" />
+                                        </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="135"><DataGridTemplateColumn.Header><TextBlock Text="{x:Static crafting:CraftingBindings.TranslationChanged}" /></DataGridTemplateColumn.Header><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding LastUpdatedText}" Foreground="{DynamicResource SolidColorBrush.Text.1}" VerticalAlignment="Center" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <GridSplitter Grid.Row="1"
+                              ResizeDirection="Rows"
+                              ResizeBehavior="PreviousAndNext"
+                              HorizontalAlignment="Stretch"
+                              Background="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+
+                <Grid Grid.Row="2" Margin="0,10,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="0,0,0,8" LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Top"
+                                    Margin="12,0,0,0">
+                            <TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationChartRange}"
+                                       Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,6,0" />
+                            <ComboBox ItemsSource="{Binding ChartDayFilters}"
+                                      DisplayMemberBinding="{ReflectionBinding Value}"
+                                      SelectedValueBinding="{ReflectionBinding Key}"
+                                      SelectedValue="{Binding SelectedChartDays, Mode=TwoWay}"
+                                      MinWidth="96"
+                                      Height="24" />
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding SelectedItemTitle, FallbackValue=BLACK_MARKET}"
+                                       Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}"
+                                       FontSize="16"
+                                       FontWeight="SemiBold" />
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationCurrentBuyPrice}" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text="{Binding SelectedItem.CurrentBuyPrice, StringFormat='{}{0:N0}', FallbackValue=0}" Foreground="{DynamicResource SolidColorBrush.Accent.Green.2}" Margin="0,0,12,0" />
+                                <TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationAverageBoughtPrice}" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text="{Binding SelectedItem.LatestAveragePrice, StringFormat='{}{0:N0}', FallbackValue=0}" Foreground="{DynamicResource SolidColorBrush.Text.1}" Margin="0,0,12,0" />
+                                <TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationAverageItemsPerDay}" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text="{Binding SelectedItemAverageItemsPerDayText, FallbackValue=0}" Foreground="{DynamicResource SolidColorBrush.Text.1}" Margin="0,0,12,0" />
+                                <TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationBoughtLast30Days}" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text="{Binding SelectedItem.SoldLast30Days, StringFormat='{}{0:N0}', FallbackValue=0}" Foreground="{DynamicResource SolidColorBrush.Text.1}" Margin="0,0,12,0" />
+                                <TextBlock Text="{x:Static crafting:BlackMarketBindings.TranslationBoughtLast365Days}" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text=": " Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                <TextBlock Text="{Binding SelectedItem.SoldLast365Days, StringFormat='{}{0:N0}', FallbackValue=0}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <lvc:CartesianChart Grid.Row="1"
+                                        Series="{Binding ChartSeries}"
+                                        XAxes="{Binding ChartXAxes}"
+                                        YAxes="{Binding ChartYAxes}"
+                                        TooltipPosition="Center"
+                                        FindingStrategy="ExactMatchTakeClosest"
+                                        LegendPosition="Top"
+                                        LegendTextPaint="{Binding ChartLegendTextPaint}"
+                                        LegendTextSize="14"
+                                        Background="Transparent"
+                                        DrawMarginFrame="{x:Null}" />
+                </Grid>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</UserControl>

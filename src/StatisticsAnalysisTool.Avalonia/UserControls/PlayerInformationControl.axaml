@@ -1,0 +1,553 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+             xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+             xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+             xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+             xmlns:gl="clr-namespace:System.Globalization;assembly=System.Runtime"
+             x:Class="StatisticsAnalysisTool.UserControls.PlayerInformationControl"
+             x:DataType="viewModels:MainWindowViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="850"
+             d:DesignWidth="1200">
+    <UserControl.Resources>
+        <DataTemplate x:Key="PlayerInformation.ProfileTemplate" DataType="models:PlayerModeInformationModel">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8,0,8,12"
+                            IsVisible="{Binding HasData}">
+                    <Border Theme="{StaticResource PlayerInformation.HeroCard}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="155" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Width="132" Height="132" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Border CornerRadius="70" Background="{DynamicResource SolidColorBrush.Background.3}" ToolTip.Tip="{Binding GameInfoPlayers?.AvatarRing}">
+                                    <Grid>
+                                        <fa:FontAwesomeImage Icon="RegularImage" Width="46" Height="46" Foreground="{DynamicResource SolidColorBrush.Text.6}"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <!-- Ellipse + ImageBrush with a url: a circular clip around a UrlImage (the brush cannot download). -->
+                                        <Border Margin="4" CornerRadius="62" ClipToBounds="True" ToolTip.Tip="{Binding GameInfoPlayers?.Avatar}">
+                                            <fa:UrlImage Url="{Binding AvatarImageUrl}" Stretch="UniformToFill" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                                <fa:UrlImage Url="{Binding AvatarRingImageUrl}" Width="132" Height="132" Stretch="Uniform"
+                                       ToolTip.Tip="{Binding GameInfoPlayers?.AvatarRing}" IsHitTestVisible="False" />
+                            </Grid>
+
+                            <StackPanel Grid.Column="1" Margin="12,0,22,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding GameInfoPlayers?.Name}" Foreground="{DynamicResource SolidColorBrush.Text.1}" FontSize="28" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding GameInfoPlayers?.Id}" Foreground="{DynamicResource SolidColorBrush.Text.5}"
+                                           FontSize="11" Margin="0,2,0,12" TextTrimming="CharacterEllipsis" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.GuildName, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=GUILD}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.GuildName, TargetNullValue='-'}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.AllianceName, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=ALLIANCE}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding GameInfoPlayers?.AllianceName, TargetNullValue='-'}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" MinWidth="210" VerticalAlignment="Center">
+                                <Border Theme="{StaticResource PlayerInformation.ApiBadge}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <fa:FontAwesomeImage Icon="SolidCircleInfo" Width="14" Height="14" Margin="0,0,7,0" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                                            <TextBlock Text="API" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" FontWeight="SemiBold" />
+                                        </StackPanel>
+                                        <TextBlock Margin="0,3,0,0"
+                                                   Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.DataFromAlbionOnlineServers, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='Data from Albion Online servers'}"
+                                                   Foreground="{DynamicResource SolidColorBrush.Text.3}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0"> 
+                                    <fa:FontAwesomeImage Icon="SolidEarthEurope" Width="14" Height="14" Margin="0,0,7,0" Foreground="{DynamicResource SolidColorBrush.Text.4}" />
+                                    <TextBlock Text="{Binding ServerName}" Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <UniformGrid Columns="5" Margin="-4,4,-4,4">
+                        <Border Theme="{StaticResource PlayerInformation.MetricCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="1"
+                                       Source="avares://StatisticsAnalysisTool/Resources/fame.png"
+                                       Theme="{StaticResource PlayerInformation.MetricImage}" />
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                           Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.KillFame, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=KILL_FAME}"
+                                           Theme="{StaticResource PlayerInformation.MetricTitle}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding GameInfoPlayers?.KillFame, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                           Theme="{StaticResource PlayerInformation.MetricValue}" />
+                            </Grid>
+                        </Border>
+                        <Border Theme="{StaticResource PlayerInformation.MetricCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="1"
+                                       Source="avares://StatisticsAnalysisTool/Resources/fame.png"
+                                       Theme="{StaticResource PlayerInformation.MetricImage}" />
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                           Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.DeathFame, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=DEATH_FAME}"
+                                           Theme="{StaticResource PlayerInformation.MetricTitle}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding GameInfoPlayers?.DeathFame, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                           Theme="{StaticResource PlayerInformation.MetricValue}" />
+                            </Grid>
+                        </Border>
+                        <Border Theme="{StaticResource PlayerInformation.MetricCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="1"
+                                       Source="avares://StatisticsAnalysisTool/Resources/fame.png"
+                                       Theme="{StaticResource PlayerInformation.MetricImage}" />
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                           Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Pve, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=PVE}"
+                                           Theme="{StaticResource PlayerInformation.MetricTitle}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding GameInfoPlayers?.LifetimeStatistics?.PvE?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, TargetNullValue=0}"
+                                           Theme="{StaticResource PlayerInformation.MetricValue}" />
+                            </Grid>
+                        </Border>
+                        <Border Theme="{StaticResource PlayerInformation.MetricCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="1"
+                                       Source="avares://StatisticsAnalysisTool/Assets/pickaxe.png"
+                                       Theme="{StaticResource PlayerInformation.MetricImage}" />
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                           Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Gathering, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=GATHERING}"
+                                           Theme="{StaticResource PlayerInformation.MetricTitle}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.All?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, TargetNullValue=0}"
+                                           Theme="{StaticResource PlayerInformation.MetricValue}" />
+                            </Grid>
+                        </Border>
+                        <Border Theme="{StaticResource PlayerInformation.MetricCard}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="34" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <fa:FontAwesomeImage Grid.Row="1"
+                                                  Icon="SolidUsers"
+                                                  Width="21"
+                                                  Height="21"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                           Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.CrystalLeague, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=CRYSTAL_LEAGUE}"
+                                           Theme="{StaticResource PlayerInformation.MetricTitle}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding GameInfoPlayers?.LifetimeStatistics?.CrystalLeague, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, TargetNullValue=0}"
+                                           Theme="{StaticResource PlayerInformation.MetricValue}" />
+                            </Grid>
+                        </Border>
+                    </UniformGrid>
+                    <Grid Margin="-4,4,-4,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Theme="{StaticResource PlayerInformation.Card}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <fa:FontAwesomeImage Icon="SolidBolt" Width="15" Height="15" Margin="0,0,8,0" Foreground="{DynamicResource SolidColorBrush.Accent.Red.1}" />
+                                    <TextBlock Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Pvp, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=PVP}"
+                                               Theme="{StaticResource PlayerInformation.SectionTitle}" />
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.KillFame, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=KILL_FAME}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.KillFame, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.DeathFame, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=DEATH_FAME}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.DeathFame, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.FameRatio, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=FAME_RATIO}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.FameRatio, StringFormat='{}{0:N2}'}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="3" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.TotalKills, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=TOTAL_KILLS}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1"
+                                               Text="{Binding SearchPlayer?.TotalKills, StringFormat='{}{0:N0}', TargetNullValue=0}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="4" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.GvgKills, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=GVG_KILLS}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="4" Grid.Column="1"
+                                               Text="{Binding SearchPlayer?.GvgKills, StringFormat='{}{0:N0}', TargetNullValue=0}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="5" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.GvgWon, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=GVG_WON}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="5" Grid.Column="1"
+                                               Text="{Binding SearchPlayer?.GvgWon, StringFormat='{}{0:N0}', TargetNullValue=0}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Theme="{StaticResource PlayerInformation.Card}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <fa:FontAwesomeImage Icon="SolidShieldHalved" Width="15" Height="15" Margin="0,0,8,0" Foreground="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+                                    <TextBlock Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Pve, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=PVE}"
+                                               Theme="{StaticResource PlayerInformation.SectionTitle}" />
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Royal, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=ROYAL}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.LifetimeStatistics?.PvE?.Royal, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Outlands, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=OUTLANDS}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.LifetimeStatistics?.PvE?.Outlands, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Hellgate, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=HELLGATE}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.LifetimeStatistics?.PvE?.Hellgate, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="3" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Total, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=TOTAL}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1"
+                                               Text="{Binding GameInfoPlayers?.LifetimeStatistics?.PvE?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                               Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Grid Margin="-4,0,-4,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Theme="{StaticResource PlayerInformation.Card}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <fa:FontAwesomeImage Icon="SolidChartLine" Width="15" Height="15" Margin="0,0,8,0" Foreground="{DynamicResource SolidColorBrush.Accent.Green.1}" />
+                                    <TextBlock Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Gathering, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=GATHERING}"
+                                               Theme="{StaticResource PlayerInformation.SectionTitle}" />
+                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="110" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Royal, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=ROYAL}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}"
+                                               TextAlignment="Right" />
+                                    <TextBlock Grid.Row="0" Grid.Column="2"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Outlands, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=OUTLANDS}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}"
+                                               TextAlignment="Right" />
+                                    <TextBlock Grid.Row="0" Grid.Column="3"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Total, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=TOTAL}"
+                                               Theme="{StaticResource PlayerInformation.DetailLabel}"
+                                               TextAlignment="Right" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Fiber, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=FIBER}" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Fiber?.Royal, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Fiber?.Outlands, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Fiber?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Hide, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=HIDE}" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Hide?.Royal, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Hide?.Outlands, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Hide?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Ore, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=ORE}" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Ore?.Royal, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Ore?.Outlands, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Ore?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Rock, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=ROCK}" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Rock?.Royal, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Rock?.Outlands, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="4" Grid.Column="3" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Rock?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+
+                                    <TextBlock Grid.Row="5" Grid.Column="0"
+                                               Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Wood, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=WOOD}" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Wood?.Royal, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Wood?.Outlands, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                    <TextBlock Grid.Row="5" Grid.Column="3" Text="{Binding GameInfoPlayers?.LifetimeStatistics?.Gathering?.Wood?.Total, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource PlayerInformation.DetailValue}" TextAlignment="Right" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Theme="{StaticResource PlayerInformation.Card}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                    <fa:FontAwesomeImage Icon="SolidDatabase" Width="15" Height="15" Margin="0,0,8,0" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+                                    <TextBlock Text="API" Theme="{StaticResource PlayerInformation.SectionTitle}" />
+                                </StackPanel>
+                                <TextBlock Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.DataFromAlbionOnlineServers, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue='Data from Albion Online servers'}"
+                                           Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Avatar" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding GameInfoPlayers?.Avatar, TargetNullValue='-'}" Theme="{StaticResource PlayerInformation.DetailValue}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Row="1" Text="Avatar Border" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding GameInfoPlayers?.AvatarRing, TargetNullValue='-'}" Theme="{StaticResource PlayerInformation.DetailValue}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Row="2" Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.Server, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=SERVER}" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ServerName}" Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                    <TextBlock Grid.Row="3" Text="{ReflectionBinding DataContext.PlayerInformationBindings.PlayerModeTranslation.LastUpdate, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=LAST_UPDATE}" Theme="{StaticResource PlayerInformation.DetailLabel}" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TimestampText}" Theme="{StaticResource PlayerInformation.DetailValue}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" ZIndex="2" Theme="{StaticResource App.TopFilterCard}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="2" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" MinWidth="240" MaxWidth="520" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="26" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <fa:FontAwesomeImage Grid.Column="0"
+                                          Icon="SolidMagnifyingGlass"
+                                          Width="16"
+                                          Height="16"
+                                          Margin="0,0,9,0"
+                                          VerticalAlignment="Center"
+                                          Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                        <TextBox x:Name="PlayerSearchTextBox"
+                                 Grid.Column="1"
+                                 TextChanged="TextBoxPlayerSearch_OnTextChanged"
+                                 IsEnabled="{Binding PlayerInformationBindings.IsSearchedPlayerTabSelected}"
+                                 IsReadOnly="{Binding PlayerInformationBindings.IsSearchInProgress}"
+                                 Theme="{StaticResource PlayerInformation.SearchTextBox}"
+                                 ToolTip.Tip="{Binding PlayerInformationBindings.PlayerModeTranslation.Search, FallbackValue=SEARCH}" />
+                        <Grid Grid.Column="2" Theme="{StaticResource LoadingIconGridStyle}">
+                            <fa:FontAwesomeImage IsVisible="{Binding PlayerInformationBindings.LoadIconVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Theme="{StaticResource LoadingIconStyle}" />
+                        </Grid>
+                        <Button Grid.Column="3"
+                                Width="32"
+                                Height="32"
+                                Margin="6,0,0,0"
+                                Padding="0"
+                                Click="CancelPlayerSearch_OnClick"
+                                Theme="{StaticResource Style.Button.Danger}"
+                                ToolTip.Tip="{Binding PlayerInformationBindings.PlayerModeTranslation.Cancel, FallbackValue=CANCEL}"
+                                IsVisible="{Binding PlayerInformationBindings.IsSearchInProgress}">
+                            <fa:FontAwesomeImage Icon="SolidXmark"
+                                              Width="13"
+                                              Height="13" />
+                        </Button>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="16,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding PlayerInformationBindings.PlayerModeTranslation.Server, FallbackValue=SERVER}"
+                                   Theme="{StaticResource App.FilterLabel}"
+                                   Margin="0,0,8,0"
+                                   VerticalAlignment="Center" />
+                        <ComboBox ItemsSource="{Binding PlayerInformationBindings.SearchServers}"
+                                  SelectedItem="{Binding PlayerInformationBindings.SelectedSearchServer, Mode=TwoWay}"
+                                  DisplayMemberBinding="{ReflectionBinding DisplayName}"
+                                  IsEnabled="{Binding PlayerInformationBindings.IsSearchInputEnabled}"
+                                  SelectionChanged="SearchServer_OnSelectionChanged"
+                                  Theme="{StaticResource PlayerInformation.ServerComboBox}" />
+                    </StackPanel>
+
+                    <TabControl Grid.Column="2"
+                                SelectedIndex="{Binding PlayerInformationBindings.SelectedPlayerTabIndex, Mode=TwoWay}"
+                                Theme="{StaticResource PlayerInformation.HeaderTabs}">
+                        <TabItem Header="{Binding PlayerInformationBindings.PlayerModeTranslation.SearchedPlayer, FallbackValue=SEARCHED_PLAYER}" />
+                        <TabItem Header="{Binding PlayerInformationBindings.PlayerModeTranslation.LocalPlayer, FallbackValue=LOCAL_PLAYER}" />
+                    </TabControl>
+                </Grid>
+
+                <ProgressBar Grid.Row="1"
+                             IsVisible="{Binding PlayerInformationBindings.LoadBarVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                             IsIndeterminate="True"
+                             Height="2"
+                             Margin="0,7,0,-9" />
+            </Grid>
+        </Border>
+
+        <Popup IsOpen="{Binding PlayerInformationBindings.IsSearchResultOpen, Mode=TwoWay}"
+               PlacementTarget="{Binding #PlayerSearchTextBox}"
+               Placement="Bottom"
+               VerticalOffset="2"
+               IsLightDismissEnabled="True">
+            <Border Theme="{StaticResource App.FilterDropdownPopup}" Padding="0"
+                    Width="{Binding Bounds.Width, ElementName=PlayerSearchTextBox}">
+                <ListBox SelectionMode="Single"
+                         SelectionChanged="ListBoxUserSearch_OnSelectionChanged"
+                         ItemsSource="{Binding PlayerInformationBindings.ListBoxUserSearchItems}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         MaxHeight="220">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="6,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{ReflectionBinding Value.Name}"
+                                           Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{ReflectionBinding Value.GuildName}"
+                                           Foreground="{DynamicResource SolidColorBrush.Text.5}"
+                                           Margin="8,0,0,0"
+                                           TextTrimming="CharacterEllipsis" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Popup>
+
+        <Grid Grid.Row="1">
+            <ContentControl Content="{Binding PlayerInformationBindings.PlayerModeInformation}" ContentTemplate="{StaticResource PlayerInformation.ProfileTemplate}"
+                            IsVisible="{Binding PlayerInformationBindings.IsSearchedPlayerTabSelected}" />
+            <ContentControl Content="{Binding PlayerInformationBindings.PlayerModeInformationLocal}" ContentTemplate="{StaticResource PlayerInformation.ProfileTemplate}"
+                            IsVisible="{Binding PlayerInformationBindings.IsLocalPlayerTabSelected}" />
+        </Grid>
+    </Grid>
+</UserControl>

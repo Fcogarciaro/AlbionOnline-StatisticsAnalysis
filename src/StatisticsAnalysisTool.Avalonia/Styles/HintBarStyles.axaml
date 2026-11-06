@@ -1,0 +1,140 @@
+<!-- Port of Styles/HintBarStyles.xaml (error, warning and information bars). The Webdings close glyph ("r")
+     does not exist on Linux, so the close button draws an X instead of setting Content. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <!-- ERROR BAR -->
+    <ControlTheme x:Key="Grid.Error.Bar" TargetType="Grid">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+      <Setter Property="Height" Value="70" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Grid.Error.Bar.Label" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="10,9,40,0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Grid.Error.Bar.CopyLink" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="10,0,40,8" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="TextDecorations" Value="Underline" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Window.Error.Bar.Button.Style" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Margin" Value="0,0,7,0" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.5}" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Width" Value="28" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+            <Path HorizontalAlignment="Center" VerticalAlignment="Center" Data="M0,0 L12,12 M12,0 L0,12"
+                  Stroke="{TemplateBinding Foreground}" StrokeThickness="2.5" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.4}" />
+      </Style>
+    </ControlTheme>
+
+    <!-- WARNING BAR -->
+    <ControlTheme x:Key="Grid.Warning.Bar" TargetType="Grid">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Accent.Yellow.3}" />
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+      <Setter Property="Height" Value="70" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Grid.Warning.Bar.Label" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="10,9,40,0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Grid.Warning.Bar.CopyLink" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="10,0,40,8" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="TextDecorations" Value="Underline" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Window.Warning.Bar.Button.Style" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Margin" Value="0,0,7,0" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.5}" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Width" Value="28" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+            <Path HorizontalAlignment="Center" VerticalAlignment="Center" Data="M0,0 L12,12 M12,0 L0,12"
+                  Stroke="{TemplateBinding Foreground}" StrokeThickness="2.5" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.4}" />
+      </Style>
+    </ControlTheme>
+
+    <!-- INFORMATION BAR -->
+    <ControlTheme x:Key="Grid.Information.Bar" TargetType="Grid">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+      <Setter Property="Height" Value="70" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Grid.Information.Bar.Label" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="10,9,40,0" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="TextWrapping" Value="NoWrap" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Grid.Information.Bar.CopyLink" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="10,0,40,8" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="TextDecorations" Value="Underline" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Window.Information.Bar.Button.Style" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Margin" Value="0,0,7,0" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Width" Value="28" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+            <Path HorizontalAlignment="Center" VerticalAlignment="Center" Data="M0,0 L12,12 M12,0 L0,12"
+                  Stroke="{TemplateBinding Foreground}" StrokeThickness="2.5" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+      </Style>
+    </ControlTheme>
+  </Styles.Resources>
+</Styles>

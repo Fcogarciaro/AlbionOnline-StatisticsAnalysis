@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        xmlns:userControls="clr-namespace:StatisticsAnalysisTool.UserControls"
+        x:Class="StatisticsAnalysisTool.Views.LanguageSelectionWindow"
+        x:DataType="viewModels:LanguageSelectionWindowViewModel"
+        mc:Ignorable="d"
+        Title="{Binding Title, FallbackValue=TITLE}" Height="230" Width="550" WindowStartupLocation="CenterScreen"
+        Theme="{StaticResource WindowChrome}"
+        Background="{DynamicResource SolidColorBrush.Background.1}" FontSize="{DynamicResource BaseFontSize}"
+        ShowInTaskbar="True" CanResize="False">
+  <Grid>
+    <Border BorderThickness="1,0,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+    <Grid x:Name="Hotbar" ZIndex="1" Height="33" VerticalAlignment="Top" Background="{DynamicResource SolidColorBrush.Background.3}" PointerPressed="Hotbar_PointerPressed">
+      <Border BorderThickness="1,0,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+      <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+      <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Blue.2}" IsHitTestVisible="False" />
+      <Grid Margin="10,3,0,0" Width="26" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <fa:FontAwesomeImage Icon="SolidTriangleExclamation" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+      </Grid>
+      <Label Content="{Binding Title, FallbackValue=TITLE}" Margin="41,0,61,0" VerticalAlignment="Top" Height="33" FontSize="16"
+             Foreground="{DynamicResource SolidColorBrush.Text.1}" FontWeight="Bold" />
+      <Button x:Name="CloseButton" Theme="{StaticResource WindowButtonStyle}" Content="r" Margin="-2,2,2,0" Click="CloseButton_Click" />
+    </Grid>
+    <StackPanel Orientation="Vertical" Margin="0,43,0,0">
+      <TextBlock Text="{Binding Message, FallbackValue='MESSAGE'}" FontSize="20" TextAlignment="Center" HorizontalAlignment="Center"
+                 TextWrapping="Wrap" Foreground="{DynamicResource SolidColorBrush.Text.1}" Height="30" />
+      <TextBlock Text="{Binding ErrorMessage, FallbackValue='ERROR_MESSAGE'}" FontSize="20" TextAlignment="Center" HorizontalAlignment="Center"
+                 TextWrapping="Wrap" Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" Height="60" />
+      <ComboBox x:Name="LanguageComboBox" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedFileInformation}"
+                Width="300" VerticalAlignment="Bottom" FontSize="18" FontWeight="Bold" Height="34" Margin="0,0,10,10" HorizontalAlignment="Center">
+        <ComboBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding DisplayText}" />
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
+      <Button Content="Ok" FontSize="18" FontWeight="Bold" Height="34" Width="300" VerticalAlignment="Bottom" Margin="0,0,10,10" HorizontalAlignment="Center"
+              IsEnabled="{Binding IsConfirmButtonEnabled}" Click="BtnConfirm_Click" />
+    </StackPanel>
+  </Grid>
+</Window>

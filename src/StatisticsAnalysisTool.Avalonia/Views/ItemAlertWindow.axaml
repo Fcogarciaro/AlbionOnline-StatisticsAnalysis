@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        xmlns:userControls="clr-namespace:StatisticsAnalysisTool.UserControls"
+        x:Class="StatisticsAnalysisTool.Views.ItemAlertWindow"
+        x:DataType="viewModels:ItemAlertWindowViewModel"
+        mc:Ignorable="d"
+        Title="{Binding Title, FallbackValue=TITLE}" Height="285" Width="420"
+        WindowStartupLocation="CenterScreen" Theme="{StaticResource WindowChrome}" Background="{DynamicResource SolidColorBrush.Background.2}"
+        FontSize="{DynamicResource BaseFontSize}" Focusable="False" CanResize="False">
+  <Grid>
+    <Image Source="avares://StatisticsAnalysisTool/Resources/alert_window_background.jpg" Stretch="None" HorizontalAlignment="Center"
+           VerticalAlignment="Center" Opacity="0.1" IsHitTestVisible="False" />
+    <Border BorderThickness="1" BorderBrush="{DynamicResource SolidColorBrush.Background.3}" IsHitTestVisible="False" />
+
+    <Grid x:Name="Hotbar" ZIndex="1" Height="33" VerticalAlignment="Top" Background="{DynamicResource SolidColorBrush.Background.2}"
+          PointerPressed="Hotbar_PointerPressed">
+      <Grid Margin="10,3,0,0" Width="26" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <fa:FontAwesomeImage Icon="SolidFlag" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      </Grid>
+      <Label Content="{Binding Title, FallbackValue=TITLE}" Margin="41,0,61,0" VerticalAlignment="Top"
+             Height="33" FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" FontWeight="Bold" />
+      <Separator Margin="10,30,10,0" VerticalAlignment="Top" />
+      <Button x:Name="CloseButton" Theme="{StaticResource WindowButtonStyle}" Content="r" Margin="-2,0,0,0"
+              Click="CloseButton_Click" />
+      <Button x:Name="MinimizeButton" Theme="{StaticResource WindowButtonStyle}" Content="0" Margin="0,0,28,0"
+              Click="MinimizeButton_Click" />
+    </Grid>
+
+    <Grid Margin="18,46,18,14" RowDefinitions="Auto,Auto,58,Auto,Auto,Auto,*">
+      <TextBlock Text="{Binding LeadText, FallbackValue=ALERT}" FontSize="15"
+                 Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" TextWrapping="Wrap" />
+      <TextBlock Grid.Row="1" Text="{Binding ItemName, FallbackValue=ITEM_NAME}" FontSize="16" FontWeight="Bold"
+                 Foreground="{DynamicResource SolidColorBrush.Accent.Yellow.1}" TextAlignment="Center"
+                 TextWrapping="Wrap" Margin="0,3,0,5" />
+      <Image Grid.Row="2" Source="{Binding Icon}" Height="54" Width="54" />
+      <TextBlock Grid.Row="3" Text="{Binding Translation.In, FallbackValue=IN}" FontSize="14"
+                 Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" Margin="0,4,0,0" />
+      <TextBlock x:Name="CityNameTextBlock" Grid.Row="4" Text="{Binding CityName, FallbackValue=CITY_NAME}" FontSize="20" FontWeight="Bold"
+                 Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" Margin="0,2,0,0">
+        <!-- Background: a gradient of ItemAlertWindowViewModel.CityColor, set in code (gradient stops cannot bind). -->
+      </TextBlock>
+      <TextBlock Grid.Row="5" Text="{Binding ResultText, FallbackValue=ALERT_TRIGGERED}" FontSize="15"
+                 Foreground="{DynamicResource SolidColorBrush.Text.1}" TextAlignment="Center" Margin="0,3,0,7" />
+      <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
+        <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="16" Height="16" Margin="0,1,6,0" />
+        <TextBlock Text="{Binding Price, StringFormat={}{0:N0}, FallbackValue=0}" FontSize="15" FontWeight="Bold" VerticalAlignment="Center" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+      </StackPanel>
+    </Grid>
+  </Grid>
+</Window>

@@ -1,0 +1,148 @@
+<!-- Port of Styles/GuildStyles.xaml. DataTriggers on SiphonedEnergyItem are classes: "disabled" (IsDisabled), "deposit"/"withdraw"
+     (IsDeposit); later rules win, as the later DataTriggers did. LootLogCheck.ContainerItem.Template is not ported: only the
+     commented-out loot log tab of GuildControl referenced it. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:guild="clr-namespace:StatisticsAnalysisTool.Guild"
+        xmlns:common="clr-namespace:StatisticsAnalysisTool.Common"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="SiphonedEnergy.Text.Blue" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      <Style Selector="^.disabled"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.2}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="SiphonedEnergy.Text.Guild" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Style Selector="^.disabled"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.2}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="SiphonedEnergy.Text.Quantity" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Style Selector="^.deposit"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.3}" /></Style>
+      <Style Selector="^.withdraw"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.3}" /></Style>
+      <Style Selector="^.disabled"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.2}" /></Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="ManuallySiphonedEnergy.Template" DataType="guild:ManuallySiphonedEnergy">
+      <Border Theme="{StaticResource App.TopFilterCard}">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+
+          <Border Grid.Column="0" Theme="{StaticResource App.FilterGroup}">
+            <StackPanel>
+              <TextBlock Text="{Binding TranslationAddOrRemoveManually, FallbackValue=ADD_OR_REMOVE_MANUALLY}"
+                         Theme="{StaticResource App.FilterLabel}" />
+
+              <StackPanel Orientation="Horizontal">
+                <StackPanel Width="160" Margin="0,0,10,0">
+                  <TextBlock Text="{Binding TranslationCharacterName, FallbackValue=CHARACTER_NAME}"
+                             Theme="{StaticResource App.FilterLabel}" />
+                  <TextBox Text="{Binding CharacterName}" />
+                </StackPanel>
+
+                <StackPanel Width="120" Margin="0,0,10,0">
+                  <TextBlock Text="{Binding TranslationOperator, FallbackValue=OPERATOR}"
+                             Theme="{StaticResource App.FilterLabel}" />
+                  <ComboBox MinWidth="0"
+                            SelectedValue="{Binding SelectedOperator, Mode=TwoWay}"
+                            SelectedValueBinding="{ReflectionBinding Tag}">
+                    <ComboBoxItem Tag="{x:Static guild:EnergyOperator.Deposit}" Content="{Binding TranslationDeposit, FallbackValue=DEPOSIT}" />
+                    <ComboBoxItem Tag="{x:Static guild:EnergyOperator.Withdraw}" Content="{Binding TranslationWithdraw, FallbackValue=WITHDRAW}" />
+                  </ComboBox>
+                </StackPanel>
+
+                <StackPanel Width="80" Margin="0,0,10,0">
+                  <TextBlock Text="{Binding TranslationQuantity, FallbackValue=QUANTITY}"
+                             Theme="{StaticResource App.FilterLabel}" />
+                  <TextBox Text="{Binding Quantity}"
+                           common:TextBoxHelper.OnlyNumeric="Double" />
+                </StackPanel>
+
+                <Button MinWidth="160"
+                        Padding="10,0"
+                        VerticalAlignment="Bottom"
+                        Content="{Binding TranslationAddEntry, FallbackValue=ADD_MANUAL_ENTRY}"
+                        Command="{Binding AddManualEntryCommand}" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="{Binding TranslationExportSiphonedEnergyList, FallbackValue=EXPORT_SIPHONED_ENERGY_LIST}"
+                       Theme="{StaticResource App.FilterLabel}" />
+            <Button Grid.Row="1"
+                    MinWidth="160"
+                    Padding="10,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Content="{Binding TranslationExportAsCsv, FallbackValue=EXPORT_AS_CSV}"
+                    Command="{Binding ExportAsCsvCommand}" />
+          </Grid>
+        </Grid>
+      </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SiphonedEnergyItemTemplate" DataType="guild:SiphonedEnergyItem">
+      <Grid Height="24">
+        <Border Theme="{StaticResource Container.Border}">
+          <StackPanel Orientation="Vertical" Margin="0,0,5,0">
+            <DockPanel>
+              <TextBlock Text="{Binding Timestamp, FallbackValue=0}" FontWeight="Bold" Width="175"
+                         Theme="{StaticResource SiphonedEnergy.Text.Blue}" Classes.disabled="{Binding IsDisabled}" />
+              <TextBlock Text="{Binding CharacterName, FallbackValue=0}" FontWeight="Bold" Width="225" Margin="3,0"
+                         Theme="{StaticResource SiphonedEnergy.Text.Blue}" Classes.disabled="{Binding IsDisabled}" />
+              <TextBlock Text="{Binding GuildName, FallbackValue=''}" FontWeight="Bold" Width="175" Margin="3,0"
+                         Theme="{StaticResource SiphonedEnergy.Text.Guild}" Classes.disabled="{Binding IsDisabled}" />
+              <TextBlock Text="{Binding Quantity, FallbackValue=0}" FontWeight="Bold" Width="75" Margin="3,0"
+                         Theme="{StaticResource SiphonedEnergy.Text.Quantity}"
+                         Classes.deposit="{Binding IsDeposit}" Classes.withdraw="{Binding !IsDeposit}" Classes.disabled="{Binding IsDisabled}" />
+
+              <Grid HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                  <!-- Disable checkbox -->
+                  <Grid Margin="0,0,10,0" Height="18" Width="18">
+                    <CheckBox IsChecked="{Binding IsDisabled}" ToolTip.Tip="{Binding TranslationSelectToDisable, FallbackValue='SELECT_TO_DISABLE'}" />
+                  </Grid>
+
+                  <!-- Delete checkbox -->
+                  <Grid Margin="0,0,10,0" Height="18" Width="18">
+                    <CheckBox IsChecked="{Binding IsSelectedForDeletion}" ToolTip.Tip="{Binding TranslationSelectToDelete, FallbackValue='SELECT_TO_DELETE'}" />
+                  </Grid>
+                </StackPanel>
+              </Grid>
+            </DockPanel>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SiphonedEnergyOverviewItemTemplate" DataType="guild:SiphonedEnergyItem">
+      <Grid Height="24">
+        <Border Theme="{StaticResource Container.Border}">
+          <StackPanel Orientation="Vertical" Margin="0,0,5,0">
+            <DockPanel>
+              <TextBlock Text="{Binding Timestamp, FallbackValue=0}" FontWeight="Bold" Width="200"
+                         Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+              <TextBlock Text="{Binding CharacterName, FallbackValue=0}" FontWeight="Bold" Width="200"
+                         Foreground="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+              <TextBlock Text="{Binding Quantity, FallbackValue=0}" FontWeight="Bold" HorizontalAlignment="Right"
+                         Theme="{StaticResource SiphonedEnergy.Text.Quantity}"
+                         Classes.deposit="{Binding IsDeposit}" Classes.withdraw="{Binding !IsDeposit}" />
+            </DockPanel>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </DataTemplate>
+
+  </Styles.Resources>
+</Styles>

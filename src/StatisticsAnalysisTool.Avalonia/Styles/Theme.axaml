@@ -1,0 +1,37 @@
+<!-- Entry point of the shared theme: merged once in App.axaml (and in the headless TestApp). Feature dictionaries
+     (Dungeon, Trade, Dashboard, ...) are NOT here; each is added with the views that use it. See PORTING.md. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://StatisticsAnalysisTool/Styles/Colors.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/MainStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/HintBarStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/InfoWindowStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/SpellStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/FontAwesomeStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/MainWindowStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/TabControlStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/TrackingStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DashboardStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/GatheringStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/CraftingStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DamageMeterStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DungeonStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/TradeMonitoringStyle.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ItemDetailsStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/EventValidationStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/SettingsStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ThanksStyle.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DonationStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/PartyStyle.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/StorageHistoryStyle.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/GuildStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/DataGridStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/ItemSearchStyles.axaml" />
+  <StyleInclude Source="avares://StatisticsAnalysisTool/Styles/PlayerInformationStyles.axaml" />
+</Styles>

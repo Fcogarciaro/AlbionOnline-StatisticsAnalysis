@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Statistics Analysis Tool
+GenericName=Albion Online statistics
+Comment=Albion Online Statistics Analysis Tool
+Exec=statisticsanalysistool
+Icon=statisticsanalysistool
+Terminal=false
+Categories=Game;
+Keywords=Albion;Albion Online;statistics;damage meter;market;
+StartupNotify=true

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Class="StatisticsAnalysisTool.UserControls.ErrorBarControl"
+             x:CompileBindings="False"
+             mc:Ignorable="d"
+             d:DesignHeight="70" d:DesignWidth="800">
+
+  <Grid ZIndex="3" Theme="{StaticResource Grid.Error.Bar}">
+    <Button ZIndex="1" Theme="{StaticResource Window.Error.Bar.Button.Style}" Click="BtnErrorBar_Click" />
+    <Grid RowDefinitions="35,35">
+      <TextBlock Grid.Row="0"
+                 Theme="{StaticResource Grid.Error.Bar.Label}"
+                 Text="{Binding ErrorText, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=ERROR}" />
+      <TextBlock Grid.Row="1"
+                 Theme="{StaticResource Grid.Error.Bar.CopyLink}"
+                 Text="Copy to clipboard"
+                 PointerReleased="CopyToClipboard_PointerReleased" />
+    </Grid>
+    <Border BorderThickness="1,0,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Red.1}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Red.1}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,1,0" BorderBrush="{DynamicResource SolidColorBrush.Accent.Red.5}" IsHitTestVisible="False" />
+    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource SolidColorBrush.Accent.Red.5}" IsHitTestVisible="False" />
+  </Grid>
+</UserControl>

@@ -1,0 +1,24 @@
+<!-- Port of Styles/ThanksStyle.xaml. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="Thanks.TextBlock.Text.Style" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+      <Setter Property="MaxWidth" Value="700" />
+      <Setter Property="FontSize" Value="14" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Thanks.TextBlock.Name.Style" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.1}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="FontSize" Value="16" />
+    </ControlTheme>
+
+  </Styles.Resources>
+</Styles>

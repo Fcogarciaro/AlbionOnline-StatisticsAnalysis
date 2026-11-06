@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>StatisticsAnalysisTool</AssemblyName>
+    <!-- Compared with the newest `linux-v*` GitHub release by the update check; build-tarball.sh overrides it from the tag. -->
+    <Version>0.1.0</Version>
+    <RootNamespace>StatisticsAnalysisTool</RootNamespace>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <!-- Links the non-view sources of the WPF project (set to false to build only the shell). -->
+    <LinkWpfSources Condition="'$(LinkWpfSources)' == ''">true</LinkWpfSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="StatisticsAnalysisTool.Avalonia.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.12" />
+    <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.1.5" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.22" Condition="'$(Configuration)' == 'Debug'" />
+
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.5" />
+    <PackageReference Include="BinaryFormat.EthernetFrame" Version="0.1.5" />
+    <PackageReference Include="BinaryFormat.IPv4" Version="0.1.5" />
+    <PackageReference Include="BinaryFormat.Udp" Version="0.1.5" />
+    <PackageReference Include="Libpcap" Version="0.1.5" />
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="3.119.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.11" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.11" />
+    <PackageReference Include="System.Linq.Async" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StatisticAnalysisTool.Extractor\StatisticAnalysisTool.Extractor.csproj" />
+    <ProjectReference Include="..\StatisticsAnalysisTool.Network\StatisticsAnalysisTool.Network.csproj" />
+  </ItemGroup>
+
+  <!-- Tray icon, loaded as avares://StatisticsAnalysisTool/Assets/sat-icon.ico. -->
+  <ItemGroup>
+    <AvaloniaResource Include="..\StatisticsAnalysisTool\sat-icon.ico" Link="Assets\sat-icon.ico" />
+    <!-- Images of the WPF project (Resource items upstream), addressed as avares://StatisticsAnalysisTool/Assets/... and /Resources/... -->
+    <AvaloniaResource Include="..\StatisticsAnalysisTool\Assets\**\*.png;..\StatisticsAnalysisTool\Assets\**\*.jpg" Link="Assets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <AvaloniaResource Include="..\StatisticsAnalysisTool\Resources\**\*.png;..\StatisticsAnalysisTool\Resources\**\*.jpg" Link="Resources\%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- Font Awesome Free 6.7.2 fonts (SIL OFL 1.1), see Assets/Fonts/FontAwesome-LICENSE.txt. -->
+    <AvaloniaResource Include="Assets\Fonts\*.ttf" />
+  </ItemGroup>
+
+  <!-- Localization table, read from <app dir>/Localization/localization.json (AppDataPaths.LocalizationFile). -->
+  <ItemGroup>
+    <Content Include="..\StatisticsAnalysisTool\Localization\localization.json" Link="Localization\localization.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Licence texts ship next to the binary (build and publish output): GPL-3.0 for the tool, SIL OFL for Font Awesome, CC BY 3.0 notice for game-icons.net. -->
+  <ItemGroup>
+    <Content Include="..\..\LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\FontAwesome-LICENSE.txt" Link="licenses\FontAwesome-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\GameIcons-NOTICE.txt" Link="licenses\GameIcons-NOTICE.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Alert sounds from the WPF project, discovered at runtime under <app dir>/Sounds. -->
+  <ItemGroup>
+    <Content Include="..\StatisticsAnalysisTool\Sounds\*.wav" Link="Sounds\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Linux replacements for excluded Windows-only files (see PORTING.md). -->
+  <ItemGroup Condition="'$(LinkWpfSources)' != 'true'">
+    <Compile Remove="Linux\**" />
+  </ItemGroup>
+
+  <!-- Compile spike: link the non-view, non-Windows-only sources of the WPF project. -->
+  <ItemGroup Condition="'$(LinkWpfSources)' == 'true'">
+    <Compile Include="..\StatisticsAnalysisTool\**\*.cs" LinkBase="Wpf" Exclude="&#xA;      ..\StatisticsAnalysisTool\bin\**;&#xA;      ..\StatisticsAnalysisTool\Models\StatPricesTotal.cs;&#xA;      ..\StatisticsAnalysisTool\Network\Handler\JoinHandler.cs;&#xA;      ..\StatisticsAnalysisTool\Network\SilverCountUpTimer.cs;&#xA;      ..\StatisticsAnalysisTool\obj\**;&#xA;      ..\StatisticsAnalysisTool\Views\**;&#xA;      ..\StatisticsAnalysisTool\UserControls\**;&#xA;      ..\StatisticsAnalysisTool\**\*.xaml.cs;&#xA;      ..\StatisticsAnalysisTool\App.xaml.cs;&#xA;      ..\StatisticsAnalysisTool\Properties\AssemblyInfo.cs;&#xA;      ..\StatisticsAnalysisTool\Properties\Resources.Designer.cs;&#xA;      ..\StatisticsAnalysisTool\Updater\AutoUpdateController.cs;&#xA;      ..\StatisticsAnalysisTool\Updater\UpdateDownloadSession.cs;&#xA;      ..\StatisticsAnalysisTool\Common\AppDataPaths.cs;&#xA;      ..\StatisticsAnalysisTool\Core\ApplicationCore.cs;&#xA;      ..\StatisticsAnalysisTool\Localization\LocalizationController.cs;&#xA;      ..\StatisticsAnalysisTool\Network\PacketProviders\LibpcapPacketProvider.cs;&#xA;      ..\StatisticsAnalysisTool\Network\PacketProviders\SocketsPacketProvider.cs;&#xA;      ..\StatisticsAnalysisTool\Common\AlbionGameProcessMonitor.cs;&#xA;      ..\StatisticsAnalysisTool\Common\SoundController.cs;&#xA;      ..\StatisticsAnalysisTool\Common\SystemInfo.cs;&#xA;      ..\StatisticsAnalysisTool\Common\Utilities.cs;&#xA;      ..\StatisticsAnalysisTool\Notification\SatNotificationManager.cs;&#xA;      ..\StatisticsAnalysisTool\Localization\Culture.cs;&#xA;      ..\StatisticsAnalysisTool\Common\Controls\**;&#xA;      ..\StatisticsAnalysisTool\Common\TextBoxHelper.cs;&#xA;      ..\StatisticsAnalysisTool\Common\ScrollViewerExtensions.cs;&#xA;      ..\StatisticsAnalysisTool\Common\ProgressBarSmoother.cs;&#xA;      ..\StatisticsAnalysisTool\Common\CultureAwareBinding.cs;&#xA;      ..\StatisticsAnalysisTool\Common\Validation\**;&#xA;      ..\StatisticsAnalysisTool\Common\Converters\ValidationErrorConverter.cs;&#xA;      ..\StatisticsAnalysisTool\Shortcut\**;&#xA;      ..\StatisticsAnalysisTool\**\SystemTrayService.cs;&#xA;      ..\StatisticsAnalysisTool\**\SystemTrayMenuRenderer.cs;&#xA;      ..\StatisticsAnalysisTool\**\WindowChromeController.cs;&#xA;      ..\StatisticsAnalysisTool\**\AuthenticodeSignatureVerifier.cs;&#xA;      ..\StatisticsAnalysisTool\**\WindowsStartupService.cs" />
+  </ItemGroup>
+
+</Project>

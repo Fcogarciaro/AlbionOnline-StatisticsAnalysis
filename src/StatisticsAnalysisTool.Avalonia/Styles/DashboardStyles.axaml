@@ -1,0 +1,1409 @@
+<!-- Port of Styles/DashboardStyles.xaml (conventions: PORTING.md, "Style mapping"). Keyed styles are ControlThemes, DataTriggers on enums
+     are classes set from the templates, MahApps GameIcons and FontAwesome use the Linux controls. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:dungeon="clr-namespace:StatisticsAnalysisTool.Dungeon"
+        xmlns:gl="clr-namespace:System.Globalization;assembly=System.Runtime"
+        xmlns:bindingModel="clr-namespace:StatisticsAnalysisTool.Models.BindingModel"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:iconPacks="clr-namespace:MahApps.Metro.IconPacks"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+
+    <conv:ShortNumberConverter x:Key="ShortNumberConverter" />
+    <conv:DurationSecondsToCompactStringConverter x:Key="DurationSecondsToCompactStringConverter" />
+
+    <ControlTheme x:Key="Dashboard.Section" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.T.2}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.Card" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SummaryCard" TargetType="Border">
+        <Setter Property="MinWidth" Value="164" />
+        <Setter Property="MinHeight" Value="82" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+        <Setter Property="Padding" Value="9,8" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.T.2}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="5" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.FactionSummaryCard" TargetType="Border" BasedOn="{StaticResource Dashboard.Section}">
+        <Setter Property="CornerRadius" Value="5" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.FactionMetricCard" TargetType="Border" BasedOn="{StaticResource Dashboard.SummaryCard}">
+        <Setter Property="MinWidth" Value="180" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SummaryTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SummaryValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="Margin" Value="0,1,0,1" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SummaryDeltaText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="ToolTip.Tip" Value="{Binding DataContext.DashboardBindings.SummaryComparisonText, RelativeSource={RelativeSource AncestorType=UserControl}, FallbackValue=VS_PREVIOUS_HOUR}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <!-- DataTriggers on IsIncrease / IsDecrease: the usages set Classes.increase / Classes.decrease. -->
+        <Style Selector="^.increase"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.3}" /></Style>
+        <Style Selector="^.decrease"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.3}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SummaryPerHourText" TargetType="TextBlock">
+        <Setter Property="Margin" Value="5,2,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SummaryImage" TargetType="Image">
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.LootBreakdownName" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.3}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.LootBreakdownValue" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="Dashboard.LootSummaryMetricTemplate" DataType="models:DashboardLootStatistics">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding TotalValueSummary.Value, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                           Theme="{StaticResource Dashboard.SummaryValue}" />
+                <TextBlock Margin="5,2,0,0"
+                           VerticalAlignment="Center"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource SolidColorBrush.Text.4}">
+                    <Run Text="(" />
+                    <Run Text="{Binding LootPerHour, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" />
+                    <Run Text="/h)" />
+                </TextBlock>
+            </StackPanel>
+            <StackPanel DataContext="{Binding TotalValueSummary}" Orientation="Horizontal">
+                <TextBlock Text="{Binding ChangeIndicator}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=" " Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text="{Binding ChangeAmount, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=" (" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text="{Binding ChangePercentageText}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=")" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.LootValueBreakdownItemTemplate" DataType="models:DashboardLootBreakdownItem">
+        <Grid Height="28">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="85" />
+                <ColumnDefinition Width="135" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" Theme="{StaticResource Dashboard.LootBreakdownName}" />
+                <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="14" Height="14" Margin="5,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+            <TextBlock Grid.Column="1"
+                       Text="{Binding ItemCount, StringFormat='{}{0:N0}', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                       TextAlignment="Right"
+                       Theme="{StaticResource Dashboard.LootBreakdownValue}" />
+            <TextBlock Grid.Column="2"
+                       Text="{Binding SharePercentage, StringFormat='{}{0:N1} %', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                       TextAlignment="Right"
+                       Theme="{StaticResource Dashboard.LootBreakdownValue}" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.LootShareBreakdownItemTemplate" DataType="models:DashboardLootBreakdownItem">
+        <Grid Height="28">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="80" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding Name}" Theme="{StaticResource Dashboard.LootBreakdownName}" />
+            <TextBlock Grid.Column="1"
+                       Text="{Binding SharePercentage, StringFormat='{}{0:N1} %', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                       TextAlignment="Right"
+                       Theme="{StaticResource Dashboard.LootBreakdownValue}" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.SummaryMetricTemplate" DataType="models:DashboardSummaryMetric">
+        <StackPanel>
+            <TextBlock Text="{Binding Value, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" 
+                       Theme="{StaticResource Dashboard.SummaryValue}" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding ChangeIndicator}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=" " Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text="{Binding ChangeAmount, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=" (" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text="{Binding ChangePercentageText}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=")" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.SummaryMetricWithPerHourTemplate" DataType="models:DashboardSummaryMetric">
+        <StackPanel>
+            <WrapPanel>
+                <TextBlock Text="{Binding Value, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                           Theme="{StaticResource Dashboard.SummaryValue}" />
+                <TextBlock Text="{Binding ValuePerHour, Mode=OneWay, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, StringFormat='{}({0} /h)', FallbackValue=0}"
+                           Theme="{StaticResource Dashboard.SummaryPerHourText}" />
+            </WrapPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding ChangeIndicator}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=" " Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text="{Binding ChangeAmount, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=" (" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text="{Binding ChangePercentageText}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=")" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.SummarySessionTimeTemplate" DataType="models:DashboardSummaryMetric">
+        <StackPanel>
+            <TextBlock Text="{Binding Value, Converter={StaticResource DurationSecondsToCompactStringConverter}, FallbackValue=0m}" Theme="{StaticResource Dashboard.SummaryValue}" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding ChangeIndicator}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text=" " Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                <TextBlock Text="{Binding ChangePercentageText}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <ControlTheme x:Key="Dashboard.SectionHeader" TargetType="Grid">
+        <Setter Property="Height" Value="44" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="Hand" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SectionTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="17" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SectionToggleIcon" TargetType="fa:FontAwesomeImage">
+        <Setter Property="Width" Value="14" />
+        <Setter Property="Height" Value="14" />
+        <Setter Property="Margin" Value="12,0" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ChartFilter" TargetType="Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Margin" Value="0,0,6,4" />
+        <Setter Property="Padding" Value="7,3" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentTabControl" TargetType="TabControl" BasedOn="{StaticResource App.TabControl}" />
+
+    <ControlTheme x:Key="Dashboard.ContentTabItem" TargetType="TabItem" BasedOn="{StaticResource App.TabItem}" />
+
+    <ControlTheme x:Key="Dashboard.MetricCard" TargetType="Border" BasedOn="{StaticResource Dashboard.Card}">
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Padding" Value="12,9" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MetricTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,0,6" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MetricLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MetricValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MetricValue.Death" TargetType="TextBlock" BasedOn="{StaticResource Dashboard.MetricValue}">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CostLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CostValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.3}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.EconomySummaryCard" TargetType="Border" BasedOn="{StaticResource Dashboard.SummaryCard}">
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.EconomyDetailCard" TargetType="Border" BasedOn="{StaticResource Dashboard.Card}">
+        <Setter Property="MinHeight" Value="62" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+        <Setter Property="Padding" Value="9,7" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.SessionDeleteButton" TargetType="Button" BasedOn="{StaticResource Style.Button.Base}">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="MinWidth" Value="20" />
+        <Setter Property="MinHeight" Value="20" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+        <!-- Collapsed unless CanDelete inside a ComboBoxItem (the MultiDataTrigger): see the selector after the resources. Gathering overrides it with a local binding. -->
+        <Setter Property="IsVisible" Value="False" />
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Accent.Red.7}" />
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.4}" />
+        </Style>
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Danger.Pressed}" />
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.1}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.7}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentRankingCard" TargetType="Border" BasedOn="{StaticResource Dashboard.Section}">
+        <Setter Property="MinWidth" Value="350" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentRankingTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentRankingName" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.3}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentRankingValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentRankingBar" TargetType="ProgressBar">
+        <Setter Property="Height" Value="5" />
+        <Setter Property="Minimum" Value="0" />
+        <Setter Property="Maximum" Value="100" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="2">
+                    <Border x:Name="PART_Indicator"
+                            HorizontalAlignment="Left"
+                            Background="{TemplateBinding Foreground}"
+                            CornerRadius="2" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentRankingTotalLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.ContentRankingTotalValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="Dashboard.ContentRankingItemTemplate" DataType="models:DashboardContentRankingItem">
+        <Grid Height="36">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="21" />
+                <RowDefinition Height="7" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding Name}" Theme="{StaticResource Dashboard.ContentRankingName}" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="{Binding Value, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" Theme="{StaticResource Dashboard.ContentRankingValue}" />
+                <TextBlock Text=" (" Theme="{StaticResource Dashboard.ContentRankingValue}" />
+                <TextBlock Text="{Binding SharePercentage, StringFormat='{}{0:N1}%'}" Theme="{StaticResource Dashboard.ContentRankingValue}" />
+                <TextBlock Text=")" Theme="{StaticResource Dashboard.ContentRankingValue}" />
+            </StackPanel>
+            <ProgressBar Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         Value="{Binding BarPercentage, Mode=OneWay}"
+                         Foreground="{Binding Brush, Converter={x:Static conv:CompatBrushConverter.Instance}}"
+                         Theme="{StaticResource Dashboard.ContentRankingBar}" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.LootItemTemplate" DataType="models:DashboardLootItem">
+        <Border MinHeight="52"
+                Margin="0,0,0,5"
+                Padding="6,4"
+                Background="{DynamicResource SolidColorBrush.Background.2}"
+                BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                BorderThickness="1"
+                CornerRadius="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="44" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Image Width="40"
+                       Height="40"
+                       Source="{Binding Item?.Icon, Mode=OneWay}"
+                       Stretch="Uniform" />
+                <StackPanel Grid.Column="1" Margin="7,0,10,0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Item?.LocalizedName}"
+                               Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip.Tip="{Binding Item?.LocalizedName}" />
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" IsVisible="{Binding ShowQuantity}">
+                            <TextBlock Text="x" Foreground="{DynamicResource SolidColorBrush.Text.4}" FontSize="11" />
+                            <TextBlock Text="{Binding Quantity, StringFormat='{}{0:N0}', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                                       Foreground="{DynamicResource SolidColorBrush.Text.4}"
+                                       FontSize="11" />
+                            <TextBlock Text="  |  " Foreground="{DynamicResource SolidColorBrush.Text.5}" FontSize="11" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding LootedAtLocal, StringFormat='{}{0:g}'}"
+                                   Foreground="{DynamicResource SolidColorBrush.Text.4}"
+                                   FontSize="11" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="14" Height="14" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding DisplayValue, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                               Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.LootAreaTemplate" DataType="models:DashboardLootAreaItem">
+        <Border MinHeight="40"
+                Margin="0,0,0,5"
+                Padding="8,5"
+                Background="{DynamicResource SolidColorBrush.Background.2}"
+                BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                BorderThickness="1"
+                CornerRadius="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="34" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="70" />
+                </Grid.ColumnDefinitions>
+                <Grid Width="26" Height="26" VerticalAlignment="Center">
+                    <Image Source="{Binding IconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}" Stretch="Uniform" IsVisible="{Binding DungeonMode, Converter={x:Static ObjectConverters.NotEqual}, ConverterParameter={x:Static dungeon:DungeonMode.DragonArea}}">
+                    </Image>
+                    <fa:FontAwesomeImage Icon="SolidDungeon" Foreground="{DynamicResource SolidColorBrush.Dungeon.Mode.DragonArea.1}" IsVisible="{Binding DungeonMode, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static dungeon:DungeonMode.DragonArea}}">
+                    </fa:FontAwesomeImage>
+                </Grid>
+                <TextBlock Grid.Column="1"
+                           Margin="7,0,10,0"
+                           Text="{Binding Name}"
+                           Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center"
+                           ToolTip.Tip="{Binding Name}" />
+                <TextBlock Grid.Column="5"
+                           Text="{Binding ItemCount, StringFormat='{}{0:N0}', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                           Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                           FontSize="12"
+                           TextAlignment="Right"
+                           VerticalAlignment="Center" />
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="14" Height="14" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding TotalValue, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                               Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="14" Height="14" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding LootPerHour, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                               Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                               FontSize="12"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="14" Height="14" Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding LootPerMap, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                               Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                               FontSize="12"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock Grid.Column="6"
+                           Text="{Binding VisitCount, StringFormat='{}{0:N0}', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                           Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                           FontSize="12"
+                           TextAlignment="Right"
+                           VerticalAlignment="Center" />
+                <TextBlock Grid.Column="7"
+                           Text="{Binding SharePercentage, StringFormat='{}{0:N1} %', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
+                           Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                           FontSize="12"
+                           TextAlignment="Right"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <ControlTheme x:Key="Dashboard.CombatMetricCard" TargetType="Border" BasedOn="{StaticResource Dashboard.SummaryCard}">
+        <Setter Property="MinHeight" Value="96" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="Padding" Value="14,12" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.T.2}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CombatMetricTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CombatMetricValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="25" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CombatCardTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CombatColumnHeader" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.5}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CombatRowText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="Dashboard.CombatLocationItemTemplate" DataType="models:DashboardCombatLocationItem">
+        <Grid MinHeight="39" Margin="0,0,0,2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="27" />
+                <RowDefinition Height="6" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="28" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="125" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Image Width="18" Height="18" Source="{Binding IconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{Binding Name}" Theme="{StaticResource Dashboard.CombatRowText}" Margin="0,0,8,0" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Count, StringFormat='{}{0:N0}', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}" Theme="{StaticResource Dashboard.CombatRowText}" />
+                <TextBlock Text=" (" Theme="{StaticResource Dashboard.CombatRowText}" />
+                <TextBlock Text="{Binding SharePercentage, StringFormat='{}{0:N1}%'}" Theme="{StaticResource Dashboard.CombatRowText}" />
+                <TextBlock Text=")" Theme="{StaticResource Dashboard.CombatRowText}" />
+            </StackPanel>
+            <TextBlock Grid.Column="3" Margin="0,0,12,0" Text="{Binding EstimatedLootValue, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" Theme="{StaticResource Dashboard.CombatRowText}" TextAlignment="Right" />
+            <ProgressBar Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Value="{Binding BarPercentage, Mode=OneWay}" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" Theme="{StaticResource Dashboard.ContentRankingBar}" />
+        </Grid>
+    </DataTemplate>
+
+    <ControlTheme x:Key="Dashboard.CombatResultText" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Green.2}" />
+        <Style Selector="^.negative"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CombatEventExpander" TargetType="Expander">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border BorderBrush="{DynamicResource SolidColorBrush.Background.4}" BorderThickness="0,0,0,1">
+                    <DockPanel LastChildFill="True">
+                        <!-- The header is the toggle button: its template draws the header content and the chevron. -->
+                        <ToggleButton x:Name="PART_ToggleButton" DockPanel.Dock="Top" Theme="{StaticResource Dashboard.CombatEventExpander.Toggle}"
+                                      IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+                                      Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <ContentPresenter x:Name="CombatEventContent" IsVisible="{TemplateBinding IsExpanded}"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.CombatEventExpander.Toggle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="CombatEventExpandIconHeader" Padding="0" Background="{TemplateBinding Background}">
+                    <Grid>
+                        <ContentPresenter Margin="0,0,42,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <Border Width="26" Height="26" Margin="0,0,7,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Background="{DynamicResource SolidColorBrush.Background.3}" CornerRadius="13">
+                            <fa:FontAwesomeImage x:Name="CombatEventExpandIcon" Width="10" Height="10" Icon="SolidChevronDown"
+                                                 Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+                        </Border>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:checked /template/ fa|FontAwesomeImage#CombatEventExpandIcon"><Setter Property="Icon" Value="SolidChevronUp" /></Style>
+        <Style Selector="^:checked /template/ Border#CombatEventExpandIconHeader"><Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" /></Style>
+        <Style Selector="^:pointerover /template/ Border#CombatEventExpandIconHeader"><Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" /></Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="Dashboard.CombatPlayerItemTemplate" DataType="models:DashboardCombatPlayerItem">
+        <Grid MinHeight="44">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="180" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="105" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Margin="0,0,12,0"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                       Text="{Binding Name}"
+                       TextTrimming="CharacterEllipsis" />
+            <ItemsControl Grid.Column="1" VerticalAlignment="Center" ItemsSource="{Binding Equipment}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="36"
+                                Height="36"
+                                Margin="0,0,4,0"
+                                Padding="2"
+                                Background="{DynamicResource SolidColorBrush.Background.3}"
+                                BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                                BorderThickness="1"
+                                CornerRadius="3">
+                            <Image Source="{Binding Icon, Mode=OneWay}"
+                                   Stretch="Uniform"
+                                   ToolTip.Tip="{Binding LocalizedName, Mode=OneWay}" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                <Image Width="14" Height="14" Margin="0,0,5,0" Source="avares://StatisticsAnalysisTool/Resources/silver.png" />
+                <TextBlock VerticalAlignment="Center"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                           Text="{Binding EstimatedValue, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}" />
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Dashboard.CombatEventItemTemplate" DataType="models:DashboardCombatEventItem">
+        <Expander IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Theme="{StaticResource Dashboard.CombatEventExpander}">
+            <Expander.Header>
+                <Grid MinHeight="34">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="115" />
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="90" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding RelativeTime}" Theme="{StaticResource Dashboard.CombatRowText}" />
+                    <TextBlock Grid.Column="1" Text="{Binding Result}" Theme="{StaticResource Dashboard.CombatResultText}" Classes.negative="{Binding IsPositiveResult, Converter={x:Static BoolConverters.Not}}" />
+                    <TextBlock Grid.Column="2" Text="{Binding MapName}" Theme="{StaticResource Dashboard.CombatRowText}" Margin="0,0,12,0" />
+                    <TextBlock Grid.Column="3" Text="{Binding OpponentName}" Theme="{StaticResource Dashboard.CombatRowText}" />
+                    <TextBlock Grid.Column="4"
+                               Text="{Binding EstimatedValue, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                               Theme="{StaticResource Dashboard.CombatRowText}"
+                               TextAlignment="Right" />
+                </Grid>
+            </Expander.Header>
+            <Border Padding="14,10"
+                    Background="{DynamicResource SolidColorBrush.Background.1}"
+                    BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                    BorderThickness="0,1,0,0">
+                <StackPanel>
+                    <ContentControl Content="{Binding Killer}" ContentTemplate="{StaticResource Dashboard.CombatPlayerItemTemplate}" />
+                    <Border Margin="0,5"
+                            Padding="0,4"
+                            BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                            BorderThickness="0,1,0,1">
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}"
+                                   Text="VS" />
+                    </Border>
+                    <ContentControl Content="{Binding Victim}" ContentTemplate="{StaticResource Dashboard.CombatPlayerItemTemplate}" />
+                </StackPanel>
+            </Border>
+        </Expander>
+    </DataTemplate>
+
+    <DataTemplate x:Key="KillDeathStatsTemplate" DataType="bindingModel:DashboardBindings">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="1.65*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Theme="{StaticResource Dashboard.MetricCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="27" />
+                        <RowDefinition Height="27" />
+                        <RowDefinition Height="27" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.ColumnSpan="2" Text="{Binding TranslationSoloKills, FallbackValue=SOLO_KILLS}" Theme="{StaticResource Dashboard.MetricTitle}" />
+                    <TextBlock Grid.Row="1" Text="{Binding TranslationToday, FallbackValue=TODAY}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SoloKillsToday, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                    <TextBlock Grid.Row="2" Text="{Binding TranslationWeek, FallbackValue=WEEK}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SoloKillsThisWeek, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                    <TextBlock Grid.Row="3" Text="{Binding TranslationMonth, FallbackValue=MONTH}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SoloKillsThisMonth, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Theme="{StaticResource Dashboard.MetricCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="27" />
+                        <RowDefinition Height="27" />
+                        <RowDefinition Height="27" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.ColumnSpan="2" Text="{Binding TranslationKills, FallbackValue=KILLS}" Theme="{StaticResource Dashboard.MetricTitle}" />
+                    <TextBlock Grid.Row="1" Text="{Binding TranslationToday, FallbackValue=TODAY}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding KillsToday, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                    <TextBlock Grid.Row="2" Text="{Binding TranslationWeek, FallbackValue=WEEK}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding KillsThisWeek, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                    <TextBlock Grid.Row="3" Text="{Binding TranslationMonth, FallbackValue=MONTH}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding KillsThisMonth, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Theme="{StaticResource Dashboard.MetricCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="27" />
+                        <RowDefinition Height="27" />
+                        <RowDefinition Height="27" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.ColumnSpan="2" Text="{Binding TranslationDeaths, FallbackValue=DEATHS}" Theme="{StaticResource Dashboard.MetricTitle}" Foreground="{DynamicResource SolidColorBrush.Accent.Red.2}" />
+                    <TextBlock Grid.Row="1" Text="{Binding TranslationToday, FallbackValue=TODAY}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DeathsToday, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue.Death}" />
+                    <TextBlock Grid.Row="2" Text="{Binding TranslationWeek, FallbackValue=WEEK}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DeathsThisWeek, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue.Death}" />
+                    <TextBlock Grid.Row="3" Text="{Binding TranslationMonth, FallbackValue=MONTH}" Theme="{StaticResource Dashboard.MetricLabel}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DeathsThisMonth, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue.Death}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="3" Theme="{StaticResource Dashboard.MetricCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding TranslationAverageItemPowerWhenKilling, FallbackValue=AVERAGE_ITEM_POWER_WHEN_KILLING}" Theme="{StaticResource Dashboard.MetricLabel}" TextWrapping="Wrap" Margin="0,0,10,0" />
+                    <TextBlock Grid.Column="1" Text="{Binding AverageItemPowerWhenKilling, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                    <TextBlock Grid.Row="1" Text="{Binding TranslationAverageItemPowerOfTheKilledEnemies, FallbackValue=AVERAGE_ITEM_POWER_OF_KILLED_ENEMIES}" Theme="{StaticResource Dashboard.MetricLabel}" TextWrapping="Wrap" Margin="0,0,10,0" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AverageItemPowerOfTheKilledEnemies, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                    <TextBlock Grid.Row="2" Text="{Binding TranslationAverageItemPowerWhenDying, FallbackValue=AVERAGE_ITEM_POWER_WHEN_DYING}" Theme="{StaticResource Dashboard.MetricLabel}" TextWrapping="Wrap" Margin="0,0,10,0" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding AverageItemPowerWhenDying, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.MetricValue}" />
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Row="1" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,5,0">
+                <TextBlock Text="{Binding TranslationDataFromAlbionOnlineServers, StringFormat='{}*{0}', FallbackValue=DATA_FROM_ALBION_ONLINE_SERVERS}" FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.5}" />
+                <TextBlock Text="  |  " FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.5}" />
+                <TextBlock Text="{Binding TranslationLastUpdate, StringFormat='{}{0}: ', FallbackValue=LAST_UPDATE:}" FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.5}" />
+                <TextBlock Text="{Binding LastUpdate, StringFormat='{}{0:HH:mm:ss} UTC', ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue='-- UTC'}" FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.5}" />
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SilverCostForReSpecTemplate" DataType="bindingModel:DashboardBindings">
+        <StackPanel>
+            <Border Theme="{StaticResource Dashboard.EconomySummaryCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="avares://StatisticsAnalysisTool/Resources/respec.png" Width="24" Height="24" Theme="{StaticResource Dashboard.SummaryImage}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding TranslationReSpec, FallbackValue=RESPEC}" Theme="{StaticResource Dashboard.SummaryTitle}" />
+                        <ContentControl Content="{Binding EconomyReSpecSummary}"
+                                        ContentTemplate="{StaticResource Dashboard.SummaryMetricTemplate}"
+                                        HorizontalContentAlignment="Stretch" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <UniformGrid Columns="{Binding ReSpecDetailColumnCount}">
+                <Border Theme="{StaticResource Dashboard.EconomyDetailCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TranslationSilverSpentOnReSpec, FallbackValue=SILVER_SPENT_ON_RESPEC}" Theme="{StaticResource Dashboard.CostLabel}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="16" Height="16" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding ReSpecSilverCost, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.CostValue}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Theme="{StaticResource Dashboard.EconomyDetailCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TranslationAverageReSpecSilverCostPerSession, FallbackValue=AVERAGE_RESPEC_SILVER_COST_PER_SESSION}" Theme="{StaticResource Dashboard.CostLabel}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="16" Height="16" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding AverageReSpecSilverCostPerSession, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.CostValue}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Theme="{StaticResource Dashboard.EconomyDetailCard}" IsVisible="{Binding SpentReSpecVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TranslationSpentReSpec, FallbackValue=SPENT_RESPEC}" Theme="{StaticResource Dashboard.CostLabel}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Image Source="avares://StatisticsAnalysisTool/Resources/respec.png" Width="16" Height="16" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding SpentReSpec, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.CostValue}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ItemQualityRerollTemplate" DataType="bindingModel:DashboardBindings">
+        <StackPanel>
+            <Border Theme="{StaticResource Dashboard.EconomySummaryCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="26" Height="26" Theme="{StaticResource Dashboard.SummaryImage}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding TranslationSilverSpentOnRefiningItemQuality, FallbackValue=SILVER_SPENT_ON_REFINING_ITEM_QUALITY}"
+                                   Theme="{StaticResource Dashboard.SummaryTitle}" />
+                        <ContentControl Content="{Binding ItemQualityRerollCostsSummary}"
+                                        ContentTemplate="{StaticResource Dashboard.SummaryMetricTemplate}"
+                                        HorizontalContentAlignment="Stretch" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Margin="24,0,8,0" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding TranslationItemsUpgraded, FallbackValue=ITEMS_UPGRADED}"
+                                   Theme="{StaticResource Dashboard.SummaryTitle}" HorizontalAlignment="Right" />
+                        <TextBlock Text="{Binding TotalItemQualityRerollCount, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                   Theme="{StaticResource Dashboard.SummaryValue}" HorizontalAlignment="Right" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Theme="{StaticResource Dashboard.EconomyDetailCard}" Margin="0">
+                <UniformGrid Columns="4">
+                    <StackPanel ToolTip.Tip="{Binding TranslationGood}" HorizontalAlignment="Center">
+                        <Grid Width="64" Height="64">
+                            <Image Source="avares://StatisticsAnalysisTool/Assets/quality_border_good.png" Stretch="Uniform" />
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding GoodItemQualityRerollCount, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                           FontSize="17" FontWeight="Bold" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding GoodItemQualityRerollPercentage, StringFormat='{}{0:N1}%', FallbackValue=0}"
+                                           FontSize="10" Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                                           HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="{Binding TranslationGood}" FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                                   HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                    <StackPanel ToolTip.Tip="{Binding TranslationOutstanding}" HorizontalAlignment="Center">
+                        <Grid Width="64" Height="64">
+                            <Image Source="avares://StatisticsAnalysisTool/Assets/quality_border_outstanding.png" Stretch="Uniform" />
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding OutstandingItemQualityRerollCount, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                           FontSize="17" FontWeight="Bold" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding OutstandingItemQualityRerollPercentage, StringFormat='{}{0:N1}%', FallbackValue=0}"
+                                           FontSize="10" Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                                           HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="{Binding TranslationOutstanding}" FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                                   HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                    <StackPanel ToolTip.Tip="{Binding TranslationExcellent}" HorizontalAlignment="Center">
+                        <Grid Width="64" Height="64">
+                            <Image Source="avares://StatisticsAnalysisTool/Assets/quality_border_excellent.png" Stretch="Uniform" />
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ExcellentItemQualityRerollCount, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                           FontSize="17" FontWeight="Bold" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding ExcellentItemQualityRerollPercentage, StringFormat='{}{0:N1}%', FallbackValue=0}"
+                                           FontSize="10" Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                                           HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="{Binding TranslationExcellent}" FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                                   HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                    <StackPanel ToolTip.Tip="{Binding TranslationMasterpiece}" HorizontalAlignment="Center">
+                        <Grid Width="64" Height="64">
+                            <Image Source="avares://StatisticsAnalysisTool/Assets/quality_border_masterpiece.png" Stretch="Uniform" />
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding MasterpieceItemQualityRerollCount, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                           FontSize="17" FontWeight="Bold" Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding MasterpieceItemQualityRerollPercentage, StringFormat='{}{0:N1}%', FallbackValue=0}"
+                                           FontSize="10" Foreground="{DynamicResource SolidColorBrush.Text.3}"
+                                           HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="{Binding TranslationMasterpiece}" FontSize="11" Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                                   HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                </UniformGrid>
+            </Border>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="AwakenedWeaponTemplate" DataType="bindingModel:DashboardBindings">
+        <StackPanel>
+            <Border Theme="{StaticResource Dashboard.EconomySummaryCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="26" Height="26" Theme="{StaticResource Dashboard.SummaryImage}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding TranslationSilverSpentOnAwakenedWeapons, FallbackValue=SILVER_SPENT_ON_AWAKENED_WEAPONS}"
+                                   Theme="{StaticResource Dashboard.SummaryTitle}" />
+                        <ContentControl Content="{Binding AwakenedWeaponCostsSummary}"
+                                        ContentTemplate="{StaticResource Dashboard.SummaryMetricTemplate}"
+                                        HorizontalContentAlignment="Stretch" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <UniformGrid Columns="2">
+                <Border Theme="{StaticResource Dashboard.EconomyDetailCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TranslationTraitsUpgraded, FallbackValue=TRAITS_UPGRADED}"
+                                   Theme="{StaticResource Dashboard.CostLabel}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <fa:FontAwesomeImage Icon="SolidPlus" Width="16" Height="16" Margin="0,0,5,0"
+                                              Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                            <TextBlock Text="{Binding AwakenedWeaponTraitUpgradeCount, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.CostValue}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Theme="{StaticResource Dashboard.EconomyDetailCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TranslationTraitUpgradeProcs, FallbackValue=TRAIT_UPGRADE_PROCS}"
+                                   Theme="{StaticResource Dashboard.CostLabel}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <fa:FontAwesomeImage Icon="SolidBolt" Width="16" Height="16" Margin="0,0,5,0"
+                                              Foreground="{DynamicResource SolidColorBrush.Text.2}" />
+                            <TextBlock Text="{Binding AwakenedWeaponTraitUpgradeProcCount, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.CostValue}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RepairCostsTemplate" DataType="bindingModel:DashboardBindings">
+        <StackPanel>
+            <Border Theme="{StaticResource Dashboard.EconomySummaryCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image Source="avares://StatisticsAnalysisTool/Assets/repair_cross.png" Width="26" Height="26" Theme="{StaticResource Dashboard.SummaryImage}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding TranslationRepairCosts, FallbackValue=REPAIR_COSTS}" Theme="{StaticResource Dashboard.SummaryTitle}" />
+                        <ContentControl Content="{Binding RepairCostsSummary}"
+                                        ContentTemplate="{StaticResource Dashboard.SummaryMetricTemplate}"
+                                        HorizontalContentAlignment="Stretch" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <UniformGrid Columns="2">
+                <Border Theme="{StaticResource Dashboard.EconomyDetailCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TranslationAverageRepairCostPerSession, FallbackValue=AVERAGE_REPAIR_COST_PER_SESSION}" Theme="{StaticResource Dashboard.CostLabel}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="16" Height="16" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding AverageRepairCostPerSession, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.CostValue}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Theme="{StaticResource Dashboard.EconomyDetailCard}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TranslationHighestRepairCost, FallbackValue=HIGHEST_REPAIR_COST}" Theme="{StaticResource Dashboard.CostLabel}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="16" Height="16" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding HighestRepairCost, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.CostValue}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </DataTemplate>
+
+    <ControlTheme x:Key="Dashboard.LootedChestTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.LootedChestTotalValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="25" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.LootedChestRarityValue" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,3,0,0" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="Dashboard.LootedChestContentTemplate" DataType="models:DashboardLootedChestContentStatistics">
+        <Border MinHeight="150" Margin="5" Padding="12,9,12,8" Theme="{StaticResource Dashboard.Card}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="11" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+
+                <DockPanel>
+                    <Grid Width="22" Height="22" Margin="0,0,7,0">
+                        <Image Source="{Binding ContentIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}" Stretch="Uniform" IsVisible="{Binding ContentType, Converter={x:Static ObjectConverters.NotEqual}, ConverterParameter={x:Static models:DashboardContentType.OpenWorld}}">
+                        </Image>
+                        <fa:FontAwesomeImage Icon="SolidEarthEurope"
+                                          Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" IsVisible="{Binding ContentType, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static models:DashboardContentType.OpenWorld}}">
+                        </fa:FontAwesomeImage>
+                    </Grid>
+                    <TextBlock Text="{Binding Name}" Theme="{StaticResource Dashboard.LootedChestTitle}" />
+                </DockPanel>
+
+                <Grid Grid.Row="1"
+                      Margin="0,6,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.35*" />
+                        <ColumnDefinition Width="18" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Margin="3,0,3,0"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="{Binding TotalSummary.Value, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                   Theme="{StaticResource Dashboard.LootedChestTotalValue}" />
+                        <StackPanel DataContext="{Binding TotalSummary}" Orientation="Horizontal">
+                            <TextBlock Text="{Binding ChangeIndicator}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                            <TextBlock Text=" " Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                            <TextBlock Text="{Binding ChangeAmount, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                                       Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                            <TextBlock Text=" (" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                            <TextBlock Text="{Binding ChangePercentageText}" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                            <TextBlock Text=")" Theme="{StaticResource Dashboard.SummaryDeltaText}" Classes.increase="{Binding IsIncrease}" Classes.decrease="{Binding IsDecrease}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Border Grid.Column="1" Width="1" Margin="8,3" Background="{DynamicResource SolidColorBrush.Background.4}" />
+
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Center" ToolTip.Tip="{Binding TranslationOpenedStandardChests}">
+                        <Grid Width="36" Height="36">
+                            <Image Width="{Binding ChestIconSize}"
+                                   Height="{Binding ChestIconSize}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
+                                   Stretch="Uniform" />
+                            <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/green_glow.png" Opacity="0.65" />
+                        </Grid>
+                        <TextBlock Text="{Binding Common, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                   Theme="{StaticResource Dashboard.LootedChestRarityValue}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" HorizontalAlignment="Center" ToolTip.Tip="{Binding TranslationOpenedUncommonChests}">
+                        <Grid Width="36" Height="36">
+                            <Image Width="{Binding ChestIconSize}"
+                                   Height="{Binding ChestIconSize}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
+                                   Stretch="Uniform" />
+                            <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/blue_glow.png" Opacity="0.65" />
+                        </Grid>
+                        <TextBlock Text="{Binding Uncommon, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                   Theme="{StaticResource Dashboard.LootedChestRarityValue}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="4" HorizontalAlignment="Center" ToolTip.Tip="{Binding TranslationOpenedRareChests}">
+                        <Grid Width="36" Height="36">
+                            <Image Width="{Binding ChestIconSize}"
+                                   Height="{Binding ChestIconSize}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
+                                   Stretch="Uniform" />
+                            <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/purple_glow.png" Opacity="0.65" />
+                        </Grid>
+                        <TextBlock Text="{Binding Rare, StringFormat='{}{0:N0}', FallbackValue=0}"
+                                   Theme="{StaticResource Dashboard.LootedChestRarityValue}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="5" HorizontalAlignment="Center" ToolTip.Tip="{Binding TranslationOpenedLegendaryChests}">
+                        <Grid Width="36" Height="36">
+                            <Image Width="{Binding ChestIconSize}"
+                                   Height="{Binding ChestIconSize}"
+                                   Source="{Binding ChestIconSource, Converter={x:Static conv:ImagePathToBitmapConverter.Instance}}"
+                                   Stretch="Uniform" />
+                            <Image Width="36" Height="36" Source="avares://StatisticsAnalysisTool/Assets/gold_glow.png" Opacity="0.65" />
+                        </Grid>
+                        <TextBlock Text="{Binding Legendary, StringFormat='{}{0:N0}', FallbackValue=0}" Theme="{StaticResource Dashboard.LootedChestRarityValue}" />
+                    </StackPanel>
+                </Grid>
+
+                <Border Grid.Row="2" Height="1" Margin="2,9,2,0" Background="{DynamicResource SolidColorBrush.Background.4}" />
+
+                <StackPanel Grid.Row="3" Margin="3,5,3,0" Orientation="Horizontal">
+                    <TextBlock FontSize="11.5" Foreground="{DynamicResource SolidColorBrush.Text.2}" Text="{Binding TranslationAverage}" />
+                    <TextBlock FontSize="11.5" Foreground="{DynamicResource SolidColorBrush.Text.2}" Text=" / " />
+                    <TextBlock FontSize="11.5" Foreground="{DynamicResource SolidColorBrush.Text.2}" Text="{Binding TranslationMaps}" />
+                    <TextBlock Margin="7,0,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}"
+                               Text="{Binding AveragePerMap, StringFormat='{}{0:N2}', FallbackValue=0}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="LootedChestsTemplate" DataType="models:LootedChests">
+        <ItemsControl ItemsSource="{Binding ContentStatistics}" ItemTemplate="{StaticResource Dashboard.LootedChestContentTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="3" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+    <ControlTheme x:Key="Dashboard.MobSummaryCard" TargetType="Border" BasedOn="{StaticResource Dashboard.CombatMetricCard}" />
+
+    <!-- Plain rows (the item content only) for the recent combat events list. -->
+    <ControlTheme x:Key="Dashboard.PlainListItem" TargetType="ListBoxItem">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobListItem" TargetType="ListBoxItem">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobExpander" TargetType="Expander">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{DynamicResource SolidColorBrush.Background.2}" BorderBrush="{DynamicResource SolidColorBrush.Background.4}" BorderThickness="1" CornerRadius="5">
+                    <DockPanel LastChildFill="True">
+                        <!-- The header is the toggle button: its template draws the header content and the chevron. -->
+                        <ToggleButton x:Name="PART_ToggleButton" DockPanel.Dock="Top" Theme="{StaticResource Dashboard.MobExpander.Toggle}"
+                                      IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+                                      Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <ContentPresenter x:Name="MobExpandContent" IsVisible="{TemplateBinding IsExpanded}"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobExpander.Toggle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border x:Name="MobExpandIconHeader" Padding="10,0,10,0" Background="{TemplateBinding Background}">
+                    <Grid>
+                        <ContentPresenter Margin="0,0,38,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <Border Width="28" Height="28" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Background="{DynamicResource SolidColorBrush.Background.3}" CornerRadius="14">
+                            <fa:FontAwesomeImage x:Name="MobExpandIcon" Width="11" Height="11" Icon="SolidChevronDown"
+                                                 Foreground="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+                        </Border>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:checked /template/ fa|FontAwesomeImage#MobExpandIcon"><Setter Property="Icon" Value="SolidChevronUp" /></Style>
+        
+        <Style Selector="^:pointerover /template/ Border#MobExpandIconHeader"><Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobHeaderMetricTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobHeaderMetricValue" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,3,0,0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobTag" TargetType="Border">
+        <Setter Property="Margin" Value="0,0,7,4" />
+        <Setter Property="Padding" Value="9,3" />
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="3" />
+    </ControlTheme>
+    <!-- Tier DataTriggers: the usages set Classes.t1 ... Classes.t8. -->
+    <ControlTheme x:Key="Dashboard.MobTierTag" TargetType="Border" BasedOn="{StaticResource Dashboard.MobTag}">
+        <Style Selector="^.t1"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.1}" /></Style>
+        <Style Selector="^.t2"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.2}" /></Style>
+        <Style Selector="^.t3"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.3}" /></Style>
+        <Style Selector="^.t4"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.4}" /></Style>
+        <Style Selector="^.t5"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.5}" /></Style>
+        <Style Selector="^.t6"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.6}" /></Style>
+        <Style Selector="^.t7"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.7}" /></Style>
+        <Style Selector="^.t8"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Item.Tier.Color.8}" /></Style>
+    </ControlTheme>
+
+    <!-- MobTypeCategory DataTriggers: the usages set one class per category. -->
+    <ControlTheme x:Key="Dashboard.MobTypeTag" TargetType="Border" BasedOn="{StaticResource Dashboard.MobTag}">
+        <Style Selector="^.standard"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Standard}" /></Style>
+        <Style Selector="^.boss"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Boss}" /></Style>
+        <Style Selector="^.champion"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Champion}" /></Style>
+        <Style Selector="^.chest"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Chest}" /></Style>
+        <Style Selector="^.critter"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Critter}" /></Style>
+        <Style Selector="^.environment"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Environment}" /></Style>
+        <Style Selector="^.harmless"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Harmless}" /></Style>
+        <Style Selector="^.miniboss"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.MiniBoss}" /></Style>
+        <Style Selector="^.summon"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Summon}" /></Style>
+        <Style Selector="^.trash"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Trash}" /></Style>
+        <Style Selector="^.vanity"><Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.MobType.Vanity}" /></Style>
+    </ControlTheme>
+
+
+    <ControlTheme x:Key="Dashboard.MobTagText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobDetailGroup" TargetType="Border">
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="BorderThickness" Value="0,0,1,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobDetailTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobDetailTitlePanel" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Margin" Value="0,0,0,5" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Dashboard.MobDetailIcon" TargetType="iconPacks:PackIconGameIcons">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="Dashboard.MobDetailValueTemplate">
+        <Grid MinHeight="23">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.ColumnSpan="2"
+                    VerticalAlignment="Bottom"
+                    BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                    BorderThickness="0,0,0,1" />
+            <TextBlock Margin="0,2,8,3"
+                       VerticalAlignment="Center"
+                       FontSize="11"
+                       Foreground="{DynamicResource SolidColorBrush.Text.2}"
+                       Text="{Binding Name}"
+                       TextTrimming="CharacterEllipsis" />
+            <TextBlock Grid.Column="1"
+                       Margin="8,2,0,3"
+                       VerticalAlignment="Center"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                       Text="{Binding Value}"
+                       TextAlignment="Right" />
+        </Grid>
+    </DataTemplate>
+
+  </Styles.Resources>
+
+  <Style Selector="ComboBoxItem Button.session-delete.can-delete"><Setter Property="IsVisible" Value="True" /></Style>
+</Styles>

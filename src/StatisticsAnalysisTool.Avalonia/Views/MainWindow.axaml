@@ -1,0 +1,264 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:userControls="clr-namespace:StatisticsAnalysisTool.UserControls"
+        xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+        x:Class="StatisticsAnalysisTool.Views.MainWindow"
+        x:DataType="viewModels:MainWindowViewModel"
+        mc:Ignorable="d"
+        d:DesignHeight="850" d:DesignWidth="1150"
+        Title="AlbionOnline - StatisticsAnalysisTool"
+        Icon="avares://StatisticsAnalysisTool/Assets/sat-icon.ico"
+        Theme="{StaticResource MainWindowStyle}">
+
+  <Grid Theme="{StaticResource MainGridStyle}">
+    <Grid Theme="{StaticResource BackgroundImageGridStyle}" />
+
+    <Grid x:Name="Hotbar" ZIndex="-1" Theme="{StaticResource MainHeader.Root}" PointerPressed="Hotbar_PointerPressed"
+          RowDefinitions="38,18,33,1" ColumnDefinitions="*,190,90">
+
+      <Grid Grid.RowSpan="4" Grid.ColumnSpan="3" Theme="{StaticResource MainHeader.Background}" />
+
+      <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button x:Name="MinimizeButton" Theme="{StaticResource WindowButtonStyle}" Content="0" Click="MinimizeButton_Click" />
+        <Button x:Name="MaximizedButton" Theme="{StaticResource WindowButtonStyle}" Content="1" Click="MaximizeButton_Click" />
+        <Button IsEnabled="{Binding IsCloseButtonActive}" Theme="{StaticResource WindowButtonStyle}" Content="r" Click="CloseButton_Click" />
+      </StackPanel>
+
+      <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Theme="{StaticResource MainHeader.StatusContainer}">
+        <StackPanel Orientation="Vertical">
+          <TextBlock Text="{Binding Translation.Status, FallbackValue=STATUS}" Theme="{StaticResource MainHeaderStatus.Title}" />
+          <StackPanel Theme="{StaticResource MainHeaderStatus.Row}" Tag="{Binding MainStatusBindings.IsGameDataDetected}">
+            <Ellipse Theme="{StaticResource MainHeaderStatus.Dot}" Classes.detected="{Binding MainStatusBindings.IsGameDataDetected}" />
+            <TextBlock Text="{Binding MainStatusBindings.GameDataStatusText, FallbackValue=WAITING__FOR__GAME__DATA}" Theme="{StaticResource MainHeaderStatus.Text}"
+                       Classes.detected="{Binding MainStatusBindings.IsGameDataDetected}" />
+          </StackPanel>
+          <StackPanel Theme="{StaticResource MainHeaderStatus.Row}" Tag="{Binding MainStatusBindings.IsServerDetected}">
+            <Ellipse Theme="{StaticResource MainHeaderStatus.Dot}" Classes.detected="{Binding MainStatusBindings.IsServerDetected}" />
+            <TextBlock Text="{Binding MainStatusBindings.ServerStatusText, FallbackValue=SERVER__UNDETECTED}" Theme="{StaticResource MainHeaderStatus.Text}"
+                       Classes.detected="{Binding MainStatusBindings.IsServerDetected}" />
+          </StackPanel>
+          <StackPanel Theme="{StaticResource MainHeaderStatus.Row}" Tag="{Binding MainStatusBindings.IsCharacterDetected}">
+            <Ellipse Theme="{StaticResource MainHeaderStatus.Dot}" Classes.detected="{Binding MainStatusBindings.IsCharacterDetected}" />
+            <TextBlock Text="{Binding MainStatusBindings.CharacterStatusText, FallbackValue=CHARACTER__UNDETECTED}" Theme="{StaticResource MainHeaderStatus.Text}"
+                       Classes.detected="{Binding MainStatusBindings.IsCharacterDetected}" />
+          </StackPanel>
+          <StackPanel Theme="{StaticResource MainHeaderStatus.Row}" Tag="{Binding MainStatusBindings.IsLocationDetected}">
+            <Ellipse Theme="{StaticResource MainHeaderStatus.Dot}" Classes.detected="{Binding MainStatusBindings.IsLocationDetected}" />
+            <TextBlock Text="{Binding MainStatusBindings.LocationStatusText, FallbackValue=LOCATION__UNDETECTED}" Theme="{StaticResource MainHeaderStatus.Text}"
+                       Classes.detected="{Binding MainStatusBindings.IsLocationDetected}" />
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="40,*">
+        <Image Grid.Column="0" Theme="{StaticResource Image.ToolIcon}" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Height="38">
+          <Label Content="AlbionOnline - STATISTICS ANALYSIS TOOL" Theme="{StaticResource MainWindow.Title}" />
+          <!-- Upstream shows this when Environment.OSVersion.Version.Major < 10 (Windows 7/8). On Linux that is the kernel
+               version, so the warning would always show; it is never visible here. -->
+          <Grid IsVisible="False"
+                Height="20" Width="20" VerticalAlignment="Center" ToolTip.Tip="{Binding Translation.UnsupportedOs, FallbackValue='UNSUPPORTED_OS'}">
+            <fa:FontAwesomeImage Icon="SolidTriangleExclamation" Foreground="{DynamicResource SolidColorBrush.Accent.Red.3}" />
+          </Grid>
+          <Label Content="- DEBUG -" Theme="{StaticResource MainWindow.Title}" Foreground="{DynamicResource SolidColorBrush.Accent.Red.3}"
+                 IsVisible="{Binding DebugModeVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" />
+          <Grid Theme="{StaticResource LoadingIconGridStyle}">
+            <fa:FontAwesomeImage IsVisible="{Binding LoadIconVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Theme="{StaticResource LoadingIconStyle}" />
+          </Grid>
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="1" Grid.Column="0" Margin="10,0,10,0" ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" Orientation="Horizontal">
+          <StackPanel Orientation="Horizontal" IsVisible="{Binding UserTrackingBindings.UsernameInformationVisibility, FallbackValue=True, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+            <Label Theme="{StaticResource HeaderStyle.Tracking.Title}" Content="{Binding Translation.Username, FallbackValue=USERNAME, StringFormat='{}{0}: '}" />
+            <Label Theme="{StaticResource HeaderStyle.Tracking.Content}" Content="{Binding UserTrackingBindings.Username, FallbackValue=USERNAME}" />
+            <Grid IsVisible="{Binding TrackingActivityBindings.CharacterIsNotTrackedInfoVisibility, FallbackValue=True, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Margin="3,0,0,0" Height="12" Width="12"
+                  ToolTip.Tip="{Binding Translation.ThisCharacterIsNotTracked, FallbackValue=THIS_CHARACTER_IS_NOT_TRACKED}">
+              <fa:FontAwesomeImage Icon="SolidTriangleExclamation" Foreground="{DynamicResource SolidColorBrush.Accent.Yellow.1}" Margin="0,2,0,0" />
+            </Grid>
+            <TextBlock Text="|" Theme="{StaticResource MainHeader.TrackingSeparator}" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" IsVisible="{Binding UserTrackingBindings.GuildInformationVisibility, FallbackValue=True, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+            <Label Theme="{StaticResource HeaderStyle.Tracking.Title}" Content="{Binding Translation.GuildCap, FallbackValue=GUILD, StringFormat='{}{0}: '}" />
+            <Label Theme="{StaticResource HeaderStyle.Tracking.Content}" Content="{Binding UserTrackingBindings.GuildName, FallbackValue=GUILD__NAME}" />
+            <TextBlock Text="|" Theme="{StaticResource MainHeader.TrackingSeparator}" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" IsVisible="{Binding UserTrackingBindings.AllianceInformationVisibility, FallbackValue=True, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+            <Label Theme="{StaticResource HeaderStyle.Tracking.Title}" Content="{Binding Translation.Alliance, FallbackValue=ALLIANCE, StringFormat='{}{0}: '}" />
+            <Label Theme="{StaticResource HeaderStyle.Tracking.Content}" Content="{Binding UserTrackingBindings.AllianceName, FallbackValue=ALLIANCE__NAME}" />
+            <TextBlock Text="|" Theme="{StaticResource MainHeader.TrackingSeparator}" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" IsVisible="{Binding UserTrackingBindings.CurrentMapInfoBinding.CurrentMapInformationVisibility, FallbackValue=True, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+            <Label Theme="{StaticResource HeaderStyle.Tracking.Title}" Content="{Binding Translation.CurrentMap, FallbackValue=CURRENT__MAP, StringFormat='{}{0}: '}" />
+            <ContentControl Content="{Binding UserTrackingBindings.CurrentMapInfoBinding}" ContentTemplate="{StaticResource CurrentMapInfoTemplate}" />
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="2" Grid.Column="0" Margin="10,0,10,0" ColumnDefinitions="Auto,Auto,*">
+        <Label Grid.Column="0" Content="{Binding PartyMemberNumber, FallbackValue=0}" Theme="{StaticResource MainHeader.PartyCount}" />
+        <Grid Grid.Column="1" Theme="{StaticResource MainHeader.PartyCopyButton}" PointerPressed="CopyPartyToClipboard_PointerPressed">
+          <fa:FontAwesomeImage Icon="SolidUsers" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+        </Grid>
+        <ItemsControl Grid.Column="2" ItemsSource="{Binding PartyMemberCircles}" Theme="{StaticResource MainHeader.PartyMembers}" />
+      </Grid>
+
+      <Grid Grid.Row="2" Grid.ColumnSpan="3" Grid.Column="0" Width="24" HorizontalAlignment="Center" Background="Transparent" Cursor="Hand"
+            PointerPressed="TatsDropDownOpenClose_PointerPressed">
+        <fa:FontAwesomeImage Icon="SolidAnglesDown" Foreground="{DynamicResource SolidColorBrush.Text.1}" Width="10" Height="10" Margin="0,0,0,2" VerticalAlignment="Bottom" />
+      </Grid>
+
+      <ProgressBar Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0" Minimum="0" Maximum="100" Value="{Binding ToolTaskProgressBarValue, FallbackValue=0}" />
+
+      <Label Grid.Row="2" Grid.Column="2" x:Name="ApplicationUptimeLabel" HorizontalAlignment="Right" Margin="0,0,10,12" Theme="{StaticResource HeaderStyle.Tracking.Content}" Content="00:00:00" />
+    </Grid>
+
+    <!-- Stats drop down -->
+    <Grid ZIndex="3" Height="90" MaxWidth="500" Margin="0,90,5,0" HorizontalAlignment="Center" VerticalAlignment="Top"
+          Background="{DynamicResource SolidColorBrush.Background.3}"
+          IsVisible="{Binding StatsDropDownVisibility, FallbackValue=True, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}">
+      <Border BorderBrush="{DynamicResource SolidColorBrush.Text.7}" BorderThickness="1">
+        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+        <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+          <Image Source="avares://StatisticsAnalysisTool/Resources/fame.png" Width="22" Height="22" ToolTip.Tip="{Binding Translation.Fame, FallbackValue=FAME}" />
+          <TextBlock Text="{Binding DashboardBindings.TotalGainedFameInSession, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                     FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+          <TextBlock FontSize="16" Text="{Binding DashboardBindings.FamePerHour, Converter={StaticResource ValuePerHourConverter}, FallbackValue='0 /h'}"
+                     Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+          <Image Source="avares://StatisticsAnalysisTool/Resources/silver.png" Width="22" Height="22" ToolTip.Tip="{Binding Translation.Silver, FallbackValue=SILVER}" />
+          <TextBlock Text="{Binding DashboardBindings.TotalGainedSilverInSession, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                     FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+          <TextBlock FontSize="16" Text="{Binding DashboardBindings.SilverPerHour, Converter={StaticResource ValuePerHourConverter}, FallbackValue='0 /h'}"
+                     Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+          <Image Source="avares://StatisticsAnalysisTool/Resources/respec.png" Width="22" Height="22" ToolTip.Tip="{Binding Translation.ReSpec, FallbackValue=RESPEC}" />
+          <TextBlock Text="{Binding DashboardBindings.TotalGainedReSpecPointsInSession, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                     FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+          <TextBlock FontSize="16" Text="{Binding DashboardBindings.ReSpecPointsPerHour, Converter={StaticResource ValuePerHourConverter}, FallbackValue='0 /h'}"
+                     Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+          <Image Source="avares://StatisticsAnalysisTool/Resources/might.png" Width="22" Height="22" ToolTip.Tip="{Binding Translation.Might, FallbackValue=MIGHT}" />
+          <TextBlock Text="{Binding DashboardBindings.TotalGainedMightInSession, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                     FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+          <TextBlock FontSize="16" Text="{Binding DashboardBindings.MightPerHour, Converter={StaticResource ValuePerHourConverter}, FallbackValue='0 /h'}"
+                     Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+          <Image Source="avares://StatisticsAnalysisTool/Resources/favor.png" Width="22" Height="22" ToolTip.Tip="{Binding Translation.Favor, FallbackValue=FAVOR}" />
+          <TextBlock Text="{Binding DashboardBindings.TotalGainedFavorInSession, Converter={StaticResource ShortNumberConverter}, ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}, FallbackValue=0}"
+                     FontSize="16" Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+          <TextBlock FontSize="16" Text="{Binding DashboardBindings.FavorPerHour, Converter={StaticResource ValuePerHourConverter}, FallbackValue='0 /h'}"
+                     Foreground="{DynamicResource SolidColorBrush.Text.1}" HorizontalAlignment="Center" />
+        </StackPanel>
+            <ItemsControl ItemsSource="{Binding FactionPointStats}" ItemTemplate="{StaticResource FactionPointStatsTemplate}" />
+        </DockPanel>
+      </Border>
+    </Grid>
+
+    <TabControl Theme="{StaticResource TabControlStyle}">
+      <TabItem IsVisible="{Binding DashboardTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Dashboard, FallbackValue=DASHBOARD}" Tag="pack://application:,,,/Assets/Navigation/dashboard.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:DashboardControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding ItemSearchTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.ItemSearch, FallbackValue=ITEM__SEARCH}" Tag="pack://application:,,,/Assets/Navigation/magnifying-glass.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:ItemSearchControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding LoggingTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Logging, FallbackValue=LOGGING}" Tag="pack://application:,,,/Assets/Navigation/log.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:LoggingControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding DungeonsTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Dungeons, FallbackValue=DUNGEONS}" Tag="pack://application:,,,/Assets/Navigation/dark.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:DungeonControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding DamageMeterTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.DamageMeter, FallbackValue=DAMAGE__METER}" Tag="pack://application:,,,/Assets/Navigation/bar-chart-rotated.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:DamageMeterControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding TradeMonitoringTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.TradeMonitoring, FallbackValue=TRADE__MONITORING}" Tag="pack://application:,,,/Assets/Navigation/market.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:TradeMonitoringControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding GatheringTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Gathering, FallbackValue=GATHERING}" Tag="pack://application:,,,/Assets/Navigation/pickaxe.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:GatheringControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding CraftingTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Crafting, FallbackValue=CRAFTING}" Tag="pack://application:,,,/Assets/Navigation/anvil.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:CraftingControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding PartyTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Party, FallbackValue=PARTY}" Tag="pack://application:,,,/Assets/Navigation/teamwork.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:PartyControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding GuildTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.Guild, FallbackValue=GUILD}" Tag="pack://application:,,,/Assets/Navigation/shield.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:GuildControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding StorageHistoryTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.StorageHistory, FallbackValue=STORAGE_HISTORY}" Tag="pack://application:,,,/Assets/Navigation/treasure.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:StorageHistoryControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding MapHistoryTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.MapHistory, FallbackValue=MAP__HISTORY}" Tag="pack://application:,,,/Assets/Navigation/location.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:MapHistoryControl />
+        </Grid>
+      </TabItem>
+      <TabItem IsVisible="{Binding PlayerInformationTabVisibility, Mode=OneWay, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}" Header="{Binding Translation.PlayerInformation, FallbackValue=PLAYER__INFORMATION}" Tag="pack://application:,,,/Assets/Navigation/baseball-player.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:PlayerInformationControl />
+        </Grid>
+      </TabItem>
+      <TabItem Theme="{StaticResource ItemContainerDonationStyle}" Header="{Binding Translation.Donations, FallbackValue=DONATIONS}" Tag="pack://application:,,,/Assets/Navigation/money.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:DonationControl />
+        </Grid>
+      </TabItem>
+      <TabItem Theme="{StaticResource ItemContainerThanksStyle}" Header="{Binding Translation.Thanks, FallbackValue=THANKS}" Tag="pack://application:,,,/Assets/heart.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:ThanksControl />
+        </Grid>
+      </TabItem>
+      <TabItem Header="{Binding Translation.Settings, FallbackValue=SETTINGS}" Tag="pack://application:,,,/Assets/Navigation/setting.png">
+        <Grid Theme="{StaticResource TabItemGridStyle}">
+          <userControls:SettingsControl />
+        </Grid>
+      </TabItem>
+    </TabControl>
+
+    <userControls:FooterControl VerticalAlignment="Bottom" Height="40" />
+    <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+      <userControls:ErrorBarControl VerticalAlignment="Bottom" IsVisible="{Binding ErrorBarVisibility, FallbackValue=False, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                                    ErrorText="{Binding ErrorBarText}" ErrorException="{Binding ErrorBarException}" />
+      <userControls:WarningBarControl VerticalAlignment="Bottom" IsVisible="{Binding WarningBarVisibility, FallbackValue=False, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                                      WarningText="{Binding WarningBarText}" />
+      <userControls:InformationBarControl VerticalAlignment="Bottom" IsVisible="{Binding InformationBarVisibility, FallbackValue=False, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                                          InformationText="{Binding InformationBarText}" />
+    </StackPanel>
+
+    <!-- Resize handles of the borderless window (WPF ResizeMode=CanResizeWithGrip): edges, corners and the grip. -->
+    <fa:WindowResizeHandles x:Name="ResizeHandles" />
+  </Grid>
+</Window>

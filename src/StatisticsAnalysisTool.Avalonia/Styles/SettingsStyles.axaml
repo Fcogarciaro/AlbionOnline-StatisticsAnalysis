@@ -1,0 +1,124 @@
+<!-- Port of Styles/SettingsStyles.xaml. Settings.Card is based on Dashboard.Section and Settings.CardTitle on Dashboard.SectionTitle
+     (DashboardStyles.axaml, which Theme.axaml includes before this file). -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="Settings.Card" TargetType="Border" BasedOn="{StaticResource Dashboard.Section}">
+      <Setter Property="Margin" Value="0,0,0,8" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.CardHeader" TargetType="Border">
+      <Setter Property="Padding" Value="14,10" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.CardTitle" TargetType="TextBlock" BasedOn="{StaticResource Dashboard.SectionTitle}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+      <Setter Property="FontSize" Value="16" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.Field" TargetType="StackPanel">
+      <Setter Property="Margin" Value="0,0,0,10" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.FieldLabel" TargetType="TextBlock" BasedOn="{StaticResource App.FilterLabel}">
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.ComboBox" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.TextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <!-- WPF draws a red border for a failed ValidationRule; the view sets the class from PathValidationRule. -->
+      <Style Selector="^.invalid">
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Red.3}" />
+        <Setter Property="BorderThickness" Value="1" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.Button" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="MinWidth" Value="120" />
+      <Setter Property="Padding" Value="10,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.WarningText" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Yellow.1}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Margin" Value="0,5,0,0" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.DangerText" TargetType="TextBlock" BasedOn="{StaticResource Settings.WarningText}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.3}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.OptionCheckBox" TargetType="CheckBox">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="MinHeight" Value="21" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Grid Background="Transparent" ColumnDefinitions="21,*">
+            <Border x:Name="Border" Width="21" Height="21" VerticalAlignment="Top"
+                    Background="{DynamicResource SolidColorBrush.Background.6}" BorderThickness="3">
+              <Path x:Name="CheckMark" Width="9" Height="9" IsVisible="False"
+                    Data="M 0 4 L 3 8 8 0" Stroke="{DynamicResource SolidColorBrush.Accent.Blue.4}" StrokeThickness="2" />
+            </Border>
+            <ContentPresenter x:Name="PART_ContentPresenter" Grid.Column="1" Margin="8,1,0,0"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Foreground="{TemplateBinding Foreground}"
+                              RecognizesAccessKey="True" />
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:checked /template/ Path#CheckMark">
+        <Setter Property="IsVisible" Value="True" />
+      </Style>
+      <Style Selector="^:indeterminate /template/ Path#CheckMark">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Data" Value="M 0 8 L 8 0" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.6}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Border#Border">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Path#CheckMark">
+        <Setter Property="Stroke" Value="{DynamicResource SolidColorBrush.Text.5}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.OptionTitle" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.DescriptionText" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Margin" Value="0,3,0,0" />
+      <Setter Property="TextWrapping" Value="Wrap" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Settings.Footer" TargetType="Border">
+      <Setter Property="Height" Value="80" />
+      <Setter Property="Padding" Value="10,20" />
+      <Setter Property="Margin" Value="10,0,10,0" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="0,1,0,0" />
+    </ControlTheme>
+
+  </Styles.Resources>
+</Styles>

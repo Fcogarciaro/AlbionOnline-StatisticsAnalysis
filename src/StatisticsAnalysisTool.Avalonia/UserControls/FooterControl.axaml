@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+             xmlns:vm="clr-namespace:StatisticsAnalysisTool.ViewModels"
+             x:Class="StatisticsAnalysisTool.UserControls.FooterControl"
+             x:DataType="vm:FooterViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="40" d:DesignWidth="800">
+  <UserControl.Styles>
+    <!-- The version label blinks between blue and red while an update is available (WPF DataTrigger + Storyboard). -->
+    <Style Selector="Label#VersionLabel">
+      <Setter Property="Cursor" Value="Arrow" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+    </Style>
+    <Style Selector="Label#VersionLabel.update">
+      <Setter Property="Cursor" Value="Hand" />
+      <Style.Animations>
+        <Animation Duration="0:0:0.55" IterationCount="Infinite" PlaybackDirection="Alternate">
+          <KeyFrame Cue="0%"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" /></KeyFrame>
+          <KeyFrame Cue="100%"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Red.2}" /></KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+    <Style Selector="Grid.link">
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+  </UserControl.Styles>
+
+  <Grid ZIndex="1" Height="30" VerticalAlignment="Bottom" Margin="10,0,20,10">
+    <Label Content="Made by Triky313" Foreground="{DynamicResource SolidColorBrush.Text.1}" FontSize="14" Padding="0" Margin="0,0,0,14"
+           HorizontalAlignment="Left" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" Height="24" Width="NaN" />
+    <Label x:Name="VersionLabel" Content="{Binding Version, FallbackValue=VERSION}" Classes.update="{Binding IsUpdateAvailable}"
+           FontSize="14" Padding="0" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom"
+           Height="24" Width="NaN" PointerPressed="VersionLabel_PointerPressed" />
+
+    <StackPanel Orientation="Horizontal" Width="NaN" HorizontalAlignment="Right" Margin="0,0">
+      <Grid Classes="link" ZIndex="10" Margin="5,0" HorizontalAlignment="Left" Width="22" Height="22" VerticalAlignment="Bottom"
+            Tag="{Binding GitHubRepoUrl}" PointerPressed="Link_PointerPressed">
+        <fa:FontAwesomeImage Icon="BrandsGithub" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+      </Grid>
+      <Grid Classes="link" ZIndex="10" Margin="5,0" HorizontalAlignment="Left" Width="22" Height="22" VerticalAlignment="Bottom"
+            Tag="{Binding DiscordUrl}" PointerPressed="Link_PointerPressed">
+        <fa:FontAwesomeImage Icon="BrandsDiscord" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+      </Grid>
+      <Grid Classes="link" ZIndex="10" Margin="5,0" HorizontalAlignment="Left" Width="22" Height="22" VerticalAlignment="Bottom"
+            Tag="{Binding DonateUrl}" PointerPressed="Link_PointerPressed">
+        <fa:FontAwesomeImage Icon="BrandsPaypal" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+      </Grid>
+      <Grid Classes="link" ZIndex="10" Margin="5,0" HorizontalAlignment="Left" Width="22" Height="22" VerticalAlignment="Bottom"
+            Tag="{Binding PatreonUrl}" PointerPressed="Link_PointerPressed">
+        <fa:FontAwesomeImage Icon="BrandsPatreon" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+      </Grid>
+    </StackPanel>
+  </Grid>
+</UserControl>

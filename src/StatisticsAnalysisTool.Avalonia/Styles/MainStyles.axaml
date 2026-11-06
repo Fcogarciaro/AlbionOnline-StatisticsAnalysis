@@ -1,0 +1,554 @@
+<!-- Port of Styles/MainStyles.xaml. Conventions (see PORTING.md, "Style mapping"):
+       keyed Style  -> ControlTheme with the same x:Key, applied with Theme="{StaticResource Key}"
+       implicit Style with template -> ControlTheme keyed {x:Type T}; implicit Style without template -> ControlTheme keyed {x:Type T} BasedOn the Fluent theme (never a Style selector: selectors beat keyed themes)
+       triggers -> pseudoclasses (:pointerover, :pressed, :disabled, :checked, :selected), TargetName -> /template/ selectors
+     Colors are DynamicResource because this file is loaded after (and separately from) Colors.axaml.
+     Dropped because Avalonia has no equivalent: FocusVisualStyle (Fluent focus adorner is used), GridView ListView styles
+     (use DataGrid/ListBox), SystemColors key overrides. Left to the views that own them: WindowButtonStyle (Webdings glyphs, T09),
+     ValidationErrorConverter (WPF ValidationError, T10), the FontAwesome based styles (T16, FontAwesomeStyles.axaml).
+     DigitsTextBox needs no style of its own: it reuses the TextBox theme. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:CompileBindings="False">
+
+  <Styles.Resources>
+    <x:Double x:Key="BaseFontSize">12</x:Double>
+    <x:Double x:Key="App.ControlHeight">32</x:Double>
+
+    <!-- Fluent resources behind the stock controls, recolored with the application palette. -->
+    <SolidColorBrush x:Key="TextControlBackground" Color="{DynamicResource Color.Background.7}" />
+    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{DynamicResource Color.Background.7}" />
+    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{DynamicResource Color.Background.6}" />
+    <SolidColorBrush x:Key="TextControlBorderBrush" Color="{DynamicResource Color.Text.5}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{DynamicResource Color.Accent.Blue.4}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="{DynamicResource Color.Accent.Blue.2}" />
+    <SolidColorBrush x:Key="TextControlForeground" Color="{DynamicResource Color.Text.1}" />
+    <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="{DynamicResource Color.Text.1}" />
+    <SolidColorBrush x:Key="TextControlForegroundFocused" Color="{DynamicResource Color.Text.1}" />
+    <SolidColorBrush x:Key="ComboBoxBackground" Color="{DynamicResource Color.Background.3}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{DynamicResource Color.Background.3}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="{DynamicResource Color.Background.2}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundUnfocused" Color="{DynamicResource Color.Background.3}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="{DynamicResource Color.Text.6}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="{DynamicResource Color.Accent.Blue.4}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrushPressed" Color="{DynamicResource Color.Accent.Blue.4}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="{DynamicResource Color.Background.3}" />
+    <SolidColorBrush x:Key="ComboBoxForeground" Color="{DynamicResource Color.Text.1}" />
+    <SolidColorBrush x:Key="ScrollBarThumbFill" Color="{DynamicResource Color.Accent.Blue.4}" />
+    <SolidColorBrush x:Key="ScrollBarThumbFillPointerOver" Color="{DynamicResource Color.Accent.Blue.4}" />
+    <SolidColorBrush x:Key="ScrollBarThumbFillPressed" Color="{DynamicResource Color.Accent.Blue.4}" />
+    <SolidColorBrush x:Key="ScrollBarTrackFill" Color="{DynamicResource Color.Background.3}" />
+    <SolidColorBrush x:Key="ScrollBarTrackFillPointerOver" Color="{DynamicResource Color.Background.3}" />
+    <SolidColorBrush x:Key="MenuFlyoutPresenterBackground" Color="{DynamicResource Color.Background.1}" />
+    <SolidColorBrush x:Key="MenuFlyoutPresenterBorderBrush" Color="{DynamicResource Color.Background.2}" />
+
+    <DataTemplate x:Key="Template.Button.Content.Spacious">
+      <TextBlock Margin="8,0" Text="{Binding}" />
+    </DataTemplate>
+
+    <!-- Implicit property-only styles: ControlThemes keyed by type, based on the Fluent theme (a Style selector would
+         override every keyed theme, unlike WPF where an explicit Style replaces the implicit one). -->
+    <ControlTheme x:Key="{x:Type Label}" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Height" Value="28" />
+      <Setter Property="MinWidth" Value="20" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+      <Setter Property="Height" Value="{DynamicResource App.ControlHeight}" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.7}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Text.5}" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type TabControl}" TargetType="TabControl" BasedOn="{StaticResource {x:Type TabControl}}">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+      <Setter Property="SelectionMode" Value="Multiple" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.1}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.3}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ScrollBar}" TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+      <Setter Property="AllowAutoHide" Value="False" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ContextMenu}" TargetType="ContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.1}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="0,3" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ComboBox}" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+      <Setter Property="Height" Value="{DynamicResource App.ControlHeight}" />
+      <Setter Property="MinWidth" Value="150" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="CornerRadius" Value="0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ProgressBar}" TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+    </ControlTheme>
+
+    <!-- Filter widgets -->
+    <ControlTheme x:Key="App.FilterToggleButton" TargetType="ToggleButton">
+      <Setter Property="Height" Value="{DynamicResource App.ControlHeight}" />
+      <Setter Property="MinWidth" Value="44" />
+      <Setter Property="Margin" Value="0,0,6,0" />
+      <Setter Property="Padding" Value="12,4" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Normal}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Normal}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="FilterSurface"
+                  Padding="{TemplateBinding Padding}"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="3">
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              RecognizesAccessKey="True" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover /template/ Border#FilterSurface">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.MouseOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.MouseOver}" />
+      </Style>
+      <Style Selector="^:checked /template/ Border#FilterSurface">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Accent.Blue.5}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      </Style>
+      <Style Selector="^:checked">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Border#FilterSurface">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Disabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.FilterDropdownButton" TargetType="ToggleButton">
+      <Setter Property="MinHeight" Value="25" />
+      <Setter Property="MinWidth" Value="115" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Border"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{DynamicResource SolidColorBrush.Background.4}"
+                  BorderThickness="1"
+                  CornerRadius="3"
+                  TextElement.Foreground="{TemplateBinding Foreground}">
+            <DockPanel Margin="9,3">
+              <!-- WPF used the Segoe MDL2 chevron glyph (E70D), which does not exist on Linux. -->
+              <Path DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center"
+                    Data="M0,0 L3.5,3.5 L7,0" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.5" />
+              <ContentPresenter x:Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True" />
+            </DockPanel>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover /template/ Border#Border">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      </Style>
+      <Style Selector="^:checked /template/ Border#Border">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.2}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Border#Border">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Text.6}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.FilterDropdownPopup" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="3" />
+      <Setter Property="Padding" Value="8" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.FilterCard" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.T.2}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="5" />
+      <Setter Property="Padding" Value="12,10" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.TopFilterCard" TargetType="Border" BasedOn="{StaticResource App.FilterCard}">
+      <Setter Property="Margin" Value="12,10,12,8" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.FilterGroup" TargetType="Border">
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderThickness" Value="0,0,1,0" />
+      <Setter Property="Padding" Value="0,0,12,0" />
+      <Setter Property="Margin" Value="0,0,12,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.FilterLabel" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      <Setter Property="Margin" Value="0,0,0,5" />
+    </ControlTheme>
+
+    <!-- Custom chrome: the caption is drawn by the app. T09 verifies move/resize on the real desktop. -->
+    <ControlTheme x:Key="WindowChrome" TargetType="Window" BasedOn="{StaticResource {x:Type Window}}">
+      <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
+      <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
+      <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.1}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+      <Setter Property="FontSize" Value="{DynamicResource BaseFontSize}" />
+      <Setter Property="Focusable" Value="False" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Image.ToolIcon" TargetType="Image">
+      <Setter Property="Source" Value="avares://StatisticsAnalysisTool/Assets/sat-icon.png" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="Margin" Value="5,4,0,0" />
+      <Setter Property="Height" Value="30" />
+      <Setter Property="Width" Value="35" />
+    </ControlTheme>
+
+    <!-- Buttons: Base owns the template; every variant only sets the palette per state. -->
+    <ControlTheme x:Key="Style.Button.Base" TargetType="Button">
+      <Setter Property="Height" Value="{DynamicResource App.ControlHeight}" />
+      <Setter Property="MinWidth" Value="40" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Normal}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="3"
+                  TextElement.Foreground="{TemplateBinding Foreground}">
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              Margin="2"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              RecognizesAccessKey="True" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </ControlTheme>
+
+    <!-- Implicit Button (primary), replaces the Fluent button for every Button without a Theme. -->
+    <ControlTheme x:Key="{x:Type Button}" TargetType="Button" BasedOn="{StaticResource Style.Button.Base}">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Primary.Normal}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Primary.Border.Normal}" />
+      <Style Selector="^:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Primary.MouseOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Primary.Border.MouseOver}" />
+      </Style>
+      <Style Selector="^:pressed">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Primary.Pressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Primary.Border.Pressed}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Primary.Disabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Primary.Border.Disabled}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Style.Button.Danger" TargetType="Button" BasedOn="{StaticResource Style.Button.Base}">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Danger.Normal}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Danger.Border.Normal}" />
+      <Style Selector="^:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Danger.MouseOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Danger.Border.MouseOver}" />
+      </Style>
+      <Style Selector="^:pressed">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Danger.Pressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Danger.Border.Pressed}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Danger.Disabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Disabled}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Style.Button.Attention" TargetType="Button" BasedOn="{StaticResource Style.Button.Danger}" />
+
+    <ControlTheme x:Key="Style.Button.Warning" TargetType="Button" BasedOn="{StaticResource Style.Button.Base}">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Warning.Normal}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Warning.Border.Normal}" />
+      <Style Selector="^:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Warning.MouseOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Warning.Border.MouseOver}" />
+      </Style>
+      <Style Selector="^:pressed">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Warning.Pressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Warning.Border.Pressed}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Warning.Disabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Disabled}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Style.Button.Orange" TargetType="Button" BasedOn="{StaticResource Style.Button.Base}">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Orange.Normal}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Orange.Border.Normal}" />
+      <Style Selector="^:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Orange.MouseOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Orange.Border.MouseOver}" />
+      </Style>
+      <Style Selector="^:pressed">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Orange.Pressed}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Orange.Border.Pressed}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Orange.Disabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Disabled}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="Style.Button.Neutral" TargetType="Button" BasedOn="{StaticResource Style.Button.Base}">
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Normal}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Normal}" />
+      <Style Selector="^:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.MouseOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.MouseOver}" />
+      </Style>
+      <Style Selector="^:pressed">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Pressed}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Button.Secondary.Disabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Button.Border.Disabled}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Button.Text.Disabled}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="TitleText" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Text.Title.1" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="Margin" Value="0,5,0,0" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="Container.Border" TargetType="Border">
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.4}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="BlackMarketStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Width" Value="150" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.Caerleon}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="DefaultCityStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Width" Value="150" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="App.TabControl" TargetType="TabControl" BasedOn="{StaticResource {x:Type TabControl}}">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+    </ControlTheme>
+
+    <!-- Header tab; implicit for every TabItem, as in WPF. -->
+    <ControlTheme x:Key="App.TabItem" TargetType="TabItem">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.4}" />
+      <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.4}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Border.2}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="FontWeight" Value="Normal" />
+      <Setter Property="Padding" Value="15,6" />
+      <Setter Property="Margin" Value="0" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="HeaderBorder"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="4,4,0,0"
+                  Padding="{TemplateBinding Padding}">
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Header}"
+                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              RecognizesAccessKey="True" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      </Style>
+      <Style Selector="^:pointerover /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.2}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Border.1}" />
+      </Style>
+      <Style Selector="^:selected">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="ZIndex" Value="2" />
+      </Style>
+      <Style Selector="^:selected /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Surface.Selected}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Border.Focus}" />
+        <Setter Property="BorderThickness" Value="1,1,1,0" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.6}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Border#HeaderBorder">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.5}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Background.6}" />
+      </Style>
+    </ControlTheme>
+    <ControlTheme x:Key="{x:Type TabItem}" TargetType="TabItem" BasedOn="{StaticResource App.TabItem}" />
+
+    <!-- Check box and radio button: the bullets are drawn here, the stock Fluent glyphs are not used. -->
+    <ControlTheme x:Key="{x:Type CheckBox}" TargetType="CheckBox">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Height" Value="21" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Grid Background="Transparent" ColumnDefinitions="Auto,*">
+            <Border x:Name="Border" Width="21" Height="21" CornerRadius="0"
+                    Background="{DynamicResource SolidColorBrush.Background.6}" BorderThickness="3">
+              <Path x:Name="CheckMark" Width="9" Height="9" IsVisible="False"
+                    Stroke="{DynamicResource SolidColorBrush.Accent.Blue.4}" StrokeThickness="2" Data="M 0 4 L 3 8 8 0" />
+            </Border>
+            <ContentPresenter x:Name="PART_ContentPresenter" Grid.Column="1" Margin="4,-2,0,0"
+                              VerticalAlignment="Center" HorizontalAlignment="Left"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Foreground="{TemplateBinding Foreground}"
+                              RecognizesAccessKey="True" />
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:checked /template/ Path#CheckMark">
+        <Setter Property="IsVisible" Value="True" />
+      </Style>
+      <Style Selector="^:indeterminate /template/ Path#CheckMark">
+        <Setter Property="IsVisible" Value="True" />
+        <Setter Property="Data" Value="M 0 8 L 8 0" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.6}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Path#CheckMark">
+        <Setter Property="Stroke" Value="{DynamicResource SolidColorBrush.Text.5}" />
+      </Style>
+      <Style Selector="^:disabled /template/ Border#Border">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.3}" />
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type RadioButton}" TargetType="RadioButton">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Height" Value="21" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Grid Background="Transparent" ColumnDefinitions="Auto,*">
+            <Grid Width="16" Height="16">
+              <Border x:Name="RadioOuter" Background="Transparent"
+                      BorderBrush="{DynamicResource SolidColorBrush.Text.1}" BorderThickness="1" CornerRadius="10" />
+              <Border x:Name="RadioMark" CornerRadius="10" Margin="4" IsVisible="False"
+                      Background="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+            </Grid>
+            <ContentPresenter x:Name="PART_ContentPresenter" Grid.Column="1" Margin="4,0,0,0"
+                              VerticalAlignment="Center"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Foreground="{DynamicResource SolidColorBrush.Text.1}"
+                              RecognizesAccessKey="True" />
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:checked /template/ Border#RadioMark">
+        <Setter Property="IsVisible" Value="True" />
+      </Style>
+      <Style Selector="^:checked /template/ Border#RadioOuter">
+        <Setter Property="BorderBrush" Value="{DynamicResource SolidColorBrush.Accent.Blue.4}" />
+      </Style>
+    </ControlTheme>
+
+    <!-- Items of a ComboBox (hover/selection), on top of the Fluent item template. -->
+    <ControlTheme x:Key="{x:Type ComboBoxItem}" TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Padding" Value="2" />
+      <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      </Style>
+      <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SolidColorBrush.Background.4}" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      </Style>
+      <Style Selector="^:disabled">
+        <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.2}" />
+      </Style>
+    </ControlTheme>
+  </Styles.Resources>
+</Styles>

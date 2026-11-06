@@ -36,8 +36,15 @@ internal static class ExtractorUtilities
         stream.Write(buffer, 0, buffer.Length);
     }
 
+    /// <summary>Bin names may use a Windows separator ("cluster\\world"); make them valid on the current OS.</summary>
+    public static string NormalizeBinFileName(string binFileName)
+    {
+        return binFileName.Replace('\\', Path.DirectorySeparatorChar);
+    }
+
     public static string GetBinFilePath(string mainGameFolder)
     {
-        return Path.Combine(mainGameFolder, ".\\Albion-Online_Data\\StreamingAssets\\GameData");
+        // Separate segments instead of ".\\Albion-Online_Data\\..." so the path also resolves on Linux.
+        return Path.Combine(mainGameFolder, "Albion-Online_Data", "StreamingAssets", "GameData");
     }
 }

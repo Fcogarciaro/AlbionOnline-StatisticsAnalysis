@@ -1,0 +1,133 @@
+<!-- Port of Styles/StorageHistoryStyle.xaml. DataTriggers are classes: the stock value colour by PastTime ("veryveryold" ... "new"),
+     the empty quantity (Visibility.Hidden is Opacity 0), and the city colours (ValueInListConverter groups the names that share a colour).
+     The WPF value text also set Visibility in its triggers, but a local Visibility binding wins over style setters there, so the
+     visibility is only the AveragePricesDisplayedOnItemVisibility binding here too. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:StatisticsAnalysisTool.Models"
+        xmlns:storageHistory="clr-namespace:StatisticsAnalysisTool.StorageHistory"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:glob="clr-namespace:System.Globalization;assembly=System.Runtime"
+        xmlns:enum="clr-namespace:StatisticsAnalysisTool.Enumerations"
+        x:CompileBindings="False">
+  <Styles.Resources>
+
+    <ControlTheme x:Key="ContainerItem.Quantity.Border" TargetType="Border">
+      <Style Selector="^.empty"><Setter Property="Opacity" Value="0" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="ContainerItem.Value.Text" TargetType="TextBlock">
+      <Setter Property="Width" Value="70" />
+      <Setter Property="Height" Value="20" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="TextAlignment" Value="Center" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.6}" />
+      <Style Selector="^.veryveryold"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.7}" /></Style>
+      <Style Selector="^.veryold"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.6}" /></Style>
+      <Style Selector="^.old"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.5}" /></Style>
+      <Style Selector="^.bitold"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.4}" /></Style>
+      <Style Selector="^.littlenew"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.3}" /></Style>
+      <Style Selector="^.almostnew"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.2}" /></Style>
+      <Style Selector="^.new"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.TimeValue.PastTime.1}" /></Style>
+    </ControlTheme>
+
+    <DataTemplate x:Key="ContainerItemTemplate" DataType="storageHistory:ContainerItem">
+      <Grid Height="80" Width="80" Margin="1">
+        <Grid Background="{DynamicResource SolidColorBrush.Background.3}">
+          <Image Source="{Binding Item?.Icon, Mode=OneWay}" Stretch="Fill" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+          <Border Theme="{StaticResource ContainerItem.Quantity.Border}" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                  Classes.empty="{Binding Quantity, Converter={x:Static conv:ToStringEqualsConverter.Instance}, ConverterParameter=0}">
+            <Viewbox StretchDirection="DownOnly" Stretch="Uniform" Width="16" Height="16" Margin="0,0,12,14">
+              <TextBlock Text="{Binding Quantity}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+            </Viewbox>
+          </Border>
+          <TextBlock Theme="{StaticResource ContainerItem.Value.Text}" Background="#c0000000"
+                     Text="{Binding TotalAvgEstMarketValue, Mode=OneWay, StringFormat='{}{0:N0}', ConverterCulture={x:Static glob:CultureInfo.CurrentCulture}}"
+                     ToolTip.Tip="{Binding Item?.LastEstimatedUpdateTimeString, Mode=OneWay}"
+                     IsVisible="{Binding AveragePricesDisplayedOnItemVisibility, Converter={x:Static conv:VisibilityToBoolConverter.Instance}}"
+                   Classes.veryveryold="{Binding Item?.EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.VeryVeryOld}}"
+                   Classes.veryold="{Binding Item?.EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.VeryOld}}"
+                   Classes.old="{Binding Item?.EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.Old}}"
+                   Classes.bitold="{Binding Item?.EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.BitOld}}"
+                   Classes.littlenew="{Binding Item?.EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.LittleNew}}"
+                   Classes.almostnew="{Binding Item?.EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.AlmostNew}}"
+                   Classes.new="{Binding Item?.EstimatedMarketValueStatus, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static enum:PastTime.New}}" />
+        </Grid>
+      </Grid>
+    </DataTemplate>
+
+    <ControlTheme x:Key="VaultSearchItem.Location.Text.Colors" TargetType="TextBlock">
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.3}" />
+      <Style Selector="^.caerleon"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.Caerleon}" /></Style>
+      <Style Selector="^.thetford"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.Thetford}" /></Style>
+      <Style Selector="^.bridgewatch"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.Bridgewatch}" /></Style>
+      <Style Selector="^.martlock"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.Martlock}" /></Style>
+      <Style Selector="^.lymhurst"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.Lymhurst}" /></Style>
+      <Style Selector="^.fortsterling"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.FortSterling}" /></Style>
+      <Style Selector="^.brecilien"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.Brecilien}" /></Style>
+      <Style Selector="^.arthur"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.ArthursRest}" /></Style>
+      <Style Selector="^.merlyn"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.MerlynsRest}" /></Style>
+      <Style Selector="^.morgana"><Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.City.MorganasRest}" /></Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="VaultSearchItem.Text.Tier" TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+      <Setter Property="Margin" Value="0,0,3,0" />
+      <Setter Property="Text" Value="{Binding Item?.TierLevelString, StringFormat='{}{0}', FallbackValue='T?'}" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="VaultSearchItem.Icon" TargetType="Image">
+      <Setter Property="Height" Value="50" />
+      <Setter Property="Width" Value="50" />
+    </ControlTheme>
+
+    <DataTemplate x:Key="VaultSearchItemTemplate" DataType="models:VaultSearchItem">
+      <Grid Height="50">
+        <Border Theme="{StaticResource Container.Border}">
+          <DockPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,10,0">
+            <Grid Margin="0,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <Image Source="{Binding Item?.Icon, Mode=OneWay}" Theme="{StaticResource VaultSearchItem.Icon}" />
+            </Grid>
+            <StackPanel Orientation="Vertical">
+              <DockPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding Quantity, StringFormat='{}{0}x', FallbackValue=0}" FontWeight="Bold"
+                             Margin="0,0,3,0" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                  <TextBlock Theme="{StaticResource VaultSearchItem.Text.Tier}" />
+                  <TextBlock Text="{Binding Item?.LocalizedName}" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                </StackPanel>
+              </DockPanel>
+              <DockPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding TranslationStorageName, FallbackValue=STORAGE}" Width="200" Foreground="{DynamicResource SolidColorBrush.Text.4}" />
+                  <TextBlock Text="{Binding TranslationLocation, FallbackValue=LOCATION}" Width="200" Foreground="{DynamicResource SolidColorBrush.Text.4}" />
+                </StackPanel>
+              </DockPanel>
+              <DockPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding VaultContainerName}" Width="200" Foreground="{DynamicResource SolidColorBrush.Text.1}" />
+                  <TextBlock Text="{Binding OutputString}" Theme="{StaticResource VaultSearchItem.Location.Text.Colors}" Width="200"
+                       Classes.caerleon="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Caerleon'}"
+                       Classes.thetford="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Thetford|Thetford Portal|Bank of Thetford'}"
+                       Classes.bridgewatch="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Bridgewatch|Bridgewatch Portal|Bank of Bridgewatch'}"
+                       Classes.martlock="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Martlock|Martlock Portal|Bank of Martlock'}"
+                       Classes.lymhurst="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Lymhurst|Lymhurst Portal|Bank of Lymhurst'}"
+                       Classes.fortsterling="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Fort Sterling|Fort Sterling Portal|Bank of Fort Sterling'}"
+                       Classes.brecilien="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Brecilien|Brecilien Bank'}"
+                       Classes.arthur="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Arthur\'s Rest'}"
+                       Classes.merlyn="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Merlyn\'s Rest'}"
+                       Classes.morgana="{Binding Location, Converter={x:Static conv:ValueInListConverter.Instance}, ConverterParameter='Morgana\'s Rest'}" />
+                </StackPanel>
+              </DockPanel>
+            </StackPanel>
+          </DockPanel>
+        </Border>
+      </Grid>
+    </DataTemplate>
+
+  </Styles.Resources>
+</Styles>

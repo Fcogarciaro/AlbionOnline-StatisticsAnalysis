@@ -1,0 +1,64 @@
+name: Linux build, tests and release
+
+# Linux port CI. The upstream Windows workflows are left untouched:
+#  - pr-build-and-unit-tests.yml runs on pushes to main and PRs to dev and builds the Windows solution;
+#  - create-release-zip-by-newest-tag.yml runs on tags `v*`, which `linux-v*` does not match.
+on:
+  push:
+    branches: [feat/avalonia-linux-port, main]
+    tags: ["linux-v*"]
+  pull_request:
+    branches: [feat/avalonia-linux-port, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linux-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Native libraries
+        run: sudo apt-get update && sudo apt-get install -y libpcap0.8 libfontconfig1
+
+      - name: Build
+        run: dotnet build src/StatisticsAnalysisTool.Linux.sln -c Release --nologo
+
+      - name: Test (headless)
+        run: dotnet test src/StatisticsAnalysisTool.Avalonia.Tests -c Release --no-build --nologo
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/linux-v')
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build tarball
+        run: packaging/linux/build-tarball.sh "${GITHUB_REF_NAME#linux-v}"
+
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Linux ${TAG#linux-v}" --generate-notes
+          gh release upload "$TAG" \
+            artifacts/StatisticsAnalysisTool-linux-x64.tar.gz \
+            artifacts/StatisticsAnalysisTool-linux-x64.tar.gz.sha256 \
+            --clobber

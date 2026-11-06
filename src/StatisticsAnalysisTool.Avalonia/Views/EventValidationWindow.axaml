@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="clr-namespace:StatisticsAnalysisTool.Common.Controls"
+        xmlns:conv="clr-namespace:StatisticsAnalysisTool.Common.Converters"
+        xmlns:viewModels="clr-namespace:StatisticsAnalysisTool.ViewModels"
+        xmlns:userControls="clr-namespace:StatisticsAnalysisTool.UserControls"
+        x:Class="StatisticsAnalysisTool.Views.EventValidationWindow"
+        x:DataType="viewModels:EventValidationViewModel"
+        mc:Ignorable="d"
+        Title="{Binding TranslationTitle, FallbackValue=EVENT__VALIDATION}"
+        Height="450" Width="650" MinHeight="450" MinWidth="400"
+        WindowStartupLocation="CenterScreen"
+        Theme="{StaticResource WindowChrome}"
+        BorderThickness="1,1,1,1"
+        BorderBrush="{DynamicResource SolidColorBrush.Background.3}">
+  <Window.Styles>
+    <!-- The rows are plain items (no selection): keep the list box from highlighting them. -->
+    <Style Selector="ListBox#EventList ListBoxItem">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Margin" Value="0" />
+    </Style>
+    <Style Selector="ListBox#EventList ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="ListBox#EventList ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+  </Window.Styles>
+
+  <Grid Background="{DynamicResource SolidColorBrush.Background.1}">
+    <Grid x:Name="Hotbar" ZIndex="1" Height="33" VerticalAlignment="Top" Background="{DynamicResource SolidColorBrush.Background.2}"
+          PointerPressed="Hotbar_PointerPressed">
+      <Label Content="{Binding TranslationTitle, FallbackValue=EVENT__VALIDATION}" Margin="0,0,91,0" VerticalAlignment="Top" Height="33" FontSize="16"
+             Foreground="{DynamicResource SolidColorBrush.Text.1}" FontWeight="Bold" />
+      <Separator Margin="5,30,5,0" VerticalAlignment="Top" />
+      <Button Theme="{StaticResource WindowButtonStyle}" Content="r" Margin="-2,0,0,0" Click="CloseButton_Click" />
+      <Button x:Name="MaximizedButton" Theme="{StaticResource WindowButtonStyle}" Content="1" Margin="0,0,28,0" Click="MaximizedButton_Click" />
+      <Button Theme="{StaticResource WindowButtonStyle}" Content="0" Margin="0,0,56,0" Click="MinimizeButton_Click" />
+    </Grid>
+
+    <Grid Margin="0,33,-1,0">
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Height="30">
+        <Button Content="{Binding TranslationReset, FallbackValue=RESET}" Margin="5,0,0,0" Theme="{StaticResource Style.Button.Danger}"
+                Height="26" MaxWidth="200" MinWidth="80" Click="BtnResetConsole_Click" />
+      </StackPanel>
+      <!-- WpfToolkit VirtualizingItemsControl -> ListBox (virtualizing). -->
+      <ListBox x:Name="EventList" Margin="0,30,0,0" ItemsSource="{Binding EventValidationCollectionView, Mode=OneWay}"
+               ItemTemplate="{StaticResource EventItemStatsTemplate}"
+               Background="Transparent" BorderThickness="0"
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+               ScrollViewer.VerticalScrollBarVisibility="Visible" />
+    </Grid>
+    <fa:WindowResizeHandles />
+  </Grid>
+</Window>

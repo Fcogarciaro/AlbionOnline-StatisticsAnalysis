@@ -1,0 +1,54 @@
+<!-- Replacement for the WPF ListView + GridView styles of MainStyles.xaml (ListView, ListViewItem, GridViewColumnHeader), which have
+     no Avalonia equivalent: ported views use a DataGrid with these looks. Transparent grid without lines; rows are transparent,
+     blue-tinted on hover and selection; headers are 14 px blue text with a bottom/right border (the gripper of the WPF header
+     had Width 0, so columns are not user-resizable here either: CanUserResizeColumns is off). -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+
+  <Style Selector="DataGrid">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+    <Setter Property="GridLinesVisibility" Value="None" />
+    <Setter Property="HeadersVisibility" Value="Column" />
+    <Setter Property="CanUserResizeColumns" Value="False" />
+    <Setter Property="CanUserReorderColumns" Value="False" />
+    <Setter Property="CanUserSortColumns" Value="False" />
+    <Setter Property="SelectionMode" Value="Single" />
+    <Setter Property="IsReadOnly" Value="True" />
+    <Setter Property="AutoGenerateColumns" Value="False" />
+  </Style>
+
+  <Style Selector="DataGridRow">
+    <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Text.1}" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="DataGridRow /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="Transparent" />
+  </Style>
+  <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.2}" />
+  </Style>
+  <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.4}" />
+  </Style>
+  <Style Selector="DataGridRow:selected:pointerover /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Blue.Transparent.4}" />
+  </Style>
+
+  <Style Selector="DataGridCell">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="BorderThickness" Value="0" />
+  </Style>
+
+  <Style Selector="DataGridColumnHeader">
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="Foreground" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style Selector="DataGridColumnHeader /template/ Rectangle#VerticalSeparator">
+    <Setter Property="Fill" Value="{DynamicResource SolidColorBrush.Accent.Blue.3}" />
+  </Style>
+</Styles>
