@@ -106,7 +106,7 @@ Each task records its route and trigger.
   - Open: the CI run is unverified; the icons are upscaled.
 - [x] T19c Verifier correction: install.sh rejects a dangerous INSTALL_DIR (/, $HOME, a relative path, sed metacharacters, a path inside the tarball, a non-empty foreign directory). Verified with a sandbox HOME run. Other findings are residual: actions pinned to @v4, PKGBUILD sha SKIP until the first tag, unguarded async void handlers that mirror upstream.
 - CI: run 42058043189 succeeded (build + tests on GitHub Actions).
-- [ ] T20 Parity pass versus the original screens. Needs the live user test on Hyprland.
+- [x] T20 Parity pass versus the original screens. Live user test on Hyprland (native Linux client): linux-v0.1.3 starts, the folder picker works under setcap, ~/albiononline is detected, and live capture fills Dashboard and DamageMeter (confirmed by the user 2026-11-06).
   - Native Linux client layout (`~/albiononline/game_x64/...`, reported by the user) was rejected as a game folder: Extractor only knew `game`. Extractor.GetServerFolderPath now falls back to `<server>_x64`; GameFolderLocator probes `~/albiononline`. Strict TDD (RED 3+1 failing, GREEN 705/705). Released as linux-v0.1.3.
   - Release linux-v0.1.0 (prerelease) crashed on start: Program.Main touched Dispatcher.UIThread before platform init (PlatformNotSupportedException in MainLoop). Fixed in 9e90977f; reproduced and verified against a live X display (:0); tests 665/665. Re-released as linux-v0.1.1 (prerelease); the downloaded tarball verifies and starts to the first-start guide.
   - Fix 0382c31e: pickers crashed with portal AccessDenied under setcap (non-dumpable); now zenity/kdialog fallback (`Linux/Platform/ExternalFilePicker.cs`). Tests 699/699.
