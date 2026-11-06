@@ -499,6 +499,8 @@ is a no-op there; if they exist it migrates into the XDG targets above.
   game data extraction found nothing. `ExtractorUtilities.GetBinFilePath` now joins separate segments, bin names are
   normalised with `NormalizeBinFileName`, and the unused `outFiles` block in `BinaryDumper` is removed. Behavior on
   Windows is identical; this is the only upstream-tree edit (a few lines, merge friendly).
+  The same project also resolves the server folder through `Extractor.GetServerFolderPath`: the native Linux client
+  installs `game_x64` (`<server>_x64`) instead of `game`, which is used only when `<server>` does not exist.
 - `Localization/localization.json` is copied to the output (the WPF project does this with a `Content` item).
 - Linked code builds file names with `Path.Combine` and lower-case literals consistently; the only other mismatch found
   by a case-insensitive scan of all file name literals was the pair above.

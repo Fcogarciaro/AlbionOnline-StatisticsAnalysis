@@ -40,6 +40,14 @@ public class GameFolderLocatorTests
     }
 
     [Test]
+    public void Candidates_IncludeTheNativeLinuxClientInHome()
+    {
+        var candidates = GameFolderLocator.Candidates(_home, Env()).ToList();
+
+        candidates.Should().Contain(Path.Combine(_home, "albiononline"));
+    }
+
+    [Test]
     public void Candidates_HonorXdgDataHomeAndWinePrefix()
     {
         var data = Path.Combine(_home, "xdgdata");

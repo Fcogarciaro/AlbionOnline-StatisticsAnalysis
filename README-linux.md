@@ -76,7 +76,8 @@ sudo setcap cap_net_raw,cap_net_admin=eip ~/.local/opt/StatisticsAnalysisTool/St
 
 ## Steam / Proton game folder
 
-The first start guide and the game-data window look for the game and propose the first valid folder: Steam libraries
+The first start guide and the game-data window look for the game and propose the first valid folder: the native Linux
+client in `~/albiononline` (its `game_x64` layout is accepted), Steam libraries
 (`~/.local/share/Steam`, Flatpak Steam, `libraryfolders.vdf`), `WINEPREFIX`, `~/.wine`, `~/Games/*` and Bottles. The Steam default is
 `~/.local/share/Steam/steamapps/common/Albion Online`. The game process is detected under Wine/Proton (`Albion-Online.exe`).
 

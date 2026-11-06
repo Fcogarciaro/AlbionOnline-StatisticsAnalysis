@@ -1,5 +1,6 @@
 // Finds the Albion Online main game folder (the one that contains "game", see Extractor.IsValidMainGameFolder) on Linux.
 // There is no registry or "C:\Program Files" default here, so the usual places are probed instead:
+//  - the native Linux client: ~/albiononline;
 //  - Steam: <steam>/steamapps/common/Albion Online for the Steam homes (native, ~/.steam, Flatpak) and every library
 //    folder named in steamapps/libraryfolders.vdf;
 //  - the standalone launcher under Wine: <prefix>/drive_c/Program Files (x86)/AlbionOnline for WINEPREFIX, ~/.wine,
@@ -17,6 +18,7 @@ public static class GameFolderLocator
 {
     private const string SteamGameFolder = "Albion Online";
     private const string LauncherGameFolder = "AlbionOnline";
+    private const string NativeGameFolder = "albiononline";
 
     private static readonly Regex VdfPath = new("^\\s*\"path\"\\s+\"(?<path>[^\"]+)\"", RegexOptions.Multiline | RegexOptions.Compiled);
 
@@ -90,6 +92,9 @@ public static class GameFolderLocator
             Path.Combine(home, ".var/app/com.valvesoftware.Steam/.local/share/Steam"),
             Path.Combine(home, ".var/app/com.valvesoftware.Steam/data/Steam")
         };
+
+        // The native Linux client (its server folder is "game_x64", see Extractor.GetServerFolderPath).
+        yield return Path.Combine(home, NativeGameFolder);
 
         // The documented order starts with the usual locations; library folders follow their Steam home.
         foreach (var steamHome in steamHomes)
