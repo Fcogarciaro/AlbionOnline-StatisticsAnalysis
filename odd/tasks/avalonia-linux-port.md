@@ -111,6 +111,9 @@ Each task records its route and trigger.
   - Release linux-v0.1.0 (prerelease) crashed on start: Program.Main touched Dispatcher.UIThread before platform init (PlatformNotSupportedException in MainLoop). Fixed in 9e90977f; reproduced and verified against a live X display (:0); tests 665/665. Re-released as linux-v0.1.1 (prerelease); the downloaded tarball verifies and starts to the first-start guide.
   - Fix 0382c31e: pickers crashed with portal AccessDenied under setcap (non-dumpable); now zenity/kdialog fallback (`Linux/Platform/ExternalFilePicker.cs`). Tests 699/699.
 
+## Delivery record
+- 2026-11-06: README-linux.md install/update/uninstall/troubleshooting rewritten (curl + releases/latest), README.md Linux pointer, PKGBUILD pkgver 0.1.3 with a real sha256. `feat/avalonia-linux-port` merged into the fork `main`; linux-v0.1.3 promoted to the stable latest release; the broken linux-v0.1.0 release and tag deleted.
+
 ## Acceptance Criteria
 - `dotnet build` and `dotnet test` succeed on Linux.
 - The app launches, captures Albion traffic via libpcap and shows every original tab with working data.

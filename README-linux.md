@@ -9,9 +9,10 @@ dungeons, trading and more.
 
 ## Requirements
 
-- Linux x86_64 with a desktop session (X11 or Wayland through XWayland).
-- `libpcap` (Arch: `libpcap`, Debian/Ubuntu: `libpcap0.8`, Fedora: `libpcap`).
-- Runtime libraries Avalonia needs: `fontconfig`, `libX11`, `libICE`, `libSM`.
+- Linux x86_64 with a desktop session (X11, or Wayland through XWayland).
+- `libpcap` for packet capture (Arch: `libpcap`, Debian/Ubuntu: `libpcap0.8`, Fedora: `libpcap`).
+- `zenity` (or `kdialog`) for file and folder pickers, see [Capture permissions](#capture-permissions-setcap).
+- Runtime libraries Avalonia needs: `fontconfig`, `libX11`, `libICE`, `libSM` (present on any desktop install).
 - The release tarball is self-contained: **no .NET installation is needed**.
 - Optional: `pw-play` (pipewire) or `paplay`/`aplay` for alert sounds, `notify-send` (libnotify) for desktop notifications, `xdg-utils`,
   `wmctrl` (X11 attention request).
@@ -20,15 +21,57 @@ dungeons, trading and more.
 
 ### Tarball (any distribution)
 
-```sh
-tar xf StatisticsAnalysisTool-linux-x64.tar.gz
-cd StatisticsAnalysisTool
-./install.sh --setcap      # --setcap runs "sudo setcap" for packet capture, see below
-```
+1. Install the dependencies:
+
+   ```sh
+   sudo pacman -S --needed libpcap zenity                # Arch / Manjaro / EndeavourOS / Omarchy
+   sudo apt install libpcap0.8 zenity                    # Debian / Ubuntu / Mint / Pop!_OS
+   sudo dnf install libpcap zenity                       # Fedora
+   ```
+
+2. Download the latest release and verify it:
+
+   ```sh
+   mkdir -p ~/Downloads/sat && cd ~/Downloads/sat
+   base=https://github.com/Fcogarciaro/AlbionOnline-StatisticsAnalysis/releases/latest/download
+   curl -LO "$base/StatisticsAnalysisTool-linux-x64.tar.gz"
+   curl -LO "$base/StatisticsAnalysisTool-linux-x64.tar.gz.sha256"
+   sha256sum -c StatisticsAnalysisTool-linux-x64.tar.gz.sha256      # must print "OK"
+   ```
+
+   `-L` is required: GitHub redirects the download. The files are also on the
+   [releases page](https://github.com/Fcogarciaro/AlbionOnline-StatisticsAnalysis/releases/latest).
+
+3. Extract and install:
+
+   ```sh
+   tar xzf StatisticsAnalysisTool-linux-x64.tar.gz
+   cd StatisticsAnalysisTool
+   ./install.sh --setcap      # asks for your sudo password once, for the packet capture permission
+   ```
+
+4. Start it from your application menu ("Statistics Analysis Tool") or a terminal:
+
+   ```sh
+   statisticsanalysistool     # or ~/.local/opt/StatisticsAnalysisTool/StatisticsAnalysisTool if ~/.local/bin is not on PATH
+   ```
+
+5. The first start guide asks for the language and the game folder (it is usually detected, see [Game folder](#game-folder)).
+   Then start Albion Online and enter a map: the dashboard and damage meter fill from the live traffic.
 
 `install.sh` copies the tool to `~/.local/opt/StatisticsAnalysisTool`, links `~/.local/bin/statisticsanalysistool`, and installs the desktop entry
-and icons under `~/.local/share`. `./install.sh --uninstall` removes them (your settings and data stay).
-Verify the download with the `.sha256` file from the release: `sha256sum -c StatisticsAnalysisTool-linux-x64.tar.gz.sha256`.
+and icons under `~/.local/share`. Run `./install.sh --help` for the options.
+
+### Update
+
+Repeat steps 2 and 3 with the new release. `--setcap` is required again: replacing the binary removes its capture permission.
+Settings and data are kept.
+
+### Uninstall
+
+```sh
+./install.sh --uninstall   # from any extracted release; settings and data stay in ~/.config and ~/.local/share
+```
 
 ### Arch Linux (PKGBUILD)
 
@@ -70,16 +113,33 @@ sudo setcap cap_net_raw,cap_net_admin=eip ~/.local/opt/StatisticsAnalysisTool/St
   The exact rule syntax depends on your Hyprland version; see the Hyprland wiki for window rules.
 - **Attention requests** (`FlashWindow` on alerts) work through `wmctrl` on X11 only; on Wayland use the desktop notification.
 - **Clipboard** works while one of the tool's windows exists.
-
 - **File and folder pickers** run through `zenity` (or `kdialog`) because the portal rejects processes with `setcap` capabilities. Install
   one of them (e.g. `sudo pacman -S zenity`) if the dialogs do not open.
 
-## Steam / Proton game folder
+## Game folder
 
-The first start guide and the game-data window look for the game and propose the first valid folder: the native Linux
-client in `~/albiononline` (its `game_x64` layout is accepted), Steam libraries
-(`~/.local/share/Steam`, Flatpak Steam, `libraryfolders.vdf`), `WINEPREFIX`, `~/.wine`, `~/Games/*` and Bottles. The Steam default is
-`~/.local/share/Steam/steamapps/common/Albion Online`. The game process is detected under Wine/Proton (`Albion-Online.exe`).
+The first start guide and the game-data window look for the game and propose the first valid folder. Both the native Linux client and
+Steam/Proton or Wine installs are supported:
+
+| Install | Folder to pick |
+|---|---|
+| Native Linux client | `~/albiononline` (contains `game_x64`) |
+| Steam (native or Proton) | `~/.local/share/Steam/steamapps/common/Albion Online`, or the same path in another Steam library |
+| Flatpak Steam | `~/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/Albion Online` |
+| Standalone launcher under Wine | `<prefix>/drive_c/Program Files (x86)/AlbionOnline` (`WINEPREFIX`, `~/.wine`, `~/Games/*`, Bottles) |
+
+Pick the folder that contains `game` (Windows/Steam layout) or `game_x64` (native Linux layout). The running game is detected both as the
+native `Albion-Online` process and under Wine/Proton (`Albion-Online.exe`).
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| No data while playing | Check the capture permission: `getcap ~/.local/opt/StatisticsAnalysisTool/StatisticsAnalysisTool` must show `cap_net_admin,cap_net_raw=eip`. Re-run `./install.sh --setcap` after every update. |
+| "Select folder" does nothing or warns about zenity | Install `zenity` (or `kdialog`). |
+| Game folder rejected | Pick the folder that contains `game` or `game_x64`, not those folders themselves. |
+| No tray icon | Your desktop needs a StatusNotifierItem host (see below). |
+| Anything else | Start it from a terminal to see the log, and look at `~/.local/share/StatisticsAnalysisTool/` (logs). |
 
 ## Data locations (XDG)
 
@@ -126,3 +186,5 @@ New upstream source files are linked automatically (the project globs them). Che
 ## Releases
 
 Push a tag `linux-vX.Y.Z`. CI builds `StatisticsAnalysisTool-linux-x64.tar.gz` and its `.sha256` and attaches them to the release.
+The version must be numeric (`linux-v0.2.0`, not `linux-v0.2.0-beta`) because the update check compares versions; mark a test build as a
+pre-release on GitHub instead. Update `pkgver` and run `updpkgsums` in `packaging/arch` after tagging.

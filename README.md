@@ -11,6 +11,10 @@ AlbionOnline - Statistics Analysis
 [![Donate PAYPAL](https://img.shields.io/badge/paypal-donate-1e477a?style=for-the-badge&labelColor=1E2126&color=1e477a)](https://www.paypal.com/donate/?hosted_button_id=N6T3CWXYNGHKC)
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3DTriky313%26type%3Dpatrons&style=for-the-badge)](https://patreon.com/Triky313)
 
+> **Linux:** this fork adds a native Linux port (Avalonia). Download it from the
+> [latest release](https://github.com/Fcogarciaro/AlbionOnline-StatisticsAnalysis/releases/latest) and follow
+> [README-linux.md](README-linux.md) for installation.
+
 A tool to easily read auction house data with a loot logger, damage meter, dungeon tracker, dungeon entry timer, crafting calculator, map history and player information
 
 <p align="center" align='right'>

@@ -1,7 +1,7 @@
 # Maintainer: Fcogarciaro
 # Builds the Linux (Avalonia) port from the source tag `linux-v$pkgver` of the fork.
 pkgname=statisticsanalysistool
-pkgver=0.1.0
+pkgver=0.1.3
 pkgrel=1
 pkgdesc='Albion Online Statistics Analysis Tool (Linux port): damage meter, loot, market and dungeon tracking from network traffic'
 arch=('x86_64')
@@ -15,13 +15,15 @@ optdepends=(
   'libnotify: desktop notifications through notify-send'
   'xdg-utils: open links and folders from the tool'
   'wmctrl: ask the window manager for attention on X11 when an alert fires'
+  'zenity: file and folder pickers (the portal rejects processes with capabilities)'
+  'kdialog: alternative file and folder pickers'
 )
 install="$pkgname.install"
 # The self-contained .NET output must not be stripped, and it carries no useful debug symbols for makepkg.
 options=('!strip' '!debug')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/linux-v$pkgver.tar.gz")
-# Replace with the real checksum once the tag exists (`updpkgsums`); SKIP is only acceptable for local testing.
-sha256sums=('SKIP')
+# Run `updpkgsums` after changing pkgver.
+sha256sums=('dea7738291b72bd7d5b8290de98a170fca113b049100faf63a46b487b6c29a7e')
 
 build() {
   cd "AlbionOnline-StatisticsAnalysis-linux-v$pkgver"
