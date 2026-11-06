@@ -112,7 +112,7 @@ Each task records its route and trigger.
   - Fix 0382c31e: pickers crashed with portal AccessDenied under setcap (non-dumpable); now zenity/kdialog fallback (`Linux/Platform/ExternalFilePicker.cs`). Tests 699/699.
 
 ## Delivery record
-- 2026-11-06: README-linux.md install/update/uninstall/troubleshooting rewritten (curl + releases/latest), README.md Linux pointer, PKGBUILD pkgver 0.1.3 with a real sha256. `feat/avalonia-linux-port` merged into the fork `main`; linux-v0.1.3 promoted to the stable latest release; the broken linux-v0.1.0 release and tag deleted.
+- 2026-11-06: README-linux.md install/update/uninstall/troubleshooting rewritten (curl + releases/latest), README.md Linux pointer, PKGBUILD pkgver 0.1.3 with a real sha256. `feat/avalonia-linux-port` merged into the fork `main`; linux-v0.1.3 promoted to the stable latest release; deleting the broken linux-v0.1.0 release and tag was blocked by the agent permission mode and is left to the user.
 
 ## Acceptance Criteria
 - `dotnet build` and `dotnet test` succeed on Linux.
