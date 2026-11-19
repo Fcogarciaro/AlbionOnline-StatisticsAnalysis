@@ -21,9 +21,28 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
   </ItemGroup>
 
-  <!-- Pure sources of the WPF project, linked as in StatisticsAnalysisTool.Avalonia. -->
+  <!-- Sources shared with the WPF and Avalonia projects, linked unchanged (capture provider, privilege check, Photon codes). -->
   <ItemGroup>
     <Compile Include="..\StatisticsAnalysisTool\Common\FixPoint.cs" Link="Linked\FixPoint.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Common\UserSettings\NetworkDeviceSettingsObject.cs" Link="Linked\NetworkDeviceSettingsObject.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Enumerations\ServerLocation.cs" Link="Linked\ServerLocation.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\EventCodes.cs" Link="Linked\EventCodes.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\OperationCodes.cs" Link="Linked\OperationCodes.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\AlbionServerChangedEventArgs.cs" Link="Linked\AlbionServerChangedEventArgs.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\AlbionServerDetectionService.cs" Link="Linked\AlbionServerDetectionService.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\AlbionServerInfo.cs" Link="Linked\AlbionServerInfo.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\AlbionServerRegistry.cs" Link="Linked\AlbionServerRegistry.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\PacketProviders\NetworkChangeMonitor.cs" Link="Linked\NetworkChangeMonitor.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\PacketProviders\NetworkDeviceInformation.cs" Link="Linked\NetworkDeviceInformation.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\PacketProviders\NpcapCaptureDiagnostics.cs" Link="Linked\NpcapCaptureDiagnostics.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\PacketProviders\PacketProvider.cs" Link="Linked\PacketProvider.cs" />
+    <Compile Include="..\StatisticsAnalysisTool\Network\PacketProviders\PacketProviderStartResult.cs" Link="Linked\PacketProviderStartResult.cs" />
+    <Compile Include="..\StatisticsAnalysisTool.Avalonia\Linux\Network\LibpcapPacketProvider.cs" Link="Linked\LibpcapPacketProvider.cs" />
+    <Compile Include="..\StatisticsAnalysisTool.Avalonia\Linux\Capture\CaptureDevicePolicy.cs" Link="Linked\CaptureDevicePolicy.cs" />
+    <Compile Include="..\StatisticsAnalysisTool.Avalonia\Linux\Capture\CaptureGuidance.cs" Link="Linked\CaptureGuidance.cs" />
+    <Compile Include="..\StatisticsAnalysisTool.Avalonia\Linux\Capture\CapturePrivilege.cs" Link="Linked\CapturePrivilege.cs" />
+    <Compile Include="..\StatisticsAnalysisTool.Avalonia\Linux\Capture\LibpcapLibrary.cs" Link="Linked\LibpcapLibrary.cs" />
+    <Compile Include="..\StatisticsAnalysisTool.Avalonia\Linux\Capture\LinkLayerDecoder.cs" Link="Linked\LinkLayerDecoder.cs" />
   </ItemGroup>
 
   <ItemGroup>
