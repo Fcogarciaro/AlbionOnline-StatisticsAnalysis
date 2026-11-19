@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>sat-headless</AssemblyName>
+    <RootNamespace>StatisticsAnalysisTool.Headless</RootNamespace>
+    <Version>0.1.0</Version>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BinaryFormat.EthernetFrame" Version="0.1.5" />
+    <PackageReference Include="BinaryFormat.IPv4" Version="0.1.5" />
+    <PackageReference Include="BinaryFormat.Udp" Version="0.1.5" />
+    <PackageReference Include="Libpcap" Version="0.1.5" />
+    <PackageReference Include="Serilog" Version="4.4.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+  </ItemGroup>
+
+  <!-- Pure sources of the WPF project, linked as in StatisticsAnalysisTool.Avalonia. -->
+  <ItemGroup>
+    <Compile Include="..\StatisticsAnalysisTool\Common\FixPoint.cs" Link="Linked\FixPoint.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StatisticsAnalysisTool.Network\StatisticsAnalysisTool.Network.csproj" />
+  </ItemGroup>
+
+</Project>
