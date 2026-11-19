@@ -10,6 +10,8 @@
     <RootNamespace>StatisticsAnalysisTool.Headless</RootNamespace>
     <Version>0.1.0</Version>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Linked CaptureGuidance reads Assembly.Location only as a fallback; ProcessPath is the real binary in a single-file app. -->
+    <NoWarn>$(NoWarn);IL3000</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
